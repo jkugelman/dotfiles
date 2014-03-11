@@ -1,0 +1,53 @@
+#!/bin/bash
+#
+# Usage: cvsadd [FILE]...
+#
+# Mass `cvs add' script. Adds files and directories recursively, automatically
+# figuring out if they are text or binary. If no file names are specified, looks
+# for unversioned files and directories in the current directory.
+#
+# To use copy this script to your ~/bin/ directory.
+
+while true; do
+    if [[ $# -eq 0 ]]; then
+        IFS=$'\n' FILES=($(cvs -fqn update -P | grep '^?' | cut -c 3-))
+    else
+        IFS=$'\n' FILES=($(cvs -fqn update -P | grep '^?' | cut -c 3- | grep "${@%/}"))
+    fi
+
+    TXT=()
+    BIN=()
+    DIR=()
+
+    for FILE in "${FILES[@]}"; do
+        TYPE=$(file -b "$FILE")
+
+          if [[ $TYPE =~ data && ! $TYPE =~ text ]]; then BIN+=("$FILE")
+        elif [[ $TYPE =~ text && ! $TYPE =~ data ]]; then TXT+=("$FILE")
+        elif [[ $TYPE =  XML ]];                     then TXT+=("$FILE")
+        elif [[ $TYPE =~ executable ]];              then BIN+=("$FILE")
+        elif [[ $TYPE =~ RPM ]];                     then BIN+=("$FILE")
+        elif [[ $TYPE =  directory ]];               then DIR+=("$FILE/")
+        elif [[ $TYPE =~ 'Vim swap file' ]];         then : # Ignore
+
+        else
+            read -erp "$FILE ($TYPE)? [b/t/SKIP] "
+
+            [[ $REPLY = b ]] && BIN+=("$FILE")
+            [[ $REPLY = t ]] && TXT+=("$FILE")
+        fi
+    done
+
+    [[ $DIR ]] && { echo 'Directories:'; for FILE in "${DIR[@]}"; do echo "    $FILE"; done; }
+    [[ $TXT ]] && { echo 'Text:';        for FILE in "${TXT[@]}"; do echo "    $FILE"; done; }
+    [[ $BIN ]] && { echo 'Binary:';      for FILE in "${BIN[@]}"; do echo "    $FILE"; done; }
+
+    [[ -n $DIR$TXT$BIN ]] || break
+
+    read -erp 'Confirm? (y/n) '
+    [[ $REPLY = y ]] || break
+
+    [[ -n $DIR ]] && { echo; echo cvs add     "${DIR[@]}"; cvs add     "${DIR[@]}"; }
+    [[ -n $TXT ]] && { echo; echo cvs add     "${TXT[@]}"; cvs add     "${TXT[@]}"; }
+    [[ -n $BIN ]] && { echo; echo cvs add -kb "${BIN[@]}"; cvs add -kb "${BIN[@]}"; }
+done

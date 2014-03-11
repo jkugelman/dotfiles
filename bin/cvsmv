@@ -1,0 +1,49 @@
+#!/bin/bash
+# 
+# Usage: cvsmv SOURCE DEST
+#    or: cvsmv -r s/PATTERN/REPL/ FILE...
+#
+# Moves files in CVS. Because CVS does not actually support moves, it removes
+# the old file and adds it under the new name, preserving the -kb flag if the
+# file is binary.
+#
+# Can also perform mass moves/renames using the `-r' option, which accepts a
+# sed-style s/PATTERN/REPL/ search-and-replace pattern.
+#
+# To use copy this script to your ~/bin/ directory.
+
+function usage() {
+    echo "Usage: $0 SOURCE DEST" >&2
+    echo "   or: $0 -r s/PATTERN/REPL/ FILE..." >&2
+    exit 1
+}
+
+function rename() {
+    FLAGS=
+
+    if cvs -q log "$1" | grep -q 'keyword substitution: b'; then
+        FLAGS=-kb
+    fi
+
+    echo "$1 --> $2"
+
+    mv "$@" && cvs -q remove "$1" && cvs -q add $FLAGS "$2"
+}
+
+if [[ $1 = -r ]]; then
+    shift
+    PATTERN=$1
+    shift
+
+    for OLD in "$@"; do
+        NEW=$(sed -re "$PATTERN" <<< "$OLD")
+
+        if [[ $OLD != $NEW ]]; then
+            rename "$OLD" "$NEW"
+        fi
+    done
+elif [[ $# -eq 2 ]]; then
+    rename "$1" "$2"
+else
+    usage
+fi

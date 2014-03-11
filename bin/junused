@@ -1,0 +1,11 @@
+#!/bin/bash
+#
+# Finds unused Java source files.
+
+find ${1:-.} -name "*.java" | while read FILE; do
+    CLASS=$(basename "$FILE" .java)
+
+    if ! grep -Rq --include="*.java" --exclude="$CLASS.java" "$CLASS" ${1:-.}; then
+        echo "$FILE"
+    fi
+done

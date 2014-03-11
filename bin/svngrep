@@ -1,0 +1,12 @@
+#!/bin/bash
+#
+# Usage: svngrep [options] PATTERN [FILE...]
+#        svngrep [options] [-e PATTERN | -f FILE] [FILE...]
+#
+# Attempts to behave identically to a plain `grep' command while ignoring .svn
+# directories. Usage is identical to `grep'.
+#
+# To use copy this script to your ~/bin/ directory.
+
+export GREP_OPTIONS+=' --exclude=*.svn-base --exclude=*.tmp --exclude=all-wcprops --exclude=entries'
+exec grep "$@"
