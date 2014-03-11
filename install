@@ -1,0 +1,15 @@
+#!/bin/bash
+
+ln -vfs ~/.dotfiles/.bashrc    ~/
+ln -vfs ~/.dotfiles/.cvsrc     ~/
+ln -vfs ~/.dotfiles/.git       ~/
+ln -vfs ~/.dotfiles/.gitconfig ~/
+ln -vfs ~/.dotfiles/.inputrc   ~/
+ln -vfs ~/.dotfiles/.netrc     ~/
+ln -vfs ~/.dotfiles/.screenrc  ~/
+ln -vfs ~/.dotfiles/.sqliterc  ~/
+ln -vfs ~/.dotfiles/.vimrc     ~/
+
+rm -rf ~/.vim ~/bin
+ln -vfs ~/.dotfiles/.vim       ~/
+ln -vfs ~/.dotfiles/bin        ~/
