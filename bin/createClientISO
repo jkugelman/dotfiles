@@ -1,0 +1,18 @@
+#!/bin/bash
+
+cd /tmp
+rm -rf Client
+cvs export -r HEAD -d Client IA/dev/Windows/Client
+
+find Client -name '*.conf' | xargs unix2dos
+find Client -name '*.java' | xargs unix2dos
+find Client -name '*.xml'  | xargs unix2dos
+find Client -name '*.bat'  | xargs unix2dos
+find Client -name '*.txt'  | xargs unix2dos
+
+find Client -name '.cvsignore' | xargs rm -f
+
+mkisofs -o iavirus.iso -R -J Client/
+mv iavirus.iso /TI-06/Windows
+rm -rf /tmp/Client
+

@@ -1,0 +1,12 @@
+#!/bin/bash
+
+cd /TI-06/CentralManager/build
+cvs -q update makeTar installCM
+
+./makeTar /tmp/cm.tar.gz
+scp installCM /tmp/cm.tar.gz bf06test:/IA/tmp
+rm -f /tmp/cm.tar.gz
+
+ssh bf06test ssh pptest scp /IA/tmp/installCM /IA/tmp/cm.tar.gz m3iacm:/tmp
+ssh bf06test ssh pptest ssh m3iacm /tmp/installCM /tmp/cm.tar.gz Backfit
+ssh bf06test rm -f /IA/tmp/installCM /IA/tmp/cm.tar.gz

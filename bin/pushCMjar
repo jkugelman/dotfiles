@@ -1,0 +1,10 @@
+#!/bin/bash
+
+scp /IA/CentralManager/lib/CentralManager.jar bf06test:/IA/tmp
+
+ssh bf06test ssh pptest ssh m3iacm service iacm stop
+ssh bf06test ssh pptest ssh m3iacm mount -o remount,rw /
+ssh bf06test ssh pptest scp /IA/tmp/CentralManager.jar m3iacm:/IA/CentralManager/lib
+ssh bf06test ssh pptest ssh m3iacm mount -o remount,ro /
+ssh bf06test ssh pptest ssh m3iacm service iacm start 
+ssh bf06test rm -f /IA/tmp/CentralManager.jar
