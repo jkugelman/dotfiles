@@ -15,17 +15,14 @@ alias ls='ls --color=auto -F --hide="*.pyc"'
 alias mv='mv -i'
 alias rm='rm --preserve-root -I'
 alias tree='tree -ACF'
-alias webshare='python -c "import SimpleHTTPServer; SimpleHTTPServer.test()"'
 alias vim='vim -p'
 
 export ACK_OPTIONS='--nosmart-case'
-export ANT_HOME=/usr/local/ant
 export CVSROOT=:pserver:jkugelman@cvs.progeny.net:/usr/local/cvsroot
 export EDITOR=vim
 export LESS=' -R -P?f%f - .?ltLine?lbs. %lt?lb-%lb.?L of %L.?PB - %PB\%.:?pb%pb\%:?btByte %bt?pB - %pB\%.:-...?e (END).'
 export LESSOPEN='| /usr/share/source-highlight/src-hilite-lesspipe.sh %s'
 export NOSQL_INSTALL=/usr/local/nosql
-export PATH=/usr/java/default/bin:$PATH
 export PS1='\[\e[0;37m\][\[\e[0;32m\]\u@\h \[\e[33m\]\w\[\e[37m\]]\$ \[\e[0m\]'
 export PYTHONSTARTUP=~/.pythonrc.py
 export SCONSFLAGS='-Q'
@@ -37,8 +34,6 @@ case $HOSTNAME in
     leviathan) export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64;;
     rhel64)    export JAVA_HOME=/usr/java/jdk1.7.0_21;;
 esac
-
-export PATH=${PATH}:$ANT_HOME/bin:/usr/local/nosql/bin:~/bin
 
 export TI06APB06=~/IA/TI06
 export APB07=~/IA/APB07
