@@ -13,3 +13,7 @@ ln -vfs ~/.dotfiles/.vimrc     ~/
 rm -rf ~/.vim ~/bin
 ln -vfs ~/.dotfiles/.vim       ~/
 ln -vfs ~/.dotfiles/bin        ~/
+
+mkdir -p ~/.ssh
+chmod u=rwx,go= ~/.ssh
+ln -vfs ~/.dotfiles/.ssh/config ~/.ssh/
