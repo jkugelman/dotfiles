@@ -32,7 +32,7 @@ export VISUAL=vim
 case $HOSTNAME in
     kaufman)   export JAVA_HOME=/usr/java/jdk1.6.0_06;;
     leviathan) export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64;;
-    rhel64)    export JAVA_HOME=/usr/java/jdk1.7.0_21;;
+    *rhel64)   export JAVA_HOME=/usr/java/jdk1.7.0_21;;
 esac
 
 if [[ -d ~/IA ]]; then
