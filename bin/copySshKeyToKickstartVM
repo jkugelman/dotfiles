@@ -9,7 +9,7 @@ main() {
     local host=$1
 
     ssh-keygen -R "$host"
-    scp -q -o PubkeyAuthentication=no ~/.ssh/id_rsa.pub "$host":.ssh/authorized_keys
+    scp -q -o PubkeyAuthentication=no ~/.ssh/id_rsa.pub root@"$host":.ssh/authorized_keys
 }
 
 main "$@"
