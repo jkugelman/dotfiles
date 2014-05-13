@@ -23,11 +23,16 @@ export EDITOR=vim
 export LESS=' -R -P?f%f - .?ltLine?lbs. %lt?lb-%lb.?L of %L.?PB - %PB\%.:?pb%pb\%:?btByte %bt?pB - %pB\%.:-...?e (END).'
 export LESSOPEN='| /usr/share/source-highlight/src-hilite-lesspipe.sh %s'
 export NOSQL_INSTALL=/usr/local/nosql
-export PS1='\[\e[0;37m\][\[\e[0;32m\]\u@\h \[\e[33m\]\w\[\e[37m\]]\$ \[\e[0m\]'
 export PYTHONSTARTUP=~/.pythonrc.py
 export SCONSFLAGS='-Q'
 export SVN_BASH_COMPL_EXT=username,urls,svnstatus
 export VISUAL=vim
+
+if [[ -n $SSH_CLIENT ]]; then
+    export PS1='\[\e[0;37m\][\[\e[0;31m\]ssh\[\e[0m\] \[\e[0;32m\]\u@\h\[\e[0m\]:\[\e[33m\]\w\[\e[37m\]]\$ \[\e[0m\]'
+else
+    export PS1='\[\e[0;37m\][\[\e[0;32m\]\u@\h\[\e[0m\]:\[\e[33m\]\w\[\e[37m\]]\$ \[\e[0m\]'
+fi
 
 # SVN's auto-completion stinks.
 complete -r svn 2> /dev/null
