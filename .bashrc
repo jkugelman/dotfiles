@@ -29,6 +29,9 @@ export SCONSFLAGS='-Q'
 export SVN_BASH_COMPL_EXT=username,urls,svnstatus
 export VISUAL=vim
 
+# SVN's auto-completion stinks.
+complete -r svn 2> /dev/null
+
 case $HOSTNAME in
     kaufman)   export JAVA_HOME=/usr/java/jdk1.6.0_06;;
     leviathan) export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64;;
