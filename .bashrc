@@ -23,6 +23,7 @@ export EDITOR=vim
 export LESS=' -R -P?f%f - .?ltLine?lbs. %lt?lb-%lb.?L of %L.?PB - %PB\%.:?pb%pb\%:?btByte %bt?pB - %pB\%.:-...?e (END).'
 export LESSOPEN='| /usr/share/source-highlight/src-hilite-lesspipe.sh %s'
 export NOSQL_INSTALL=/usr/local/nosql
+export PATH=$HOME/bin:$PATH
 export PYTHONSTARTUP=~/.pythonrc.py
 export SCONSFLAGS='-Q'
 export SVN_BASH_COMPL_EXT=username,urls,svnstatus
