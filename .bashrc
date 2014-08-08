@@ -53,8 +53,9 @@ if [[ -d ~/IA ]]; then
     export TI12APB11=~/IA/TI12_APB11
     export TI12APB13=~/IA/TI12_APB13
     export TI14APB13=~/IA/TI14_APB13
+    export TI14APB15=~/IA/TI14_APB15
     export IA=$TI14APB13
-    . "$IA/Support/Environment/bashrc"
+    . "$TI14APB15/Support/Environment/bashrc"
 fi
 
 #shopt -s failglob      # Disabled, interferes with Ubuntu's auto `complete'
