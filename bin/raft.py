@@ -6,21 +6,23 @@ verbose = "-q" not in sys.argv
 
 def main():
     print "Forward:"
-    raft.find_fit(pieces, delay=0.002)
+    solve(raft, pieces, delay=0.002)
     print
     print "Backward:"
-    raft.find_fit([piece.flipped() for piece in pieces], delay=0.002)
+    solve(raft, [piece.flipped() for piece in pieces], delay=0.002)
 
-class Piece(list):
-    def __init__(self, sides):
-        self[:] = sides
+class Piece:
+    def __init__(self, sides, letter=None):
+        self.sides  = sides
+        self.letter = letter
 
     def flipped(self):
-        return Piece(self[3:6] + self[0:3])
+        return Piece(self.sides[3:6] + self.sides[0:3], self.letter)
 
-    def fits_below(self, other): return other is None or self[0] != other[3]
+    def fits_below(self, other): return other is None or self.sides[0] != other.sides[3]
     def fits_above(self, other): return other is None or other.fits_below(self)
-    def fits_left (self, other): return other is None or self[1] != other[5] and self[2] != other[4]
+    def fits_left (self, other): return other is None or self.sides[1] != other.sides[5] \
+                                                     and self.sides[2] != other.sides[4]
     def fits_right(self, other): return other is None or other.fits_left(self)
 
     def fits_in(self, raft, row, col):
@@ -29,59 +31,63 @@ class Piece(list):
            and self.fits_right(raft[row][col - 1]) \
            and self.fits_left (raft[row][col + 1])
 
+    def __str__(self):
+        return self.letter
+
 class Raft(list):
     def __init__(self, pieces):
         self[:] = [row[:] for row in pieces]
 
-    def find_fit(self, pieces, delay, solution=[]):
-        for row in range(len(self)):
-            for col in range(len(self[row])):
-                if self[row][col] is not None:
-                    continue
+    @property
+    def rows(self):
+        return len(self) - 2
 
-                for i in range(len(pieces)):
-                    if pieces[i] is None:
-                        continue
+    @property
+    def cols(self):
+        return len(self[0]) - 2
 
-                    piece  = pieces[i]
-                    letter = string.uppercase[i]
-
-                    if verbose:
-                        sys.stdout.write(letter)
-                        sys.stdout.flush()
-
-                    if piece.fits_in(self, row, col):
-                        solution.append(letter)
-                        self[row][col] = piece
-                        pieces[i]      = None
-
-                        if all(x is None for x in pieces):
-                            if verbose:
-                                sys.stdout.write("\r            \r")
-
-                            self.show_solution(solution)
-                        else:
-                            self.find_fit(pieces, delay, solution)
-
-                        pieces[i]      = piece
-                        self[row][col] = None
-                        solution.pop()
-
-                    if verbose:
-                        time.sleep(delay)
-                        sys.stdout.write("\b \b")
-                        sys.stdout.flush()
-
-                # Nothing fits in empty square.
-                return
-
-    def show_solution(self, solution):
+    def show(self):
         sys.stdout.write(".--&--.\n")
 
-        for i in range(len(solution) / 3):
-            sys.stdout.write("(%s)\n" % (" ".join(solution[i * 3 : i * 3 + 3])))
+        for row in range(1, self.rows + 1):
+            sys.stdout.write("(%s)\n" % (" ".join(str(piece) for piece in self[row][1:-1])))
 
         sys.stdout.write("'-----'\n")
+
+def solve(raft, pieces, delay, solution=[]):
+    if len(solution) == len(pieces):
+        if verbose:
+            sys.stdout.write("\r            \r")
+
+        raft.show()
+        return
+
+    row = len(solution) // raft.cols + 1
+    col = len(solution) %  raft.cols + 1
+
+    for i, piece in enumerate(pieces):
+        if piece is None:
+            continue
+
+        if verbose:
+            sys.stdout.write(piece.letter)
+            sys.stdout.flush()
+
+        if piece.fits_in(raft, row, col):
+            solution.append(piece)
+            raft[row][col] = piece
+            pieces[i]      = None
+
+            solve(raft, pieces, delay, solution)
+
+            pieces[i]      = piece
+            raft[row][col] = None
+            solution.pop()
+
+        if verbose:
+            time.sleep(delay)
+            sys.stdout.write("\b \b")
+            sys.stdout.flush()
 
 raft = Raft([
     [Piece("------"), Piece("---i--"), Piece("---i--"), Piece("---i--"), Piece("------")],
@@ -93,18 +99,18 @@ raft = Raft([
 ])
     
 pieces = [
-    Piece("ioiooi"),
-    Piece("iiooio"),
-    Piece("oioiio"),
-    Piece("ioiioi"),
-    Piece("ooiooi"),
-    Piece("iioioi"),
-    Piece("ooiioi"),
-    Piece("iioooi"),
-    Piece("ooioio"),
-    Piece("oioooi"),
-    Piece("ooiiio"),
-    Piece("ioiiio"),
+    Piece("ioiooi", 'A'),
+    Piece("iiooio", 'B'),
+    Piece("oioiio", 'C'),
+    Piece("ioiioi", 'D'),
+    Piece("ooiooi", 'E'),
+    Piece("iioioi", 'F'),
+    Piece("ooiioi", 'G'),
+    Piece("iioooi", 'H'),
+    Piece("ooioio", 'I'),
+    Piece("oioooi", 'J'),
+    Piece("ooiiio", 'K'),
+    Piece("ioiiio", 'L'),
 ]
 
 if __name__ == "__main__":
