@@ -45,17 +45,9 @@ case $HOSTNAME in
 esac
 
 if [[ -d ~/IA ]]; then
-    export TI06APB06=~/IA/TI06
-    export APB07=~/IA/APB07
-    export TI08APB09=~/IA/TI08_APB09
-    export TI10APB09=~/IA/TI10_APB09
-    export TI10APB11=~/IA/TI10_APB11
-    export TI12APB11=~/IA/TI12_APB11
-    export TI12APB13=~/IA/TI12_APB13
-    export TI14APB13=~/IA/TI14_APB13
-    export TI14APB15=~/IA/TI14_APB15
-    export IA=$TI14APB13
-    . "$TI14APB15/Support/Environment/bashrc"
+    export IA_COMMON=~/IA/Common
+    . "$IA_COMMON/Support/Environment/ENV"
+    . "$IA_COMMON/Support/Environment/bashrc"
 fi
 
 #shopt -s failglob      # Disabled, interferes with Ubuntu's auto `complete'
