@@ -57,6 +57,7 @@ set scrolloff=2
 
 " Other file types.
 autocmd BufReadPre,BufNew *.xml   set filetype=xml
+autocmd BufReadPre,BufNew *.fxml  set filetype=xml
 autocmd BufReadPre,BufNew SCons*  set filetype=python
 autocmd BufReadPre,BufNew ex*.log set filetype=iislog
 
