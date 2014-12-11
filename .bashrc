@@ -55,6 +55,13 @@ shopt -u failglob
 shopt -u force_fignore
 shopt -s extglob
 
+
+bind space:magic-space  # Space dynamically expands any ! history expansions
+
+# Use vi-style key bindings
+#set -o vi
+#bind -m vi-command ".":insert-last-argument
+
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
 xterm*|rxvt*)
