@@ -140,6 +140,9 @@ nnoremap <C-D> :tabclose<Enter>
 " Enable modelines even for root.
 set modeline
 
+" Don't add '.' to the 'iskeyword' list of characters that w, e, etc., use.
+let g:sh_noisk=1
+
 
 "=======[ Fix smartindent stupidities ]============
 
