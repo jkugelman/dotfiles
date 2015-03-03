@@ -2,3 +2,4 @@ $include /etc/inputrc
 
 set match-hidden-files Off
 set visible-stats On
+set colored-stats On
