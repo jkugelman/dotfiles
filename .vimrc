@@ -56,10 +56,11 @@ set ruler
 set scrolloff=2
 
 " Other file types.
-autocmd BufReadPre,BufNew *.xml   set filetype=xml
-autocmd BufReadPre,BufNew *.fxml  set filetype=xml
-autocmd BufReadPre,BufNew SCons*  set filetype=python
-autocmd BufReadPre,BufNew ex*.log set filetype=iislog
+autocmd BufReadPre,BufNew *.xml    set filetype=xml
+autocmd BufReadPre,BufNew *.fxml   set filetype=xml
+autocmd BufReadPre,BufNew SCons*   set filetype=python
+autocmd BufReadPre,BufNew ex*.log  set filetype=iislog
+autocmd BufReadPre,BufNew *.gradle set filetype=groovy
 
 " Flag problematic whitespace (trailing spaces, spaces before tabs).
 let c_space_errors=1
