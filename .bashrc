@@ -40,7 +40,7 @@ complete -r svn 2> /dev/null
 
 case $HOSTNAME in
     kaufman)   export JAVA_HOME=/usr/java/jdk1.6.0_06;;
-    leviathan) export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64;;
+    leviathan) export JAVA_HOME=/usr/lib/jvm/java-8-oracle;;
     *rhel64)   export JAVA_HOME=/usr/java/jdk1.7.0_21;;
 esac
 
