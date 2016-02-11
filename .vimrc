@@ -4,6 +4,10 @@ set laststatus=2
 " Enable syntax highlighting.
 syntax on
 
+" Change color scheme.
+colorscheme molokai
+set t_Co=256
+
 " Store swap files in fixed location, not current directory.
 set dir=~/.vimswap//,/var/tmp//,/tmp//,.
 
