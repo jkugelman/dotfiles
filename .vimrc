@@ -78,10 +78,9 @@ set list
 highlight Tab ctermfg=lightgray guifg=lightgray
 2match Tab /\t/
 
-""" Obsoleted by sleuth.vim.
 " Indent settings for code: 4 spaces, do not use tab character.
-"set tabstop=8 shiftwidth=4 autoindent cindent shiftround
-"set expandtab softtabstop=4
+set tabstop=8 shiftwidth=4 autoindent cindent shiftround
+set expandtab softtabstop=4
 
 " Automatically show matching brackets.
 set showmatch
