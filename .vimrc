@@ -49,9 +49,10 @@ set copyindent
 " Customize code formatting.
 set cinoptions=l1,g0,(0,W4,j1,#1
 
-" Incremental search without highlighting.
+" Incremental search. F7 to disable highlighting.
 set incsearch
-set nohlsearch
+set hlsearch
+nnoremap <F7> :nohl<Enter>
 
 " Show ruler.
 set ruler
