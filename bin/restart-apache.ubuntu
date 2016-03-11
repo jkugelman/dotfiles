@@ -1,0 +1,8 @@
+#!/bin/bash -e
+
+cd /var/www/ia.progeny.net/django
+sudo chown -R www-data:www-data .
+sudo chmod -R g+w .
+sudo -u www-data ./manage.py collectstatic -c -v 0 -l --noinput
+git checkout -- ../static/.gitignore
+sudo service apache2 reload
