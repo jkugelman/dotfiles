@@ -30,11 +30,34 @@ export SCONSFLAGS='-Q'
 export SVN_BASH_COMPL_EXT=username,urls,svnstatus
 export VISUAL=vim
 
-if [[ -n $SSH_CLIENT ]]; then
-    export PS1='\[\e[0;37m\][\[\e[0;31m\]ssh\[\e[0m\] \[\e[0;32m\]\u@\h\[\e[0m\]:\[\e[33m\]\w\[\e[37m\]]\$ \[\e[0m\]'
-else
-    export PS1='\[\e[0;37m\][\[\e[0;32m\]\u@\h\[\e[0m\]:\[\e[33m\]\w\[\e[37m\]]\$ \[\e[0m\]'
-fi
+export PS1='\[\e[0;37m\][$(__ps1ssh)\[\e[0;32m\]\u@\h\[\e[0m\]:\[\e[33m\]\w$(__ps1branch)\[\e[37m\]]\$ \[\e[0m\]'
+
+__ps1ssh() {
+    [[ -n $SSH_CLIENT ]] && printf '\001\e[0;31m\002ssh\001\e[0m\002 '
+}
+
+__ps1branch() {(
+    set -o pipefail
+
+    svn info 2> /dev/null | awk -F': ' '$1=="Relative URL" {print $2}' | {
+        IFS=/ read _ _ _ type dir _ || return
+
+        case $type in
+            Trunk)    ;;
+            Branches) printf '\001\e[0m\002 \001\e[0;34m\002(%s)' "$dir";;
+            *)        printf '\001\e[0m\002 \001\e[0;34m\002(%s)' "$type/$dir";;
+        esac
+    } && return
+
+    git rev-parse --abbrev-ref HEAD 2> /dev/null | {
+        read branch || return
+
+        case $branch in
+            master)   ;;
+            *)        printf '\001\e[0m\002 \001\e[0;34m\002(%s)' "$branch";;
+        esac
+    } && return
+)}
 
 # SVN's auto-completion stinks.
 complete -r svn 2> /dev/null
