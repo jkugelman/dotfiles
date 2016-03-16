@@ -30,13 +30,14 @@ export SCONSFLAGS='-Q'
 export SVN_BASH_COMPL_EXT=username,urls,svnstatus
 export VISUAL=vim
 
-export PS1='\[\e[0;37m\][$(__ps1ssh)\[\e[0;32m\]\u@\h\[\e[0m\]:\[\e[33m\]\w$(__ps1branch)\[\e[37m\]]\$ \[\e[0m\]'
+# Fancy prompt.
+export PS1='\[\e[0;37m\][$(__ps1_ssh)\[\e[32m\]\u@\h\[\e[0m\]:\[\e[33m\]\w$(__ps1_branch)\[\e[37m\]]\$ \[\e[0m\]'
 
-__ps1ssh() {
-    [[ -n $SSH_CLIENT ]] && printf '\001\e[0;31m\002ssh\001\e[0m\002 '
+__ps1_ssh() {
+    [[ -n $SSH_CLIENT ]] && printf '\001\e[31m\002ssh\001\e[0m\002 '
 }
 
-__ps1branch() {(
+__ps1_branch() {(
     set -o pipefail
 
     svn info 2> /dev/null | awk -F': ' '$1=="Relative URL" {print $2}' | {
@@ -58,6 +59,18 @@ __ps1branch() {(
         esac
     } && return
 )}
+
+# Show the exit codes of failed commands.
+trap __exitCode ERR
+
+__exitCode() {
+    local exitCode=$?
+    
+    if ((exitCode != 0)); then
+        local msg="(exit code $exitCode)"
+        printf '%s\e[31m%s\e[0m%s' "$(tput sc; tput cuu1; tput hpa $((COLUMNS - ${#msg}));)" "$msg" "$(tput rc)"
+    fi
+}
 
 # SVN's auto-completion stinks.
 complete -r svn 2> /dev/null
