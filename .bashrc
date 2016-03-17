@@ -60,18 +60,6 @@ __ps1_branch() {(
     } && return
 )}
 
-# Show the exit codes of failed commands.
-trap __exitCode ERR
-
-__exitCode() {
-    local exitCode=$?
-    
-    if ((exitCode != 0)); then
-        local msg="(exit code $exitCode)"
-        printf '%s\e[31m%s\e[0m%s' "$(tput sc; tput cuu1; tput hpa $((COLUMNS - ${#msg}));)" "$msg" "$(tput rc)"
-    fi
-}
-
 # SVN's auto-completion stinks.
 complete -r svn 2> /dev/null
 
@@ -107,3 +95,18 @@ xterm*|rxvt*)
 *)
     ;;
 esac
+
+# Show the exit codes of failed commands.
+trap __exitCode ERR
+
+__exitCode() {
+    local exitCode=$?
+    
+    if ((exitCode != 0)); then
+        local msg="(exit code $exitCode)"
+        local spaces=$((${#msg} < COLUMNS ? COLUMNS - ${#msg} : 0))
+
+        printf '%s\e[31m%s\e[0m%s' "$(tput sc; tput cuu1; tput hpa "$spaces")" "$msg" "$(tput rc)"
+    fi
+}
+
