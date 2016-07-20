@@ -67,6 +67,7 @@ case $HOSTNAME in
     kaufman)   export JAVA_HOME=/usr/java/jdk1.6.0_06;;
     leviathan) export JAVA_HOME=/usr/lib/jvm/java-8-oracle;;
     *rhel64)   export JAVA_HOME=/usr/java/jdk1.7.0_21;;
+    *-rhel7p2) export JAVA_HOME=/usr
 esac
 
 if [[ -d ~/IA ]]; then
@@ -80,8 +81,8 @@ shopt -u failglob
 shopt -u force_fignore
 shopt -s extglob
 
-
-bind space:magic-space  # Space dynamically expands any ! history expansions
+# Space dynamically expands any ! history expansions
+bind space:magic-space 2> /dev/null || :
 
 # Use vi-style key bindings
 #set -o vi
