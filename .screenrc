@@ -1,5 +1,8 @@
+#                         [  session name  ][                windows                  ][           date/time         ]
+hardstatus string '%{= k.}%{g}[ %{G}%S%{-} ][%{-}%= %-Lw%{+b}(%n*%f %t)%{-}%+Lw %=%{g}][ %{B}%Y-%m-%d%{-} %{W}%c%{-} ]'
+#                                                   \__/\_________________/\__/
+#                                                  before      current     after
 hardstatus alwayslastline
-hardstatus string '%{= kG}[ %{G}%H %{g}][%= %{=kw}%{w}%?%-Lw%?%{r}(%{W}%n*%f %t%?(%u)%?%{r})%{w}%?%+Lw%?%?%= %{g}][ %{B}%Y-%m-%d %{W}%c %{g}]'
 defscrollback 9999
 
 term xterm
