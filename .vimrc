@@ -101,10 +101,6 @@ set showcmd
 " Use mouse if possible.
 " set mouse=a
 
-" Use Ctrl-N and Ctrl-P to move between files.
-nnoremap <C-N> :confirm next<Enter>
-nnoremap <C-P> :confirm prev<Enter>
-
 " Confirm saving and quitting.
 set confirm
 
