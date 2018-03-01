@@ -64,9 +64,9 @@ complete -r svn 2> /dev/null
 
 case $HOSTNAME in
     kaufman)   export JAVA_HOME=/usr/java/jdk1.6.0_06;;
-    leviathan) export JAVA_HOME=/usr/lib/jvm/java-8-oracle;;
+    leviathan) export JAVA_HOME=/usr/lib/jvm/default-java;;
     *rhel64)   export JAVA_HOME=/usr/java/jdk1.7.0_21;;
-    *-rhel7p2) export JAVA_HOME=/usr
+    *rhel72)   export JAVA_HOME=/usr
 esac
 
 if [[ -d ~/IA ]]; then
@@ -110,3 +110,5 @@ __exitCode() {
     fi
 }
 
+
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
