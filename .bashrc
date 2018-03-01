@@ -21,7 +21,6 @@ export ACK_OPTIONS='--nosmart-case'
 export CVSROOT=:pserver:jkugelman@cvs.progeny.net:/usr/local/cvsroot
 export EDITOR=vim
 export LESS=' -R -P?f%f - .?ltLine?lbs. %lt?lb-%lb.?L of %L.?PB - %PB\%.:?pb%pb\%:?btByte %bt?pB - %pB\%.:-...?e (END).'
-export LESSOPEN='| /usr/share/source-highlight/src-hilite-lesspipe.sh %s'
 export NOSQL_INSTALL=/usr/local/nosql
 export OLD_PATH=
 export PATH=$HOME/bin:$PATH
