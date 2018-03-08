@@ -1,10 +1,12 @@
 #                         [  session name  ][                    windows                      ][           date/time         ]
-hardstatus string '%{= kw}%{g}[ %{G}%S%{-} ][%{-}%= %-Lw%{+b}%{g}(%n*%f %t)%{-}%{-}%+Lw %=%{g}][ %{B}%Y-%m-%d%{-} %{W}%c%{-} ]'
+hardstatus string '%{= kw}%{g}[ %{G}%S%{-} ][%{-}%= %-Lw%{+b}%{B}(%n*%f %t)%{-}%{-}%+Lw %=%{g}][ %{B}%Y-%m-%d%{-} %{W}%c%{-} ]'
 #                                                   \__/\_________________________/\__/
 #                                                  before         current         after
 hardstatus alwayslastline
-defscrollback 9999
+rendition bell ""
+rendition monitor "=ub "
 
 term xterm
 altscreen on
 vbell off
+defscrollback 9999
