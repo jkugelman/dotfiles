@@ -1,5 +1,5 @@
 #                         [  session name  ][                    windows                      ][           date/time         ]
-hardstatus string '%{= kw}%{g}[ %{G}%S%{-} ][%{-}%= %-Lw%{+b}%{B}(%n*%f %t)%{-}%{-}%+Lw %=%{g}][ %{B}%Y-%m-%d%{-} %{W}%c%{-} ]'
+hardstatus string '%{= kw}%{g}[ %{G}%S%{-} ][%{-}%= %-Lw%{+b}%{G}(%n*%f %t)%{-}%{-}%+Lw %=%{g}][ %{G}%Y-%m-%d%{-} %{W}%c%{-} ]'
 #                                                   \__/\_________________________/\__/
 #                                                  before         current         after
 hardstatus alwayslastline
