@@ -1,7 +1,7 @@
-#                         [  session name  ][                windows                  ][           date/time         ]
-hardstatus string '%{= k.}%{g}[ %{G}%S%{-} ][%{-}%= %-Lw%{+b}(%n*%f %t)%{-}%+Lw %=%{g}][ %{B}%Y-%m-%d%{-} %{W}%c%{-} ]'
-#                                                   \__/\_________________/\__/
-#                                                  before      current     after
+#                         [  session name  ][                    windows                      ][           date/time         ]
+hardstatus string '%{= kw}%{g}[ %{G}%S%{-} ][%{-}%= %-Lw%{+b}%{g}(%n*%f %t)%{-}%{-}%+Lw %=%{g}][ %{B}%Y-%m-%d%{-} %{W}%c%{-} ]'
+#                                                   \__/\_________________________/\__/
+#                                                  before         current         after
 hardstatus alwayslastline
 defscrollback 9999
 
