@@ -7,6 +7,7 @@ ln -vfs ~/.dotfiles/.git          ~/
 ln -vfs ~/.dotfiles/.gitconfig    ~/
 ln -vfs ~/.dotfiles/.inputrc      ~/
 ln -vfs ~/.dotfiles/.netrc        ~/
+ln -vfs ~/.dotfiles/.psqlrc       ~/
 ln -vfs ~/.dotfiles/.pythonrc.py  ~/
 ln -vfs ~/.dotfiles/.screenrc     ~/
 ln -vfs ~/.dotfiles/.sqliterc     ~/
