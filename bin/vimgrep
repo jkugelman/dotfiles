@@ -1,8 +1,8 @@
-#!/bin/bash
+#!/bin/bash -e
 
 main() {
     if (($# > 0)); then
-        echo "Usage: grep <files> | $0" >&2
+        echo "Usage: grep -n <files> | $0" >&2
         exit 1
     fi
 
@@ -58,10 +58,10 @@ replaceLine() {
     local oldText=$(sed -n "${line}p" "$file")
     [[ $oldText == "$text" ]] && return
 
-    echo -n "$file:$line:"; deleted;  echo "-$oldText";    plain
-    echo -n "$file:$line:"; inserted; echo "+$text";       plain
+    echo -n "$file:$line:"; deleted;  echo "-$oldText"; plain
+    echo -n "$file:$line:"; inserted; echo "+$text";    plain
 
-    awk -v N="$number" -v T="$text" 'NR==N {$0=T} 1' "$file" > "$file.tmp.$$"
+    awk -v N="$line" -v T="$(printf %q "$text")" 'NR==N {$0=T} 1' "$file" > "$file.tmp.$$"
     cat "$file.tmp.$$" > "$file"
     rm "$file.tmp.$$"
 }
