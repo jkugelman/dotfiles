@@ -1,6 +1,10 @@
+\set QUIET 1
+
 \x auto
 \pset null NULL
 
 \set COMP_KEYWORD_CASE upper
 \set PROMPT1 '%[%033[1m%]%M %n@%/%[%033[0m%]% psql> '
 \set PROMPT2 '    %R> '
+
+\unset QUIET
