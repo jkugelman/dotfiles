@@ -1,0 +1,73 @@
+#!/bin/bash
+
+main() {
+    if (($# > 0)); then
+        echo "Usage: grep <files> | $0" >&2
+        exit 1
+    fi
+
+    LINES=$(mktemp)
+    trap 'rm "$LINES"' EXIT
+    cat > "$LINES"
+
+    if ! isGrepOutput "$LINES"; then
+        badFile "$LINES"
+        exit 1
+    fi
+
+    edit "$LINES" || return
+
+    while ! isGrepOutput "$LINES"; do
+        badFile "$LINES"
+        echo >&2
+        read -p 'Press enter to continue.'
+
+        edit "$LINES" || return
+    done
+
+    while IFS=: read -r file line text; do
+        replaceLine "$file" "$line" "$text"
+    done < "$LINES"
+}
+
+edit() {
+    [[ -n VISUAL ]] && { "$VISUAL" "$@" < /dev/tty > /dev/tty; return; }
+    [[ -n EDITOR ]] && { "$EDITOR" "$@" < /dev/tty > /dev/tty; return; }
+
+    echo 'Neither of the environment variables VISUAL or EDITOR are set.' >&2
+    exit 1
+}
+
+isGrepOutput() {
+    ! grep -qv '.*:.*:.*' "$@"
+}
+
+badFile() {
+    local file=$1
+
+    echo "Output in unexpected format. Expected file:line:text." >&2
+    echo >&2
+    grep -v '.*:.*:.*' "$file" | head -20 >&2
+}
+
+replaceLine() {
+    local file=$1
+    local line=$2
+    local text=$3
+
+    local oldText=$(sed -n "${line}p" "$file")
+    [[ $oldText == "$text" ]] && return
+
+    echo -n "$file:$line:"; deleted;  echo "-$oldText";    plain
+    echo -n "$file:$line:"; inserted; echo "+$text";       plain
+
+    awk -v N="$number" -v T="$text" 'NR==N {$0=T} 1' "$file" > "$file.tmp.$$"
+    cat "$file.tmp.$$" > "$file"
+    rm "$file.tmp.$$"
+}
+
+deleted () { [[ -t 1 ]] && tput setaf 1; }
+inserted() { [[ -t 1 ]] && tput setaf 2; }
+plain   () { [[ -t 1 ]] && tput sgr0; }
+
+main "$@"
