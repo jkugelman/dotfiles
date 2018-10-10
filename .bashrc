@@ -40,21 +40,28 @@ __ps1_branch() {(
     set -o pipefail
 
     svn info 2> /dev/null | awk -F': ' '$1=="Relative URL" {print $2}' | {
-        IFS=/ read _ _ _ type dir _ || return
+        IFS= read -r path || return
+        name=
 
-        case $type in
-            Trunk)    ;;
-            Branches) printf '\001\e[0m\002 \001\e[0;34m\002(%s)' "$dir";;
-            *)        printf '\001\e[0m\002 \001\e[0;34m\002(%s)' "$type/$dir";;
+        case $path in
+            */branches/*)     name=${path##*/branches/};     name=${name%%/*};;
+            */Branches/*)     name=${path##*/Branches/};     name=${name%%/*};;
+            */dev_branches/*) name=${path##*/dev_branches/}; name=${name%%/*};;
+            */tags/*)         name=${path##*/tags/};         name=${name%%/*};;
+            */Tags/*)         name=${path##*/Tags/};         name=${name%%/*};;
         esac
+
+        if [[ -n $name ]]; then
+            printf '\001\e[0m\002 \001\e[0;34m\002(%s)' "$name"
+        fi
     } && return
 
     git rev-parse --abbrev-ref HEAD 2> /dev/null | {
         read branch || return
 
         case $branch in
-            master)   ;;
-            *)        printf '\001\e[0m\002 \001\e[0;34m\002(%s)' "$branch";;
+            master)  ;;
+            *)       printf '\001\e[0m\002 \001\e[0;34m\002(%s)' "$branch";;
         esac
     } && return
 )}
