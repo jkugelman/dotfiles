@@ -2,7 +2,7 @@
 
 main() {
     if (($# > 0)); then
-        echo "Usage: grep -n <files> | $0" >&2
+        echo "Usage: grep -Hn <files> | $0" >&2
         exit 1
     fi
 
@@ -25,7 +25,12 @@ main() {
         edit "$LINES" || return
     done
 
-    while IFS=: read -r file line text; do
+    local l
+    while IFS= read -r l; do
+        local file=$(cut -d: -f1  <<< "$l")
+        local line=$(cut -d: -f2  <<< "$l")
+        local text=$(cut -d: -f3- <<< "$l")
+
         replaceLine "$file" "$line" "$text"
     done < "$LINES"
 }
@@ -61,13 +66,17 @@ replaceLine() {
     echo -n "$file:$line:"; deleted;  echo "-$oldText"; plain
     echo -n "$file:$line:"; inserted; echo "+$text";    plain
 
-    awk -v N="$line" -v T="$(printf %q "$text")" 'NR==N {$0=T} 1' "$file" > "$file.tmp.$$"
+    awk -v N="$line" -v T="$(escape "$text")" 'NR==N {$0=T} 1' "$file" > "$file.tmp.$$"
     cat "$file.tmp.$$" > "$file"
     rm "$file.tmp.$$"
 }
 
-deleted () { [[ -t 1 ]] && tput setaf 1; }
-inserted() { [[ -t 1 ]] && tput setaf 2; }
-plain   () { [[ -t 1 ]] && tput sgr0; }
+deleted () { if [[ -t 1 ]]; then tput setaf 1; fi; }
+inserted() { if [[ -t 1 ]]; then tput setaf 2; fi; }
+plain   () { if [[ -t 1 ]]; then tput sgr0;    fi; }
+
+escape() {
+    sed 's/\\/\\\\/g' <<< "$1"
+}
 
 main "$@"
