@@ -71,7 +71,7 @@ complete -r svn 2> /dev/null
 
 case $HOSTNAME in
     kaufman)   export JAVA_HOME=/usr/java/jdk1.6.0_06;;
-    leviathan) export JAVA_HOME=/usr/lib/jvm/default-java;;
+    leviathan) export JAVA_HOME=/usr/lib/jvm/default-java; export MAKEFLAGS=-j8;;
     *rhel64)   export JAVA_HOME=/usr/java/jdk1.7.0_21;;
     *rhel72)   export JAVA_HOME=/usr
 esac
@@ -119,3 +119,4 @@ __exitCode() {
 
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+eval "$(cstk bashrc)"
