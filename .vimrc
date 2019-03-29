@@ -44,19 +44,6 @@ vnoremap <Up> gk
 inoremap <Down> <C-o>gj
 inoremap <Up> <C-o>gk
 
-" Allow backspacing over auto-indent and line breaks.
-set backspace=indent,eol,start
-
-" Enable smarter indentation support.
-filetype plugin indent on
-
-" Use same indentation style as previous lines.
-set preserveindent
-set copyindent
-
-" Customize code formatting.
-set cinoptions=l1,g0,(0,W4,j1,#1
-
 " Incremental search. F7 to disable highlighting.
 set incsearch
 set hlsearch
@@ -90,6 +77,19 @@ execute 'set listchars=tab:' . nr2char(187) . '\ '
 set list
 highlight Tab ctermfg=lightgray guifg=lightgray
 2match Tab /\t/
+
+" Allow backspacing over auto-indent and line breaks.
+set backspace=indent,eol,start
+
+" Enable smarter indentation support.
+filetype plugin indent on
+
+" Customize code formatting.
+set cinoptions=l1,g0,(0,W4,j1
+
+" Use same indentation style as previous lines.
+set preserveindent
+set copyindent
 
 " Indent settings for code: 4 spaces, do not use tab character.
 set tabstop=8 shiftwidth=4 autoindent cindent shiftround
