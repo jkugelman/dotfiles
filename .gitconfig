@@ -16,3 +16,7 @@
 	lg = !"git lg3"
 [diff "sqlite3"]
 	textconv = bash -c 'sqlite3 \"$1\" .dump' --
+[pager]
+	stash = 
+	tag = 
+	branch = 
