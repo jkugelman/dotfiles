@@ -39,6 +39,10 @@ __ps1_ssh() {
 __ps1_branch() {(
     set -o pipefail
 
+    git rev-parse --abbrev-ref HEAD 2> /dev/null | {
+        read branch && printf '\001\e[0m\002 \001\e[0;34m\002(%s)' "$branch"
+    } && return
+
     svn info 2> /dev/null | awk -F': ' '$1=="Relative URL" {print $2}' | {
         IFS= read -r path || return
         name=
@@ -54,15 +58,6 @@ __ps1_branch() {(
         if [[ -n $name ]]; then
             printf '\001\e[0m\002 \001\e[0;34m\002(%s)' "$name"
         fi
-    } && return
-
-    git rev-parse --abbrev-ref HEAD 2> /dev/null | {
-        read branch || return
-
-        case $branch in
-            master)  ;;
-            *)       printf '\001\e[0m\002 \001\e[0;34m\002(%s)' "$branch";;
-        esac
     } && return
 )}
 
