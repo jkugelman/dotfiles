@@ -10,9 +10,9 @@
 	default = simple
 [alias]
 	unstage = reset HEAD --
-	lg1 = log --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) - %C(dim white)%an%C(reset)%C(bold yellow)%d%C(reset)' --all
-	lg2 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) - %C(dim white)%an%C(reset)' --all
-	lg3 = log --abbrev-commit --date=relative --format=format:'%C(bold blue)%an%C(reset), %C(bold green)%ad%C(reset) %C(dim yellow)(%h)%C(reset)%C(bold yellow)%d%C(reset)%n%w(0,4,4)%B'
+	lg1 = log --graph --abbrev-commit --decorate --date=relative --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%s%C(reset) - %C(dim white)%aN%C(reset)%C(bold yellow)%d%C(reset)' --all
+	lg2 = log --graph --abbrev-commit --decorate --format=format:'%C(bold blue)%h%C(reset) - %C(bold cyan)%aD%C(reset) %C(bold green)(%ar)%C(reset)%C(bold yellow)%d%C(reset)%n''          %C(white)%s%C(reset) - %C(dim white)%aN%C(reset)' --all
+	lg3 = log --abbrev-commit --date=relative --format=format:'%C(bold blue)%aN%C(reset), %C(bold green)%ad%C(reset) %C(dim yellow)(%h)%C(reset)%C(bold yellow)%d%C(reset)%n%w(0,4,4)%B'
 	lg = !"git lg3"
 [filter "lfs"]
 	process = git-lfs filter-process
@@ -35,3 +35,5 @@
 	docs = docs
 	rpms = distros/swfts/rpms
 	md = support/make-dist
+[log]
+	mailmap = true
