@@ -112,6 +112,9 @@ __exitCode() {
     fi
 }
 
+# If available, use clang as the default C/C++ compiler.
+command -v clang   &> /dev/null && export CC=$(which clang)
+command -v clang++ &> /dev/null && export CXX=$(which clang++)
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
 eval "$(cstk bashrc)"
