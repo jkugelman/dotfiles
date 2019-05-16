@@ -25,6 +25,12 @@
 	stash = 
 	tag = 
 	branch = 
+[log]
+	mailmap = true
+[merge]
+	ff = only
+[fetch]
+	pruneTags = true
 [cstk]
 	dir = /home/jkugelman/IA/cstk
 [cstk "cd"]
@@ -36,5 +42,3 @@
 	rpms = distros/swfts/rpms
 	md = support/make-dist
 	docker = support/docker
-[log]
-	mailmap = true
