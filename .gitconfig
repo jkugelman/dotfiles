@@ -35,5 +35,6 @@
 	docs = docs
 	rpms = distros/swfts/rpms
 	md = support/make-dist
+	docker = support/docker
 [log]
 	mailmap = true
