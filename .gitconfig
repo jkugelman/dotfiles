@@ -37,8 +37,8 @@
 	cli = support/cstk-cli
 	cl = distros/swfts/Client
 	bbs = distros/swfts/Basebuild/build/IA/Basebuild/Setup
-	rpmb = support/rpm-build
 	docs = docs
 	rpms = distros/swfts/rpms
 	md = support/make-dist
 	docker = support/docker
+	rpmb = support/docker/rpm-build
