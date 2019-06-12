@@ -95,9 +95,12 @@ set copyindent
 set tabstop=8 shiftwidth=4 autoindent cindent shiftround
 set expandtab softtabstop=4
 
+autocmd BufRead,BufNewFile *.css  set shiftwidth=2 softtabstop=2
 autocmd BufRead,BufNewFile *.html set shiftwidth=2 softtabstop=2
-autocmd BufRead,BufNewFile *.yml  set shiftwidth=2 softtabstop=2
+autocmd BufRead,BufNewFile *.scss set shiftwidth=2 softtabstop=2
+autocmd BufRead,BufNewFile *.toml set shiftwidth=2 softtabstop=2
 autocmd BufRead,BufNewFile *.yaml set shiftwidth=2 softtabstop=2
+autocmd BufRead,BufNewFile *.yml  set shiftwidth=2 softtabstop=2
 
 " Automatically show matching brackets.
 set showmatch
