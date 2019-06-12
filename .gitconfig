@@ -42,3 +42,4 @@
 	md = support/make-dist
 	docker = support/docker
 	rpmb = support/docker/rpm-build
+	website = support/website
