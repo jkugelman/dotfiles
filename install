@@ -1,20 +1,19 @@
 #!/bin/bash
 
-ln -vfs ~/.dotfiles/.bash_profile ~/
-ln -vfs ~/.dotfiles/.bashrc       ~/
-ln -vfs ~/.dotfiles/.cvsrc        ~/
-ln -vfs ~/.dotfiles/.gitconfig    ~/
-ln -vfs ~/.dotfiles/.inputrc      ~/
-ln -vfs ~/.dotfiles/.netrc        ~/
-ln -vfs ~/.dotfiles/.psqlrc       ~/
-ln -vfs ~/.dotfiles/.pythonrc.py  ~/
-ln -vfs ~/.dotfiles/.screenrc     ~/
-ln -vfs ~/.dotfiles/.sqliterc     ~/
-ln -vfs ~/.dotfiles/.vimrc        ~/
+ln -vfs ~/.dotfiles/.bashrc      ~/
+ln -vfs ~/.dotfiles/.cvsrc       ~/
+ln -vfs ~/.dotfiles/.gitconfig   ~/
+ln -vfs ~/.dotfiles/.inputrc     ~/
+ln -vfs ~/.dotfiles/.netrc       ~/
+ln -vfs ~/.dotfiles/.psqlrc      ~/
+ln -vfs ~/.dotfiles/.pythonrc.py ~/
+ln -vfs ~/.dotfiles/.screenrc    ~/
+ln -vfs ~/.dotfiles/.sqliterc    ~/
+ln -vfs ~/.dotfiles/.vimrc       ~/
 
 rm -rf ~/.vim ~/bin
-ln -vfs ~/.dotfiles/.vim          ~/
-ln -vfs ~/.dotfiles/bin           ~/
+ln -vfs ~/.dotfiles/.vim         ~/
+ln -vfs ~/.dotfiles/bin          ~/
 
 mkdir -p ~/.ssh
 chmod u=rwx,go= ~/.ssh
