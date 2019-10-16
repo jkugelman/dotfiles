@@ -1,8 +1,23 @@
 #!/bin/bash
 
-git rev-list --objects --all |
-    git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' |
-    sed -n 's/^blob //p' |
-    sort --numeric-sort --key=2 |
-    cut -c 1-12,41- |
-    "$(command -v gnumfmt || echo numfmt)" --field=2 --to=iec-i --suffix=B --padding=7 --round=nearest
+main() {
+    if (($# == 0)); then
+        cat >&2 <<-USAGE
+Usage: $0 {--all | <commit>...}
+
+List large files in the repository that aren't managed by LFS. Use --all
+to scan the entire repository, or HEAD for just the current branch.
+See git-rev-list(1) for a detailed description of the <commit>... format.
+USAGE
+        exit 1
+    fi
+
+    git rev-list --objects "$@" |
+        git cat-file --batch-check='%(objecttype) %(objectname) %(objectsize) %(rest)' |
+        sed -n 's/^blob //p' |
+        sort --numeric-sort --key=2 |
+        cut -c 1-12,41- |
+        "$(command -v gnumfmt || echo numfmt)" --field=2 --to=iec-i --suffix=B --padding=7 --round=nearest
+}
+
+main "$@"
