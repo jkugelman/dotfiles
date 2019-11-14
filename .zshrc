@@ -1,0 +1,175 @@
+if ! [[ -d ~/.zplug ]]; then
+    printf 'Install zplug? [y/N]: '
+    read -q || return
+    echo
+    curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
+    echo
+fi
+
+if ! (($+commands[colorls])) && (($+commands[gem] || $+commands[apt-get])); then
+    printf 'Install colorls? [y/N]: '
+    if read -q; then
+        echo
+        (($+commands[gem])) || sudo apt-get install -y ruby ruby-dev make gcc
+        sudo gem install colorls
+        echo
+    fi
+fi
+
+source ~/.zplug/init.zsh
+
+# Use emacs keybindings even if our EDITOR is set to vi. Need to set this early.
+bindkey -e
+
+# Automatically cd to my favorite directories.
+setopt auto_cd
+cdpath=(
+    ~/
+    ~/cstk
+    ~/cstk/toolkit
+    ~/cstk/distros
+    ~/cstk/support
+)
+
+# Customize completion.
+setopt auto_list list_packed
+
+autoload -U compinit
+zstyle ':completion:*' menu select=2
+zmodload zsh/complist
+compinit
+_comp_options+=(globdots)       # Include hidden files.
+
+# Shell theme. Same Powerlevel9k just faster.
+zplug 'romkatv/powerlevel10k', as:theme, if:'[[ $TERM == *256* ]]'
+
+# This plugin enables directory navigation similar to using back and forward on
+# browsers or common file explorers like Finder or Nautilus. It uses a small zle
+# trick that lets you cycle through your directory stack left or right using
+# Ctrl + Shift + Left / Right. This is useful when moving back and forth between
+# directories in development environments, and can be thought of as kind of a
+# nondestructive pushd/popd.
+zplug 'plugins/dircycle', from:oh-my-zsh
+
+bindkey '^[[1;3D' insert-cycledleft     # Alt-Left
+bindkey '^[[1;3C' insert-cycledright    # Alt-Right
+
+setopt auto_pushd pushd_ignore_dups
+
+# Press Alt-Up to go up a directory, Alt-Down to go back down.
+_chdir-parent() {
+    cd ..
+    _chdir-reset-prompt
+}
+
+_chdir-descendant() {
+    [[ "${dirstack[1]}" == "$PWD"/* ]] && popd >/dev/null
+    _chdir-reset-prompt
+}
+
+_chdir-reset-prompt() {
+    local fn
+    for fn (chpwd $chpwd_functions precmd $precmd_functions); do
+        (( $+functions[$fn] )) && $fn
+    done
+    zle reset-prompt
+}
+
+zle -N _chdir-parent
+zle -N _chdir-descendant
+
+bindkey '^[[1;3A' _chdir-parent         # Alt-Up
+bindkey '^[[1;3B' _chdir-descendant     # Alt-Down
+
+# * ccat <file> [files]: colorize the contents of the file (or files, if more
+#   than one are provided). If no arguments are passed it will colorize the
+#   standard input or stdin.
+#
+# * cless <file> [files]: colorize the contents of the file (or files, if more
+#   than one are provided) and open less. If no arguments are passed it will
+#   colorize the standard input or stdin.
+zplug 'plugins/colorize', from:oh-my-zsh
+
+# Fish-like fast/unobtrusive autosuggestions for zsh. It suggests commands as
+# you type based on history and completions.
+zplug 'zsh-users/zsh-autosuggestions'
+
+# This package provides syntax highlighting for the shell zsh. It enables
+# highlighting of commands whilst they are typed at a zsh prompt into an
+# interactive terminal. This helps in reviewing commands before running them,
+# particularly in catching syntax errors.
+zplug 'zsh-users/zsh-syntax-highlighting', defer:2
+
+# This plugin sets title and hardstatus of the tab window for screen, the
+# terminal multiplexer.
+zplug 'plugins/screen', from:oh-my-zsh
+
+# If a command is not recognized in the $PATH, this will use Ubuntu's
+# command-not-found package to find it or suggest spelling mistakes.
+zplug 'plugins/command-not-found', from:oh-my-zsh
+
+# Show directory status after hitting enter at a blank prompt.
+_dir-status() {
+    if [[ -z $BUFFER ]] && type colorls &> /dev/null; then
+        printf '\r%s%s' "$(tput el)" "$(colorls --color=always -Ax --sort-dirs --git-status)"
+    fi
+
+    zle .accept-line
+}
+
+zle -N _dir-status
+zle -N accept-line _dir-status
+
+# Press Alt-G to run `git status`.
+_git-status() {
+    [[ -z $BUFFER ]] || return 0
+
+    BUFFER='git status'
+    zle accept-line
+}
+
+zle -N _git-status
+bindkey '^[g' _git-status           # Alt-G
+
+# Pretty ls output.
+alias ls='ls -F --color=auto'
+
+# Open files in tabs.
+alias vim='vim -p'
+
+# Share history among sessions.
+setopt hist_ignore_all_dups share_history
+
+# Keep 1000 lines of history within the shell and save it to ~/.zsh_history.
+HISTSIZE=100000
+SAVEHIST=100000
+HISTFILE=~/.zsh_history
+
+# Fix key bindings.
+bindkey '^[[1;5D' backward-word     # Ctrl-Left
+bindkey '^[[1;5C' forward-word      # Ctrl-Right
+
+# Use vim.
+export EDITOR=vim
+
+# Add to PATH. Don't allow duplicates.
+typeset -U path
+path=(~/.local/bin ~/bin $path)
+
+# Install plugins if there are plugins that have not been installed.
+if ! zplug check --verbose; then
+    printf "Install plugins? [y/N]: "
+    if read -q; then
+        echo; zplug install
+    fi
+fi
+
+# Then, source plugins and add commands to $PATH.
+zplug load
+
+# Customize plugins/screen status line. Have to do this after it's loaded.
+TAB_TITLE_PREFIX='"`'$_GET_PATH' | sed "s:..*/::"`$PROMPT_CHAR"'
+TAB_TITLE_PROMPT=''
+
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh

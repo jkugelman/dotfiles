@@ -6,7 +6,7 @@ hardstatus alwayslastline
 rendition bell ""
 rendition monitor "=ub "
 
-term xterm
+term screen-256color
 altscreen on
 vbell off
 defscrollback 9999
