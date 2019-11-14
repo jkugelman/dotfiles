@@ -61,6 +61,19 @@ __ps1_branch() {(
     } && return
 )}
 
+# Start ssh-agent.
+SSH_ENV=~/.ssh/environment
+
+if [[ -f $SSH_ENV ]]; then
+    . "$SSH_ENV" > /dev/null
+fi
+
+if ! { [[ -f $SSH_ENV ]] && [[ -n $SSH_AGENT_PID ]] && kill -0 "$SSH_AGENT_PID" 2> /dev/null; }; then
+    ssh-agent -s > "$SSH_ENV" || return
+    chmod +x "$SSH_ENV"
+    . "$SSH_ENV" > /dev/null
+fi
+
 # SVN's auto-completion stinks.
 complete -r svn 2> /dev/null
 
