@@ -45,6 +45,11 @@
 	services = services
 	ckms = distros/swfts/CM/CKM/src/net/progeny/ia/cm/ckm
 	rpm-build = support/docker/rpm-build
+[core]
+	pager = diff-so-fancy | less -R
+[diff-so-fancy]
+	stripLeadingSymbols = false
+	markEmptyLines = false
 [cstk "list"]
 	clean = true
 [cstk "make"]
