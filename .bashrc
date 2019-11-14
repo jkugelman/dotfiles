@@ -5,6 +5,8 @@ if [ -f /etc/bashrc ]; then
     . /etc/bashrc
 fi
 
+PATH="$HOME/bin:$HOME/.local/bin:$PATH"
+
 alias cat='cat -v'
 alias cdjavas='cd ~/Software/java-src/'
 alias cp='cp -i'
@@ -22,8 +24,6 @@ export CVSROOT=:pserver:jkugelman@cvs.progeny.net:/usr/local/cvsroot
 export EDITOR=vim
 export LESS=' -R -P?f%f - .?ltLine?lbs. %lt?lb-%lb.?L of %L.?PB - %PB\%.:?pb%pb\%:?btByte %bt?pB - %pB\%.:-...?e (END).'
 export NOSQL_INSTALL=/usr/local/nosql
-export OLD_PATH=
-export PATH=$HOME/bin:$PATH
 export PYTHONSTARTUP=~/.pythonrc.py
 export SCONSFLAGS='-Q'
 export SVN_BASH_COMPL_EXT=username,urls,svnstatus
