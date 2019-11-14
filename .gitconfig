@@ -32,6 +32,7 @@
 	ff = only
 [fetch]
 	pruneTags = true
+	prune = true
 [cstk]
 	dir = /home/jkugelman/cstk
 [cstk "cd"]
