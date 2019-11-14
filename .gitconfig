@@ -33,14 +33,22 @@
 [fetch]
 	pruneTags = true
 [cstk]
-	dir = /home/jkugelman/IA/cstk
+	dir = /home/jkugelman/cstk
 [cstk "cd"]
 	cli = support/cstk-cli
 	cl = distros/swfts/Client
 	bbs = distros/swfts/Basebuild/build/IA/Basebuild/Setup
 	docs = docs
-	rpms = distros/swfts/rpms
 	md = support/make-dist
 	docker = support/docker
-	rpmb = support/docker/rpm-build
 	website = support/website
+	services = services
+	ckms = distros/swfts/CM/CKM/src/net/progeny/ia/cm/ckm
+	rpm-build = support/docker/rpm-build
+[cstk "list"]
+	clean = true
+[cstk "make"]
+	cc = clang
+	os = debian
+[cstk "update"]
+	message = true
