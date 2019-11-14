@@ -102,6 +102,8 @@ autocmd BufRead,BufNewFile *.toml set shiftwidth=2 softtabstop=2
 autocmd BufRead,BufNewFile *.yaml set shiftwidth=2 softtabstop=2
 autocmd BufRead,BufNewFile *.yml  set shiftwidth=2 softtabstop=2
 
+autocmd BufRead,BufNewFile *.go   set tabstop=4 shiftwidth=0 noexpandtab nolist softtabstop=0 nocopyindent
+
 " Automatically show matching brackets.
 set showmatch
 

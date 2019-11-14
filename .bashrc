@@ -88,6 +88,7 @@ if [[ -d ~/IA ]]; then
     export IA_COMMON=~/IA/Common
     . "$IA_COMMON/Support/Environment/ENV"
     . "$IA_COMMON/Support/Environment/bashrc"
+    unset -f go
 fi
 
 #shopt -s failglob      # Disabled, interferes with Ubuntu's auto `complete'
