@@ -131,4 +131,4 @@ command -v clang   &> /dev/null && export CC=$(which clang)
 command -v clang++ &> /dev/null && export CXX=$(which clang++)
 
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
-eval "$(cstk bashrc)"
+type cstk &> /dev/null && eval "$(cstk bashrc)"
