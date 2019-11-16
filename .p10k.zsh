@@ -463,7 +463,7 @@
   # Status when the last command was terminated by a signal.
   typeset -g POWERLEVEL9K_STATUS_ERROR_SIGNAL=true
   # Use terse signal names: "INT" instead of "SIGINT(2)".
-  typeset -g POWERLEVEL9K_STATUS_VERBOSE_SIGNAME=false
+  typeset -g POWERLEVEL9K_STATUS_VERBOSE_SIGNAME=true
   typeset -g POWERLEVEL9K_STATUS_ERROR_SIGNAL_VISUAL_IDENTIFIER_EXPANSION=''
   typeset -g POWERLEVEL9K_STATUS_ERROR_SIGNAL_FOREGROUND=220
   typeset -g POWERLEVEL9K_STATUS_ERROR_SIGNAL_BACKGROUND=088
