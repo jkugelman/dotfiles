@@ -96,7 +96,17 @@ zplug 'plugins/screen', from:oh-my-zsh
 
 # If a command is not recognized in the $PATH, this will use Ubuntu's
 # command-not-found package to find it or suggest spelling mistakes.
-zplug 'plugins/command-not-found', from:oh-my-zsh
+#
+# Don't use this, it doesn't print an error if there's no suggestion:
+# zplug 'plugins/command-not-found', from:oh-my-zsh
+if [[ -x /usr/lib/command-not-found ]] ; then
+    if (( ! ${+functions[command_not_found_handler]} )) ; then
+        function command_not_found_handler {
+            [[ -x /usr/lib/command-not-found ]] || return 1
+            /usr/lib/command-not-found -- ${1+"$1"} && :
+        }
+    fi
+fi
 
 # Press Alt-L to run `ls`.
 _zsh-ls() {
