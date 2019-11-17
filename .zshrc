@@ -108,10 +108,10 @@ _zsh-ls() {
 zle -N _zsh-ls
 bindkey '^[l' _zsh-ls
 
-# Press Alt-G to run `git status`.
+# Press Alt-S to run `git status`.
 _zsh-git-status() { _zsh-run-command 'git status'; }
 zle -N _zsh-git-status
-bindkey '^[g' _zsh-git-status
+bindkey '^[s' _zsh-git-status
 
 # Press Alt-D to run `git diff`.
 _zsh-git-diff() { _zsh-run-command 'git diff'; }
