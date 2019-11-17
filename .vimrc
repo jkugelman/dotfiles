@@ -4,11 +4,13 @@ set laststatus=2
 " Enable syntax highlighting.
 syntax on
 
-" Store swap files in fixed location, not current directory.
-set dir=~/.vimswap//,/var/tmp//,/tmp//,.
-
-" On second thought, just disable swap files.
+" Disable swap files.
 set uc=0
+
+" Jump to the last known cursor position.
+if has("autocmd")
+    au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+endif
 
 " Automatically reload files that have changed.
 set autoread
