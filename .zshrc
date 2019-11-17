@@ -102,21 +102,33 @@ zplug 'plugins/command-not-found', from:oh-my-zsh
 _zsh-ls() {
     [[ -z $BUFFER ]] || return 0
     BUFFER='ls'
-    zle .accept-line
+    zle accept-line
 }
 
 zle -N _zsh-ls
 bindkey '^[l' _zsh-ls
 
 # Press Alt-G to run `git status`.
-_zsh-git-status() {
-    [[ -z $BUFFER ]] || return 0
-    BUFFER='git status'
-    zle .accept-line
-}
-
+_zsh-git-status() { _zsh-run-command 'git status'; }
 zle -N _zsh-git-status
-bindkey '^[g' _zsh-git-status           # Alt-G
+bindkey '^[g' _zsh-git-status
+
+# Press Alt-D to run `git diff`.
+_zsh-git-diff() { _zsh-run-command 'git diff'; }
+zle -N _zsh-git-diff
+bindkey '^[d' _zsh-git-diff
+
+# Press Alt-C to run `git diff --cached`.
+_zsh-git-diff-cached() { _zsh-run-command 'git diff --cached'; }
+zle -N _zsh-git-diff-cached
+bindkey '^[c' _zsh-git-diff-cached
+
+# Run a command if the user hasn't typed anything.
+_zsh-run-command() {
+    [[ -z $BUFFER ]] || return 0
+    BUFFER=$1
+    zle accept-line
+}
 
 # Pretty ls output.
 alias ls='ls -F --color=auto'
@@ -132,9 +144,9 @@ HISTSIZE=100000
 SAVEHIST=100000
 HISTFILE=~/.zsh_history
 
-# Fix key bindings.
-bindkey '^[[1;5D' backward-word     # Ctrl-Left
-bindkey '^[[1;5C' forward-word      # Ctrl-Right
+# Fix Ctrl-Left and Ctrl-Right key bindings.
+bindkey '^[[1;5D' backward-word
+bindkey '^[[1;5C' forward-word
 
 # Use vim.
 export EDITOR=vim
