@@ -6,16 +6,6 @@ if ! [[ -d ~/.zplug ]]; then
     echo
 fi
 
-if ! (($+commands[colorls])) && (($+commands[gem] || $+commands[apt-get])); then
-    printf 'Install colorls? [y/N]: '
-    if read -q; then
-        echo
-        (($+commands[gem])) || sudo apt-get install -y ruby ruby-dev make gcc
-        sudo gem install colorls
-        echo
-    fi
-fi
-
 source ~/.zplug/init.zsh
 
 # Use emacs keybindings even if our EDITOR is set to vi. Need to set this early.
@@ -108,28 +98,25 @@ zplug 'plugins/screen', from:oh-my-zsh
 # command-not-found package to find it or suggest spelling mistakes.
 zplug 'plugins/command-not-found', from:oh-my-zsh
 
-# Show directory status after hitting enter at a blank prompt.
-_dir-status() {
-    if [[ -z $BUFFER ]] && type colorls &> /dev/null; then
-        printf '\r%s%s' "$(tput el)" "$(colorls --color=always -Ax --sort-dirs --git-status)"
-    fi
-
+# Press Alt-L to run `ls`.
+_zsh-ls() {
+    [[ -z $BUFFER ]] || return 0
+    BUFFER='ls'
     zle .accept-line
 }
 
-zle -N _dir-status
-zle -N accept-line _dir-status
+zle -N _zsh-ls
+bindkey '^[l' _zsh-ls
 
 # Press Alt-G to run `git status`.
-_git-status() {
+_zsh-git-status() {
     [[ -z $BUFFER ]] || return 0
-
     BUFFER='git status'
-    zle accept-line
+    zle .accept-line
 }
 
-zle -N _git-status
-bindkey '^[g' _git-status           # Alt-G
+zle -N _zsh-git-status
+bindkey '^[g' _zsh-git-status           # Alt-G
 
 # Pretty ls output.
 alias ls='ls -F --color=auto'
