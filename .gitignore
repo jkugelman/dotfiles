@@ -1,14 +1,2 @@
 /*
-!/.*
-/.bash_history
-/.bash_logout
-/.cache/
-/.hushlogin
-/.lesshst
-/.profile
-/.sudo_as_admin_successful
-/.viminfo
-/.vim_mru_files
-/.zcompdump
-/.zplug/
-/.zsh_history
+!/.vim/
