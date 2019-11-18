@@ -143,6 +143,11 @@ _zsh-reload-shell() { _zsh-run-command "$(printf 'exec %q' "$SHELL")"; }
 zle -N _zsh-reload-shell
 bindkey '^[r' _zsh-reload-shell
 
+# Press Ctrl-Z to resume vi.
+_zsh-resume-vi() { _zsh-run-command 'fg %vi'; }
+zle -N _zsh-resume-vi
+bindkey '^Z' _zsh-resume-vi
+
 # Run a command if the user hasn't typed anything.
 _zsh-run-command() {
     [[ -z $BUFFER ]] || return 0
