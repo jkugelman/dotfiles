@@ -34,7 +34,6 @@
   # The list of segments shown on the left. Fill it with the most important segments.
   typeset -g POWERLEVEL9K_LEFT_PROMPT_ELEMENTS=(
       # =========================[ Line #1 ]=========================
-      # os_icon               # os identifier
       background_jobs         # presence of background jobs
       dir                     # current directory
       vcs                     # git status
@@ -72,6 +71,7 @@
       # context               # user@hostname
       user                    # user
       host                    # hostname
+      os_icon                 # os identifier
       nordvpn                 # nordvpn connection status, linux only (https://nordvpn.com/)
       ranger                  # ranger shell (https://github.com/ranger/ranger)
       vi_mode                 # vi mode (you don't need this if you've enabled prompt_char)
@@ -198,8 +198,8 @@
 
   #################################[ os_icon: os identifier ]##################################
   # OS identifier color.
-  typeset -g POWERLEVEL9K_OS_ICON_FOREGROUND=232
-  typeset -g POWERLEVEL9K_OS_ICON_BACKGROUND=7
+  typeset -g POWERLEVEL9K_OS_ICON_FOREGROUND=145
+  typeset -g POWERLEVEL9K_OS_ICON_BACKGROUND=235
   # Make the icon bold.
   typeset -g POWERLEVEL9K_OS_ICON_CONTENT_EXPANSION='%B${P9K_CONTENT// }'
 
@@ -215,7 +215,7 @@
   # Prompt symbol in command vi mode.
   typeset -g POWERLEVEL9K_PROMPT_CHAR_{OK,ERROR}_VICMD_CONTENT_EXPANSION='❮'
   # Prompt symbol in visual vi mode.
-  typeset -g POWERLEVEL9K_PROMPT_CHAR_{OK,ERROR}_VIVIS_CONTENT_EXPANSION='Ⅴ'
+  typeset -g POWERLEVEL9K_PROMPT_CHAR_{OK,ERROR}_VIVIS_CONTENT_EXPANSION=' '
   # Prompt symbol in overwrite vi mode.
   typeset -g POWERLEVEL9K_PROMPT_CHAR_{OK,ERROR}_VIOWR_CONTENT_EXPANSION='▶'
   typeset -g POWERLEVEL9K_PROMPT_CHAR_OVERWRITE_STATE=true
@@ -224,7 +224,7 @@
   # No line introducer if prompt_char is the first segment.
   typeset -g POWERLEVEL9K_PROMPT_CHAR_LEFT_PROMPT_FIRST_SEGMENT_START_SYMBOL=
   # No surrounding whitespace.
-  typeset -g POWERLEVEL9K_PROMPT_CHAR_LEFT_LEFT_WHITESPACE=' '
+  typeset -g POWERLEVEL9K_PROMPT_CHAR_LEFT_LEFT_WHITESPACE=''
   typeset -g POWERLEVEL9K_PROMPT_CHAR_LEFT_RIGHT_WHITESPACE=''
 
   ##################################[ dir: current directory ]##################################
@@ -450,7 +450,7 @@
   # like this: 1|0.
   typeset -g POWERLEVEL9K_STATUS_OK_PIPE=true
   typeset -g POWERLEVEL9K_STATUS_OK_PIPE_VISUAL_IDENTIFIER_EXPANSION=''
-  typeset -g POWERLEVEL9K_STATUS_OK_PIPE_FOREGROUND=0
+  typeset -g POWERLEVEL9K_STATUS_OK_PIPE_FOREGROUND=016
   typeset -g POWERLEVEL9K_STATUS_OK_PIPE_BACKGROUND=145
 
   # Status when it's just an error code (e.g., '1'). No need to show it if prompt_char is enabled as
@@ -477,7 +477,7 @@
 
   ###################[ command_execution_time: duration of the last command ]###################
   # Execution time color.
-  typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_FOREGROUND=0
+  typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_FOREGROUND=016
   typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_BACKGROUND=145
   # Show duration of the last command if takes longer than this many seconds.
   typeset -g POWERLEVEL9K_COMMAND_EXECUTION_TIME_THRESHOLD=3
@@ -492,7 +492,7 @@
 
   #######################[ background_jobs: presence of background jobs ]#######################
   # Background jobs color.
-  typeset -g POWERLEVEL9K_BACKGROUND_JOBS_FOREGROUND=0
+  typeset -g POWERLEVEL9K_BACKGROUND_JOBS_FOREGROUND=016
   typeset -g POWERLEVEL9K_BACKGROUND_JOBS_BACKGROUND=250
   # Don't show the number of background jobs.
   typeset -g POWERLEVEL9K_BACKGROUND_JOBS_VERBOSE=true
@@ -525,7 +525,7 @@
 
   ###########[ vi_mode: vi mode (you don't need this if you've enabled prompt_char) ]###########
   # Foreground color.
-  typeset -g POWERLEVEL9K_VI_MODE_FOREGROUND=0
+  typeset -g POWERLEVEL9K_VI_MODE_FOREGROUND=016
   # Text and color for normal (a.k.a. command) vi mode.
   typeset -g POWERLEVEL9K_VI_COMMAND_MODE_STRING=NORMAL
   typeset -g POWERLEVEL9K_VI_MODE_NORMAL_BACKGROUND=2
@@ -874,9 +874,12 @@
   # typeset -g POWERLEVEL9K_BATTERY_BACKGROUND=0
 
   ####################################[ time: current time ]####################################
+  # Current date color.
+  typeset -g POWERLEVEL9K_DATE_FOREGROUND=016
+  typeset -g POWERLEVEL9K_DATE_BACKGROUND=244
   # Current time color.
-  # typeset -g POWERLEVEL9K_TIME_FOREGROUND=0
-  # typeset -g POWERLEVEL9K_TIME_BACKGROUND=7
+  typeset -g POWERLEVEL9K_TIME_FOREGROUND=016
+  typeset -g POWERLEVEL9K_TIME_BACKGROUND=253
   # Format for the current time: 09:51:02. See `man 3 strftime`.
   typeset -g POWERLEVEL9K_DATE_FORMAT='%D{%A}'
   typeset -g POWERLEVEL9K_TIME_FORMAT='%D{%l:%M%p}'
@@ -929,7 +932,7 @@
   #   - always:   Trim down prompt when accepting a command line.
   #   - same-dir: Trim down prompt when accepting a command line unless this is the first command
   #               typed after changing current working directory.
-  typeset -g POWERLEVEL9K_TRANSIENT_PROMPT=off
+  typeset -g POWERLEVEL9K_TRANSIENT_PROMPT=same-dir
 
   # Instant prompt mode.
   #
@@ -967,19 +970,15 @@
   POWERLEVEL9K_SSH_ICON=''
 
   POWERLEVEL9K_USER_DEFAULT_BACKGROUND=069
-  POWERLEVEL9K_USER_DEFAULT_FOREGROUND=black
+  POWERLEVEL9K_USER_DEFAULT_FOREGROUND=016
   POWERLEVEL9K_USER_SUDO_BACKGROUND=$POWERLEVEL9K_USER_DEFAULT_BACKGROUND
   POWERLEVEL9K_USER_SUDO_FOREGROUND=$POWERLEVEL9K_USER_DEFAULT_FOREGROUND
   POWERLEVEL9K_USER_ROOT_BACKGROUND=$POWERLEVEL9K_USER_DEFAULT_BACKGROUND
   POWERLEVEL9K_USER_ROOT_FOREGROUND=$POWERLEVEL9K_USER_DEFAULT_FOREGROUND
   POWERLEVEL9K_HOST_LOCAL_BACKGROUND=061
-  POWERLEVEL9K_HOST_LOCAL_FOREGROUND=black
+  POWERLEVEL9K_HOST_LOCAL_FOREGROUND=016
   POWERLEVEL9K_HOST_REMOTE_BACKGROUND=$POWERLEVEL9K_HOST_LOCAL_BACKGROUND
   POWERLEVEL9K_HOST_REMOTE_FOREGROUND=$POWERLEVEL9K_HOST_LOCAL_FOREGROUND
-  POWERLEVEL9K_DATE_BACKGROUND=145
-  POWERLEVEL9K_DATE_FOREGROUND=black
-  POWERLEVEL9K_TIME_BACKGROUND=253
-  POWERLEVEL9K_TIME_FOREGROUND=black
 
   # zle indents the right prompt by 1 by default.
   unset ZLE_RPROMPT_INDENT
