@@ -133,6 +133,11 @@ _zsh-git-diff-cached() { _zsh-run-command 'git diff --cached'; }
 zle -N _zsh-git-diff-cached
 bindkey '^[c' _zsh-git-diff-cached
 
+# Press Alt-G to run `git log`.
+_zsh-git-log() { _zsh-run-command 'git lg'; }
+zle -N _zsh-git-log
+bindkey '^[g' _zsh-git-log
+
 # Press Alt-R to reload the shell.
 _zsh-reload-shell() { _zsh-run-command "$(printf 'exec %q' "$SHELL")"; }
 zle -N _zsh-reload-shell
