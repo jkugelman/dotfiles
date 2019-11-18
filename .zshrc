@@ -30,6 +30,18 @@ zmodload zsh/complist
 compinit
 _comp_options+=(globdots)       # Include hidden files.
 
+# Set window title.
+# Based on <https://github.com/mdarocha/zsh-windows-title>
+case $TERM in
+    xterm*|termite)
+        precmd () {
+            dir=${PWD/#$HOME/'~'}
+            command=$(history | tail -n1 | awk '{for (i=2;i<=NF-1;i++) printf $i " "; print $NF}')
+            print -Pn "\e]0;$dir ❯ $command\a"
+        }
+        ;;
+esac
+
 # Shell theme. Same Powerlevel9k just faster.
 zplug 'romkatv/powerlevel10k', as:theme, if:'[[ $TERM == *256* ]]'
 
