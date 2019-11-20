@@ -71,14 +71,14 @@
       # context               # user@hostname
       user                    # user
       host                    # hostname
-      os_icon                 # os identifier
+      # os_icon               # os identifier
       nordvpn                 # nordvpn connection status, linux only (https://nordvpn.com/)
       ranger                  # ranger shell (https://github.com/ranger/ranger)
       vi_mode                 # vi mode (you don't need this if you've enabled prompt_char)
       # vpn_ip                # virtual private network indicator
       # ram                   # free RAM
       # load                  # CPU load
-      date                    # current date
+      # date                  # current date
       time                    # current time
       # =========================[ Line #2 ]=========================
       newline
@@ -896,10 +896,10 @@
   ####################################[ time: current time ]####################################
   # Current date color.
   typeset -g POWERLEVEL9K_DATE_FOREGROUND=016
-  typeset -g POWERLEVEL9K_DATE_BACKGROUND=244
+  typeset -g POWERLEVEL9K_DATE_BACKGROUND=239
   # Current time color.
   typeset -g POWERLEVEL9K_TIME_FOREGROUND=016
-  typeset -g POWERLEVEL9K_TIME_BACKGROUND=253
+  typeset -g POWERLEVEL9K_TIME_BACKGROUND=239
   # Format for the current time: 09:51:02. See `man 3 strftime`.
   typeset -g POWERLEVEL9K_DATE_FORMAT='%D{%A}'
   typeset -g POWERLEVEL9K_TIME_FORMAT='%D{%l:%M%p}'
@@ -989,16 +989,16 @@
   POWERLEVEL9K_HOST_ICON=''
   POWERLEVEL9K_SSH_ICON=''
 
-  POWERLEVEL9K_USER_DEFAULT_BACKGROUND=069
   POWERLEVEL9K_USER_DEFAULT_FOREGROUND=016
-  POWERLEVEL9K_USER_SUDO_BACKGROUND=$POWERLEVEL9K_USER_DEFAULT_BACKGROUND
+  POWERLEVEL9K_USER_DEFAULT_BACKGROUND=239
   POWERLEVEL9K_USER_SUDO_FOREGROUND=$POWERLEVEL9K_USER_DEFAULT_FOREGROUND
-  POWERLEVEL9K_USER_ROOT_BACKGROUND=$POWERLEVEL9K_USER_DEFAULT_BACKGROUND
+  POWERLEVEL9K_USER_SUDO_BACKGROUND=$POWERLEVEL9K_USER_DEFAULT_BACKGROUND
   POWERLEVEL9K_USER_ROOT_FOREGROUND=$POWERLEVEL9K_USER_DEFAULT_FOREGROUND
-  POWERLEVEL9K_HOST_LOCAL_BACKGROUND=061
+  POWERLEVEL9K_USER_ROOT_BACKGROUND=$POWERLEVEL9K_USER_DEFAULT_BACKGROUND
   POWERLEVEL9K_HOST_LOCAL_FOREGROUND=016
-  POWERLEVEL9K_HOST_REMOTE_BACKGROUND=$POWERLEVEL9K_HOST_LOCAL_BACKGROUND
+  POWERLEVEL9K_HOST_LOCAL_BACKGROUND=239
   POWERLEVEL9K_HOST_REMOTE_FOREGROUND=$POWERLEVEL9K_HOST_LOCAL_FOREGROUND
+  POWERLEVEL9K_HOST_REMOTE_BACKGROUND=$POWERLEVEL9K_HOST_LOCAL_BACKGROUND
 
   # zle indents the right prompt by 1 by default.
   unset ZLE_RPROMPT_INDENT
