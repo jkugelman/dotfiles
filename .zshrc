@@ -19,6 +19,7 @@ cdpath=(
     ~/cstk/toolkit
     ~/cstk/distros
     ~/cstk/support
+    ~/IT
 )
 
 # Customize completion.
