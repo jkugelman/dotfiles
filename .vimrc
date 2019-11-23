@@ -94,8 +94,8 @@ set preserveindent
 set copyindent
 
 " Indent settings for code: 4 spaces, do not use tab character.
-set tabstop=8 shiftwidth=4 autoindent cindent shiftround
-set expandtab softtabstop=4
+set tabstop=8 shiftwidth=2 autoindent cindent shiftround
+set expandtab softtabstop=2
 
 autocmd BufRead,BufNewFile *.css  set shiftwidth=2 softtabstop=2
 autocmd BufRead,BufNewFile *.html set shiftwidth=2 softtabstop=2
