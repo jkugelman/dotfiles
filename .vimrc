@@ -147,6 +147,7 @@ let python_highlight_all=1
 
 let sql_type_default="mysql"
 
+autocmd BufRead,BufNewFile Dockerfile* set syntax=dockerfile
 autocmd BufRead,BufNewFile *.m4 hi link m4Custom   Special
 autocmd BufRead,BufNewFile *.m4 hi link m4Constant Special
 autocmd BufRead,BufNewFile *.m4 syn region m4Command  matchgroup=m4Type start="\<m4_\(\w*\)("he=e-1 end=")" contains=@m4Top
