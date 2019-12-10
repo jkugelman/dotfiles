@@ -53,7 +53,7 @@
 [cstk "list"]
 	clean = true
 [cstk "make"]
-	cc = clang
-	os = debian
+	cc = gcc
+	os = centos7
 [cstk "update"]
 	message = true
