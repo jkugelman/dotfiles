@@ -17,6 +17,7 @@ cdpath=(
     ~/
     ~/cstk
     ~/cstk/toolkit
+    ~/cstk/toolkit/legacy
     ~/cstk/distros
     ~/cstk/support
     ~/IT
