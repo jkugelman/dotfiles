@@ -187,6 +187,9 @@ Plug 'tpope/vim-repeat'
 " function which loops or conditions are surrounding the visible code.
 Plug 'wellle/context.vim'
 
+" Vim plugin for Nginx, including syntax highlighting.
+Plug 'chr4/nginx.vim'
+
 call plug#end()
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
