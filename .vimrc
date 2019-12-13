@@ -166,6 +166,26 @@ set modeline
 let g:sh_noisk=1
 
 
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Load plugins with vim-plug. See ~/.vim/autoload/plug.vim and
+" <https://github.com/junegunn/vim-plug>.
+"
+" Run :PlugInstall to install new plugins.
+
+call plug#begin()
+
+" A Vim plugin that shows the context of the currently visible buffer contents.
+" It's supposed to work on a wide range of file types, but is probably most
+" useful when looking at source code files. In most programming languages this
+" context will show you which function you're looking at, and within that
+" function which loops or conditions are surrounding the visible code.
+Plug 'wellle/context.vim'
+
+call plug#end()
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
 "=======[ Fix smartindent stupidities ]============
 
 inoremap # X<C-H>#|                         "No magic outdent for comments
