@@ -190,6 +190,9 @@ Plug 'wellle/context.vim'
 " Vim plugin for Nginx, including syntax highlighting.
 Plug 'chr4/nginx.vim'
 
+" Vim syntax for TOML.
+Plug 'cespare/vim-toml'
+
 call plug#end()
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
