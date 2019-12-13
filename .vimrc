@@ -174,11 +174,18 @@ let g:sh_noisk=1
 
 call plug#begin()
 
-" If you've ever tried using the `.` command after a plugin map, you were likely
-" disappointed to discover it only repeated the last native command inside that
-" map, rather than the map as a whole. That disappointment ends today.
-" Repeat.vim remaps `.` in a way that plugins can tap into it.
-Plug 'tpope/vim-repeat'
+" Surround.vim is all about 'surroundings': parentheses, brackets, quotes, XML
+" tags, and more. The plugin provides mappings to easily delete, change and add
+" such surroundings in pairs.
+"
+"     cs"'       Change surrounding " to '
+"     cs'<q>     Change surrounding ' to <q></q>
+"     cst"       Change surrounding <q> to '
+"
+"     ysiw]      Surround word with [brackets]
+"     cs]{       Change [word] to { word } (use `}` instead of `{` for no
+"                    spaces)
+Plug 'tpope/vim-surround'
 
 " A Vim plugin that shows the context of the currently visible buffer contents.
 " It's supposed to work on a wide range of file types, but is probably most
@@ -186,6 +193,12 @@ Plug 'tpope/vim-repeat'
 " context will show you which function you're looking at, and within that
 " function which loops or conditions are surrounding the visible code.
 Plug 'wellle/context.vim'
+
+" If you've ever tried using the `.` command after a plugin map, you were likely
+" disappointed to discover it only repeated the last native command inside that
+" map, rather than the map as a whole. That disappointment ends today.
+" Repeat.vim remaps `.` in a way that plugins can tap into it.
+Plug 'tpope/vim-repeat'
 
 " Vim plugin for Nginx, including syntax highlighting.
 Plug 'chr4/nginx.vim'
