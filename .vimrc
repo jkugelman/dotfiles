@@ -170,9 +170,15 @@ let g:sh_noisk=1
 " Load plugins with vim-plug. See ~/.vim/autoload/plug.vim and
 " <https://github.com/junegunn/vim-plug>.
 "
-" Run :PlugInstall to install new plugins.
+" Run :PlugUpdate to install and/or update plugins.
 
 call plug#begin()
+
+" If you've ever tried using the `.` command after a plugin map, you were likely
+" disappointed to discover it only repeated the last native command inside that
+" map, rather than the map as a whole. That disappointment ends today.
+" Repeat.vim remaps `.` in a way that plugins can tap into it.
+Plug 'tpope/vim-repeat'
 
 " A Vim plugin that shows the context of the currently visible buffer contents.
 " It's supposed to work on a wide range of file types, but is probably most
