@@ -94,11 +94,15 @@ set preserveindent
 set copyindent
 
 " Indent settings for code: 4 spaces, do not use tab character.
-set tabstop=8 shiftwidth=2 autoindent cindent shiftround
-set expandtab softtabstop=2
+set tabstop=8 shiftwidth=4 autoindent cindent shiftround
+set expandtab softtabstop=4
 
+autocmd BufRead,BufNewFile *.c    set shiftwidth=2 softtabstop=2
+autocmd BufRead,BufNewFile *.cpp  set shiftwidth=2 softtabstop=2
 autocmd BufRead,BufNewFile *.css  set shiftwidth=2 softtabstop=2
+autocmd BufRead,BufNewFile *.h    set shiftwidth=2 softtabstop=2
 autocmd BufRead,BufNewFile *.html set shiftwidth=2 softtabstop=2
+autocmd BufRead,BufNewFile *.java set shiftwidth=2 softtabstop=2
 autocmd BufRead,BufNewFile *.scss set shiftwidth=2 softtabstop=2
 autocmd BufRead,BufNewFile *.toml set shiftwidth=2 softtabstop=2
 autocmd BufRead,BufNewFile *.yaml set shiftwidth=2 softtabstop=2
