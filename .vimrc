@@ -203,6 +203,33 @@ Plug 'wellle/context.vim'
 " Repeat.vim remaps `.` in a way that plugins can tap into it.
 Plug 'tpope/vim-repeat'
 
+" Syntastic is a syntax checking plugin for Vim created by Martin Grenfell. It
+" runs files through external syntax checkers and displays any resulting
+" errors to the user. This can be done on demand, or automatically as files
+" are saved. If syntax errors are detected, the user is notified and is happy
+" because they didn't have to compile their code or execute their script to
+" find them.
+Plug 'vim-syntastic/syntastic'
+
+"set statusline+=%#warningmsg#
+"set statusline+=%{SyntasticStatuslineFlag()}
+"set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+"let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
+let g:rust_cargo_check_tests = 1
+
+hi QuickFixLine term=reverse ctermbg=11 ctermfg=0 guibg=Yellow guifg=Black
+
+nnoremap g[ :lprevious<Enter>
+nnoremap g] :lnext<Enter>
+
+" This is a Vim plugin that provides Rust file detection, syntax highlighting,
+" formatting, Syntastic integration, and more.
+Plug 'rust-lang/rust.vim'
 
 " Vim syntax for TOML.
 Plug 'cespare/vim-toml'
