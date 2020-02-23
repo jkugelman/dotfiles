@@ -151,7 +151,6 @@ let python_highlight_all=1
 
 let sql_type_default="mysql"
 
-autocmd BufRead,BufNewFile Dockerfile* set syntax=dockerfile
 autocmd BufRead,BufNewFile *.m4 hi link m4Custom   Special
 autocmd BufRead,BufNewFile *.m4 hi link m4Constant Special
 autocmd BufRead,BufNewFile *.m4 syn region m4Command  matchgroup=m4Type start="\<m4_\(\w*\)("he=e-1 end=")" contains=@m4Top
@@ -204,15 +203,20 @@ Plug 'wellle/context.vim'
 " Repeat.vim remaps `.` in a way that plugins can tap into it.
 Plug 'tpope/vim-repeat'
 
-" Vim plugin for Nginx, including syntax highlighting.
-Plug 'chr4/nginx.vim'
 
 " Vim syntax for TOML.
 Plug 'cespare/vim-toml'
 
+" Vim plugin for Nginx, including syntax highlighting.
+Plug 'chr4/nginx.vim'
+
 call plug#end()
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+
+autocmd BufRead,BufNewFile Dockerfile* set syntax=dockerfile
+autocmd BufRead,BufNewFile *.bats      set syntax=sh
 
 
 "=======[ Fix smartindent stupidities ]============
