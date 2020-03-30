@@ -181,7 +181,8 @@ alias ls='ls -F --color=auto'
 alias vim='vim -p'
 
 # Share history among sessions.
-setopt hist_ignore_all_dups share_history
+setopt hist_ignore_all_dups
+#setopt share_history
 
 # Keep 1000 lines of history within the shell and save it to ~/.zsh_history.
 HISTSIZE=100000
