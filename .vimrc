@@ -127,6 +127,10 @@ set showcmd
 " Confirm saving and quitting.
 set confirm
 
+" Fix Ctrl-Left and Ctrl-Right in screen.
+set <C-Left>=[1;5D
+set <C-Right>=[1;5C
+
 " So yank behaves like delete, i.e. Y = D.
 map Y y$
 
