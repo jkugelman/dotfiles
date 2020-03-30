@@ -109,6 +109,10 @@ zplug 'zsh-users/zsh-syntax-highlighting', defer:2
 # terminal multiplexer.
 zplug 'plugins/screen', from:oh-my-zsh
 
+# This plugin starts automatically ssh-agent to set up and load whichever
+# credentials you want for ssh connections.
+zplug 'plugins/ssh-agent', from:oh-my-zsh
+
 # If a command is not recognized in the $PATH, this will use Ubuntu's
 # command-not-found package to find it or suggest spelling mistakes.
 #
