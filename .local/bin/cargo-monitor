@@ -1,0 +1,3 @@
+#!/bin/bash
+
+cargo watch --no-restart -qcs '(cargo check --tests --color always && cargo test --color always) 2>&1 | less -RFX'
