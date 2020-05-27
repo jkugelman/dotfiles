@@ -223,6 +223,7 @@ hi QuickFixLine term=reverse ctermbg=11 ctermfg=0 guibg=Yellow guifg=Black
 
 nnoremap g[ :lprevious<Enter>
 nnoremap g] :lnext<Enter>
+nnoremap gs :SyntasticToggleMode<Enter>
 
 " This is a Vim plugin that provides Rust file detection, syntax highlighting,
 " formatting, Syntastic integration, and more.
