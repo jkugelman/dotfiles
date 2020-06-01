@@ -1,0 +1,4 @@
+{
+    "rust-analyzer.serverPath": "rust-analyzer",
+    "suggest.autoTrigger": "none"
+}
