@@ -1,3 +1,22 @@
 #!/bin/bash
 
-cargo watch --no-restart -qcs '(cargo check --tests --color always && cargo test --color always) 2>&1 | less -RFX'
+main() {
+    shift
+    if (($# > 0)); then
+        local cargo_commands=("$@")
+    else
+        local cargo_commands=('check --tests' 'test')
+    fi
+
+    local command
+    local cargo_command
+    for cargo_command in "${cargo_commands[@]}"; do
+        [[ -n $command ]] && command+=' && '
+        command+="cargo $cargo_command --color always"
+    done
+    command="($command)"
+
+    cargo watch --no-restart -qcs "$command 2>&1 | less -RX"
+}
+
+main "$@"
