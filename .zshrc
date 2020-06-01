@@ -105,10 +105,6 @@ zplug 'zsh-users/zsh-autosuggestions'
 # particularly in catching syntax errors.
 zplug 'zsh-users/zsh-syntax-highlighting', defer:2
 
-# This plugin sets title and hardstatus of the tab window for screen, the
-# terminal multiplexer.
-zplug 'plugins/screen', from:oh-my-zsh
-
 # This plugin starts automatically ssh-agent to set up and load whichever
 # credentials you want for ssh connections.
 zplug 'plugins/ssh-agent', from:oh-my-zsh
