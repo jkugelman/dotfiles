@@ -1,8 +1,13 @@
-" Always show the current file name.
-set laststatus=2
-
 " Enable syntax highlighting.
 syntax on
+hi Comment ctermfg=darkgray
+hi LineNr ctermfg=darkblue
+
+" Show line numbers.
+set number
+
+" Always show the current file name.
+set laststatus=2
 
 " Disable swap files.
 set uc=0
@@ -206,6 +211,10 @@ Plug 'tpope/vim-repeat'
 " Run `:CocInstall coc-rust-analyzer` to add Rust support.
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 source ~/.vimrc-coc
+
+" This is a Vim plugin that provides Rust file detection, syntax highlighting,
+" formatting, Syntastic integration, and more.
+Plug 'rust-lang/rust.vim'
 
 " Vim syntax for TOML.
 Plug 'cespare/vim-toml'
