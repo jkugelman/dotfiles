@@ -2,6 +2,7 @@
 syntax on
 hi Comment ctermfg=darkgray
 hi LineNr ctermfg=darkblue
+hi CursorColumn ctermbg=darkblue
 
 " Show line numbers.
 set number
