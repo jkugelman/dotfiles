@@ -12,7 +12,7 @@ main() {
         done
     fi
 
-    cargo watch --no-restart -qcs "($command) 2>&1 | less -RX"
+    cargo watch --no-restart -qcs "{ $command; } 2>&1 | less -RX"
 }
 
 main "$@"
