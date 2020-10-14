@@ -196,6 +196,9 @@ export EDITOR=vim
 typeset -U path
 path=(~/.local/bin ~/bin $path)
 
+# Parallelize make.
+export MAKEFLAGS=-j8
+
 # Install plugins if there are plugins that have not been installed.
 if ! zplug check --verbose; then
     printf "Install plugins? [y/N]: "
