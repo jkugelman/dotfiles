@@ -3,6 +3,7 @@ if ! [[ -d ~/.zplug ]]; then
     read -q || return
     echo
     curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
+    sleep 1 # Why is this needed? Without it, init.zsh is missing on Raspberry Pi.
     echo
 fi
 
