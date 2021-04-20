@@ -230,6 +230,11 @@ export EDITOR=vim
 typeset -U path
 path=(~/.local/bin ~/bin $path)
 
+# Alias to make working with .dotfiles easier.
+dotfiles() {
+    git --git-dir="$HOME"/.dotfiles --work-tree="$HOME" "$@"
+}
+
 # Parallelize make.
 export MAKEFLAGS=-j8
 
