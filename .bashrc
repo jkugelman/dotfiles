@@ -105,11 +105,11 @@ bind space:magic-space 2> /dev/null || :
 
 # If this is an xterm set the title to user@host:dir
 case "$TERM" in
-xterm*|rxvt*)
-    PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
-    ;;
-*)
-    ;;
+    xterm*|rxvt*)
+        PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+        ;;
+    *)
+        ;;
 esac
 
 # Show the exit codes of failed commands.
@@ -130,5 +130,9 @@ __exitCode() {
 command -v clang   &> /dev/null && export CC=$(which clang)
 command -v clang++ &> /dev/null && export CXX=$(which clang++)
 
+# Add a `dotfiles` alias for working with the `.dotfiles` repo.
+dotfiles() {
+    git --git-dir="$HOME"/.dotfiles --work-tree="$HOME" "$@";
+}
+
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
-type cstk &> /dev/null && eval "$(cstk bashrc)"
