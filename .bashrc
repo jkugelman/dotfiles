@@ -122,9 +122,10 @@ __exit_code() {
 command -v clang   &> /dev/null && export CC=$(which clang)
 command -v clang++ &> /dev/null && export CXX=$(which clang++)
 
-# Add a `dotfiles` alias for working with the `.dotfiles` repo.
-dotfiles() {
-    git --git-dir="$HOME"/.dotfiles --work-tree="$HOME" "$@";
-}
-
 [ -f ~/.fzf.bash ] && source ~/.fzf.bash
+
+# Source functions/aliases shared with other shells.
+[[ ! -f ~/.config/common.shrc ]] || source ~/.config/common.shrc
+
+# Source local customizations.
+[[ ! -f ~/.config/local.bashrc ]] || source ~/.config/local.bashrc

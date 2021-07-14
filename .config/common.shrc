@@ -1,0 +1,11 @@
+# Functions and aliases shared by bash and zsh.
+
+# Add a `dotfiles` alias for working with the `.dotfiles` repo.
+dotfiles() {
+    git --git-dir="$HOME"/.dotfiles --work-tree="$HOME" "$@";
+}
+
+# Source local customizations.
+[[ ! -f ~/.config/local.shrc ]] || source ~/.config/local.shrc
+
+# vim: syntax=sh
