@@ -10,3 +10,5 @@ term screen-256color
 altscreen on
 vbell off
 defscrollback 9999
+
+source ~/.config/local.screenrc

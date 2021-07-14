@@ -249,3 +249,9 @@ TAB_TITLE_PROMPT=''
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+
+# Source functions/aliases shared with other shells.
+[[ ! -f ~/.config/common.shrc ]] || source ~/.config/common.shrc
+
+# Source local customizations.
+[[ ! -f ~/.config/local.zshrc ]] || source ~/.config/local.zshrc
