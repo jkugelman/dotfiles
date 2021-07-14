@@ -35,6 +35,7 @@ export PS1='\[\e[0;37m\][$(__ps1_ssh)\[\e[32m\]\u@\h\[\e[0m\]:\[\e[33m\]\w$(__ps
 __ps1_ssh() {
     [[ -n $SSH_CLIENT ]] && printf '\001\e[31m\002ssh\001\e[0m\002 '
 }
+export -f __ps1_ssh
 
 __ps1_branch() {(
     set -o pipefail
@@ -60,6 +61,7 @@ __ps1_branch() {(
         fi
     } && return
 )}
+export -f __ps1_branch
 
 # Start ssh-agent.
 SSH_ENV=~/.ssh/environment
