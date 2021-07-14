@@ -113,17 +113,25 @@ case "$TERM" in
 esac
 
 # Show the exit codes of failed commands.
-trap __exitCode ERR
+trap __exit_code ERR
 
-__exitCode() {
-    local exitCode=$?
-    
-    if ((exitCode != 0)); then
-        local msg="(exit code $exitCode)"
-        local spaces=$((${#msg} < COLUMNS ? COLUMNS - ${#msg} : 0))
+__exit_code() {
+    local exit_code=$?
+    ((exit_code == 0)) && return
 
-        printf '%s\e[31m%s\e[0m%s' "$(tput sc; tput cuu1; tput hpa "$spaces")" "$msg" "$(tput rc)"
-    fi
+    # Technique to get the current cursor position courtesty of [Unix.SE]
+    # (https://unix.stackexchange.com/questions/88296/get-vertical-cursor-position/183121#183121).
+    local row _
+    IFS=';' read -sdR -p $'\E[6n' row _
+    row="${row#*[}"
+    ((row--)) || : # Top-left corner is (1,1), but `tput cup` calls it (0,0).
+
+    # Show the message right-aligned on the previous line. Instead of `tput cup` we
+    # could use `tput hpa`, but that doesn't work when `TERM=screen-256color`.
+    local message="(exit code $exit_code)"
+    local column=$((${#message} < COLUMNS ? COLUMNS - ${#message} : 0))
+
+    printf '%s\e[31m%s\e[0m%s' "$(tput sc; tput cup "$((row-1))" "$((column))")" "$message" "$(tput rc)"
 }
 
 # If available, use clang as the default C/C++ compiler.
