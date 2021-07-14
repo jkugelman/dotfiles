@@ -1,6 +1,0 @@
-#!/bin/bash
-
-cp ~/vm{mon,net}.tar /usr/lib/vmware/modules/source/
-touch /usr/src/kernels/`uname -r`-`uname -p`/include/linux/config.h
-
-vmware-config.pl

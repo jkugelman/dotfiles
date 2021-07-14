@@ -1,2 +1,0 @@
-#!/bin/bash
-ssh bf06test ssh pptest ssh m3iacm reboot
