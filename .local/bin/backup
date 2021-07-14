@@ -1,5 +1,0 @@
-#!/bin/bash
-
-for FILE; do
-    mv -iv "$FILE" "$FILE.bak"
-done

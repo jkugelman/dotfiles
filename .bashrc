@@ -8,10 +8,8 @@ fi
 PATH="$HOME/bin:$HOME/.local/bin:$PATH"
 
 alias cat='cat -v'
-alias cdjavas='cd ~/Software/java-src/'
 alias cp='cp -i'
 alias diff='diff -u'
-alias ftp='yafc'
 alias lack='ack --pager="less -R"'
 alias ls='ls --color=auto -F --hide="*.o" --hide="*.lo" --hide="*.pyc"'
 alias mv='mv -i'
@@ -20,10 +18,8 @@ alias tree='tree -ACF'
 alias vim='vim -p'
 
 export ACK_OPTIONS='--nosmart-case'
-export CVSROOT=:pserver:jkugelman@cvs.progeny.net:/usr/local/cvsroot
 export EDITOR=vim
 export LESS=' -R -P?f%f - .?ltLine?lbs. %lt?lb-%lb.?L of %L.?PB - %PB\%.:?pb%pb\%:?btByte %bt?pB - %pB\%.:-...?e (END).'
-export NOSQL_INSTALL=/usr/local/nosql
 export PYTHONSTARTUP=~/.pythonrc.py
 export SCONSFLAGS='-Q'
 export SVN_BASH_COMPL_EXT=username,urls,svnstatus
@@ -78,20 +74,6 @@ fi
 
 # SVN's auto-completion stinks.
 complete -r svn 2> /dev/null
-
-case $HOSTNAME in
-    kaufman)   export JAVA_HOME=/usr/java/jdk1.6.0_06;;
-    leviathan) export JAVA_HOME=/usr/lib/jvm/default-java; export MAKEFLAGS=-j8;;
-    *rhel64)   export JAVA_HOME=/usr/java/jdk1.7.0_21;;
-    *rhel72)   export JAVA_HOME=/usr
-esac
-
-if [[ -d ~/IA ]]; then
-    export IA_COMMON=~/IA/Common
-    . "$IA_COMMON/Support/Environment/ENV"
-    . "$IA_COMMON/Support/Environment/bashrc"
-    unset -f go
-fi
 
 #shopt -s failglob      # Disabled, interferes with Ubuntu's auto `complete'
 shopt -u failglob

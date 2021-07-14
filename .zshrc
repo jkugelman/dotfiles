@@ -185,7 +185,7 @@ HISTSIZE=100000
 SAVEHIST=100000
 HISTFILE=~/.zsh_history
 
-# Fix key bindings.
+# Fix key bindings. From https://wiki.archlinux.org/title/Zsh#Key_bindings.
 typeset -g -A key
 
 key[Home]="${terminfo[khome]}"
