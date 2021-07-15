@@ -89,32 +89,16 @@ highlight Tab ctermfg=lightgray guifg=lightgray
 " Allow backspacing over auto-indent and line breaks.
 set backspace=indent,eol,start
 
-" Enable smarter indentation support.
-filetype plugin indent on
+" Default indentation settings: 4 spaces, do not use tab character.
+set tabstop=8 shiftwidth=4 autoindent shiftround
+set expandtab softtabstop=4
 
-" Customize code formatting.
-set cinoptions=l1,g0,(0,W4,j1
-
-" Use same indentation style as previous lines.
+" Use same indentation characters as previous lines.
 set preserveindent
 set copyindent
 
-" Indent settings for code: 4 spaces, do not use tab character.
-set tabstop=8 shiftwidth=4 autoindent cindent shiftround
-set expandtab softtabstop=4
-
-autocmd BufRead,BufNewFile *.c    set shiftwidth=2 softtabstop=2
-autocmd BufRead,BufNewFile *.cpp  set shiftwidth=2 softtabstop=2
-autocmd BufRead,BufNewFile *.css  set shiftwidth=2 softtabstop=2
-autocmd BufRead,BufNewFile *.h    set shiftwidth=2 softtabstop=2
-autocmd BufRead,BufNewFile *.html set shiftwidth=2 softtabstop=2
-autocmd BufRead,BufNewFile *.java set shiftwidth=2 softtabstop=2
-autocmd BufRead,BufNewFile *.scss set shiftwidth=2 softtabstop=2
-autocmd BufRead,BufNewFile *.toml set shiftwidth=2 softtabstop=2
-autocmd BufRead,BufNewFile *.yaml set shiftwidth=2 softtabstop=2
-autocmd BufRead,BufNewFile *.yml  set shiftwidth=2 softtabstop=2
-
-autocmd BufRead,BufNewFile *.go   set tabstop=4 shiftwidth=0 noexpandtab nolist softtabstop=0 nocopyindent
+" Customize C/C++ formatting.
+set cinoptions=l1,g0,(0,W4,j1
 
 " Automatically show matching brackets.
 set showmatch
@@ -186,6 +170,17 @@ let g:sh_noisk=1
 " Run :PlugUpdate to install and/or update plugins.
 
 call plug#begin()
+
+" This plugin automatically adjusts 'shiftwidth' and 'expandtab' heuristically
+" based on the current file, or, in the case the current file is new, blank, or
+" otherwise insufficient, by looking at other files of the same type in the
+" current and parent directories. In lieu of adjusting 'softtabstop', 'smarttab'
+" is enabled.
+"
+" Compare to DetectIndent. I wrote this because I wanted something fully
+" automatic. My goal is that by installing this plugin, you can remove all
+" indenting related configuration from your vimrc.
+Plug 'tpope/vim-sleuth'
 
 " Surround.vim is all about 'surroundings': parentheses, brackets, quotes, XML
 " tags, and more. The plugin provides mappings to easily delete, change and add
