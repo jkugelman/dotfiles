@@ -97,8 +97,12 @@ set expandtab softtabstop=4
 set preserveindent
 set copyindent
 
-" Customize C/C++ formatting.
-set cinoptions=l1,g0,(0,W4,j1
+" Customize C/C++/Java/JS formatting.
+set cinoptions=l1,g0,(s,L0,U1,Ws,j1,J1,#1
+
+" Indent <script> and <style> blocks in HTML.
+let html_indent_script1 = "inc"
+let html_indent_style1 = "inc"
 
 " Automatically show matching brackets.
 set showmatch
