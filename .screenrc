@@ -6,9 +6,11 @@ hardstatus alwayslastline
 rendition bell ""
 rendition monitor "=ub "
 
-term screen-256color
 altscreen on
 vbell off
 defscrollback 9999
+
+# Renumber screen windows with Ctrl-A, Space.
+bind ' ' exec renumber-screen-windows
 
 source ~/.config/local.screenrc

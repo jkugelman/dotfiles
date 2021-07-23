@@ -1,0 +1,29 @@
+#!/bin/bash
+#
+# Renumbers screen windows when there are gaps. Probably bound to a hotkey in
+# `~/.screenrc`.
+#
+# From https://fortmantechtalk.wordpress.com/2013/07/16/linux-screen-command-auto-renumber-your-screens/
+
+set -euo pipefail
+
+main() {
+    screen -X msgminwait 0
+    screen -X msgwait 0
+
+    local currentWindow="$(screen -Q title)"
+    local maxWindow=30
+    local next=0
+
+    for ((current = 0; current <= $maxWindow; current++)); do
+        screen -p "$current" -Q info &>/dev/null || continue
+        screen -p "$current" -X number "$next" || continue
+        ((next++)) || :
+    done
+
+    screen -Q select "$currentWindow" &>/dev/null
+    screen -X msgminwait 1
+    screen -X msgwait 5
+}
+
+main "$@"
