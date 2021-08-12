@@ -5,6 +5,16 @@ dotfiles() {
     git --git-dir="$HOME"/.dotfiles --work-tree="$HOME" "$@";
 }
 
+# tree's `ioctl(1, TCGETS, ...)` call fails for some reason despite stdout
+# being connected to a TTY.
+tree() {
+    if [[ -t 1 ]]; then
+        command tree -C "$@"
+    else
+        command tree "$@"
+    fi
+}
+
 # Source local customizations.
 [[ ! -f ~/.config/local.shrc ]] || source ~/.config/local.shrc
 
