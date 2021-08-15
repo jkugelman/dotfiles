@@ -23,3 +23,18 @@ readline.parse_and_bind('tab: complete')
 atexit.register(save_history)
 
 del os, atexit, readline, rlcompleter, save_history, history_path
+
+# Auto-imports.
+try:
+    import matplotlib.pyplot as plt
+    import numpy as np
+    import scipy
+    import scipy.signal
+except ImportError:
+    pass
+
+try:
+    import matplotlib
+    matplotlib.use('TkAgg')
+except (ImportError, ValueError):
+    pass
