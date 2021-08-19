@@ -1,15 +1,34 @@
 # Functions and aliases shared by bash and zsh.
 
+unalias cat cp diff lack ls mv rm vim 2>/dev/null || :
+
+cat() { command cat -v "$@"; }
+cp() { command cp -i "$@"; }
+diff() { command diff -u "$@"; }
+lack() { command ack --pager="less -R" "$@"; }
+ls() { command ls --color=auto -F "$@"; }
+mv() { command mv -i "$@"; }
+rm() { command rm --preserve-root -I "$@"; }
+vim() { command vim -p "$@"; }
+
+export ACK_OPTIONS='--nosmart-case'
+export EDITOR=vim
+export LESS=' -R -P?f%f - .?ltLine?lbs. %lt?lb-%lb.?L of %L.?PB - %PB\%.:?pb%pb\%:?btByte %bt?pB - %pB\%.:-...?e (END).'
+export PYTHONSTARTUP=~/.pythonrc.py
+export SCONSFLAGS='-Q'
+export SVN_BASH_COMPL_EXT=username,urls,svnstatus
+export VISUAL=vim
+
 # Add a `dotfiles` alias for working with the `.dotfiles` repo.
 dotfiles() {
-    git --git-dir="$HOME"/.dotfiles --work-tree="$HOME" "$@";
+    git --git-dir="$HOME"/.dotfiles --work-tree="$HOME" "$@"
 }
 
 # tree's `ioctl(1, TCGETS, ...)` call fails for some reason despite stdout
 # being connected to a TTY.
 tree() {
     if [[ -t 1 ]]; then
-        command tree -C "$@"
+        command tree -ACF "$@"
     else
         command tree "$@"
     fi
