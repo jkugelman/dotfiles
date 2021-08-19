@@ -7,24 +7,6 @@ fi
 
 PATH="$HOME/bin:$HOME/.local/bin:$PATH"
 
-alias cat='cat -v'
-alias cp='cp -i'
-alias diff='diff -u'
-alias lack='ack --pager="less -R"'
-alias ls='ls --color=auto -F'
-alias mv='mv -i'
-alias rm='rm --preserve-root -I'
-alias tree='tree -ACF'
-alias vim='vim -p'
-
-export ACK_OPTIONS='--nosmart-case'
-export EDITOR=vim
-export LESS=' -R -P?f%f - .?ltLine?lbs. %lt?lb-%lb.?L of %L.?PB - %PB\%.:?pb%pb\%:?btByte %bt?pB - %pB\%.:-...?e (END).'
-export PYTHONSTARTUP=~/.pythonrc.py
-export SCONSFLAGS='-Q'
-export SVN_BASH_COMPL_EXT=username,urls,svnstatus
-export VISUAL=vim
-
 # Fancy prompt.
 export PS1='\[\e[0;37m\][$(__ps1_ssh)\[\e[32m\]\u@\h\[\e[0m\]:\[\e[33m\]\w$(__ps1_branch)\[\e[37m\]]\$ \[\e[0m\]'
 
