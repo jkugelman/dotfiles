@@ -9,7 +9,6 @@ lack() { command ack --pager="less -R" "$@"; }
 ls() { command ls --color=auto -F "$@"; }
 mv() { command mv -i "$@"; }
 rm() { command rm --preserve-root -I "$@"; }
-vim() { command vim -p "$@"; }
 
 export ACK_OPTIONS='--nosmart-case'
 export EDITOR=vim
@@ -18,6 +17,15 @@ export PYTHONSTARTUP=~/.pythonrc.py
 export SCONSFLAGS='-Q'
 export SVN_BASH_COMPL_EXT=username,urls,svnstatus
 export VISUAL=vim
+
+# Use nvim if it's installed. Open files in tabs.
+vim() {
+    if command -v nvim >/dev/null 2>&1; then
+        nvim -p "$@"
+    else
+        command vim -p "$@"
+    fi
+}
 
 # Add a `dotfiles` alias for working with the `.dotfiles` repo.
 dotfiles() {

@@ -178,12 +178,6 @@ _zsh-run-command() {
     zle accept-line
 }
 
-# Pretty ls output.
-alias ls='ls -F --color=auto'
-
-# Open files in tabs.
-alias vim='vim -p'
-
 # Share history among sessions.
 setopt hist_ignore_all_dups
 #setopt share_history
