@@ -23,13 +23,6 @@ bindkey -e
 setopt auto_cd
 cdpath=(
     ~/
-    ~/cstk
-    ~/cstk/toolkit
-    ~/cstk/toolkit/legacy
-    ~/cstk/distros
-    ~/cstk/support
-    ~/cstk/test
-    ~/IT
 )
 
 # Customize completion.
