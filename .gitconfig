@@ -8,6 +8,10 @@
 	interactive = auto
 [push]
 	default = simple
+[merge]
+	ff = only
+[pull]
+	ff = only
 [alias]
 	unstage = reset HEAD --
 	lg = log --graph --abbrev-commit --date=relative --format=format:'%C(bold blue)%aN%C(reset), %C(bold green)%ad%C(reset) - %C(auto)%h%d%C(reset)%n%C(bold)%B%-C()%n' --stat
@@ -25,8 +29,6 @@
 	branch = 
 [log]
 	mailmap = true
-[merge]
-	ff = only
 [fetch]
 	pruneTags = true
 	prune = true
