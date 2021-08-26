@@ -30,28 +30,8 @@
 [fetch]
 	pruneTags = true
 	prune = true
-[cstk]
-	dir = /home/jkugelman/cstk
-[cstk "cd"]
-	cli = support/cstk-cli
-	cl = distros/swfts/Client
-	bbs = distros/swfts/Basebuild/build/IA/Basebuild/Setup
-	docs = docs
-	md = support/make-dist
-	docker = support/docker
-	website = support/website
-	services = services
-	ckms = distros/swfts/CM/CKM/src/net/progeny/ia/cm/ckm
-	rpm-build = support/docker/rpm-build
 [core]
 	pager = diff-so-fancy | less -R
 [diff-so-fancy]
 	stripLeadingSymbols = false
 	markEmptyLines = false
-[cstk "list"]
-	clean = true
-[cstk "make"]
-	cc = gcc
-	os = centos7
-[cstk "update"]
-	message = true
