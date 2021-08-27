@@ -8,8 +8,10 @@
 	interactive = auto
 [push]
 	default = simple
+	useForceIfIncludes = true
 [merge]
 	ff = only
+	directoryRenames = true
 [pull]
 	ff = only
 [alias]
@@ -37,3 +39,10 @@
 [diff-so-fancy]
 	stripLeadingSymbols = false
 	markEmptyLines = false
+[diff]
+	colorMoved = default
+	renames = copies
+[commit]
+	verbose = true
+[status]
+	showStash = true
