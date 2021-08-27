@@ -17,7 +17,7 @@
 [alias]
 	unstage = reset HEAD --
 	lg = log --graph --abbrev-commit --date=relative --format=format:'%C(bold blue)%aN%C(reset), %C(bold green)%ad%C(reset) - %C(auto)%h%d%C(reset)%n%C(bold)%B%-C()%n' --stat
-	pushf = push --force-with-lease --force-if-includes
+	pushf = push --force-with-lease
 [filter "lfs"]
 	process = git-lfs filter-process
 	required = true
