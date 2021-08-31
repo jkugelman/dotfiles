@@ -32,6 +32,20 @@ dotfiles() {
     git --git-dir="$HOME"/.dotfiles --work-tree="$HOME" "$@"
 }
 
+# Maintain the same working directory when ssh-ing to a host.
+ssh() {
+    if (($# != 1)) || [[ $1 == -* ]]; then
+        command ssh "$@"
+        return
+    fi
+
+    local host="$1"
+
+    # Get current directory relative to $HOME, unless $PWD isn't in $HOME.
+    local rel_pwd; rel_pwd="$(realpath --relative-base ~ "$PWD")"
+    command ssh -t "$host" "sh -c 'cd $(printf '%q' "$rel_pwd") 2>/dev/null; exec \"\$SHELL\" -l'"
+}
+
 # tree's `ioctl(1, TCGETS, ...)` call fails for some reason despite stdout
 # being connected to a TTY.
 tree() {
