@@ -1,0 +1,16 @@
+#!/bin/bash
+#
+# `ssh` to a host and maintain the same working directory.
+
+set -euo pipefail
+
+main() {
+    local host="$1"
+
+    # Get current directory relative to $HOME, unless $PWD isn't in $HOME.
+    local rel_pwd; rel_pwd="$(realpath --relative-base ~ "$PWD")"
+
+    ssh -t "$host" "sh -c 'cd $(printf '%q' "$rel_pwd") 2>/dev/null; exec \"\$SHELL\" -l'"
+}
+
+main "$@"
