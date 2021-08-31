@@ -1,5 +1,6 @@
 # Functions and aliases shared by bash and zsh.
 
+# Simple QOL "aliases".
 unalias cat cp diff lack ls mv rm vim 2>/dev/null || :
 
 cat() { command cat -v "$@"; }
@@ -10,12 +11,9 @@ ls() { command ls --color=auto -F "$@"; }
 mv() { command mv -i "$@"; }
 rm() { command rm --preserve-root -I "$@"; }
 
-export ACK_OPTIONS='--nosmart-case'
 export EDITOR=vim
 export LESS=' -R -P?f%f - .?ltLine?lbs. %lt?lb-%lb.?L of %L.?PB - %PB\%.:?pb%pb\%:?btByte %bt?pB - %pB\%.:-...?e (END).'
 export PYTHONSTARTUP=~/.pythonrc.py
-export SCONSFLAGS='-Q'
-export SVN_BASH_COMPL_EXT=username,urls,svnstatus
 export VISUAL=vim
 
 # Use nvim if it's installed. Open files in tabs.
