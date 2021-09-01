@@ -1001,7 +1001,7 @@
   POWERLEVEL9K_HOST_REMOTE_BACKGROUND=253
 
   # zle indents the right prompt by 1 by default.
-  unset ZLE_RPROMPT_INDENT
+  ZLE_RPROMPT_INDENT=0
 }
 
 (( ${#p10k_config_opts} )) && setopt ${p10k_config_opts[@]}
