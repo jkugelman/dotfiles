@@ -217,9 +217,6 @@ key[Ctrl-Right]="${terminfo[kRIT5]}"
 [[ -n "${key[Ctrl-Left]}"  ]] && bindkey -- "${key[Ctrl-Left]}"  backward-word
 [[ -n "${key[Ctrl-Right]}" ]] && bindkey -- "${key[Ctrl-Right]}" forward-word
 
-# Use vim.
-export EDITOR=vim
-
 # Add to PATH. Don't allow duplicates.
 typeset -U path
 path=(~/.local/bin ~/bin $path)
@@ -228,9 +225,6 @@ path=(~/.local/bin ~/bin $path)
 dotfiles() {
     git --git-dir="$HOME"/.dotfiles --work-tree="$HOME" "$@"
 }
-
-# Parallelize make.
-export MAKEFLAGS=-j8
 
 # Install plugins if there are plugins that have not been installed.
 if ! zplug check --verbose; then
