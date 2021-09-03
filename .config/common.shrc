@@ -13,6 +13,7 @@ rm() { command rm --preserve-root -I "$@"; }
 
 export EDITOR=vim
 export LESS=' -R -P?f%f - .?ltLine?lbs. %lt?lb-%lb.?L of %L.?PB - %PB\%.:?pb%pb\%:?btByte %bt?pB - %pB\%.:-...?e (END).'
+export MAKEFLAGS=-j8
 export PYTHONSTARTUP=~/.pythonrc.py
 export VISUAL=vim
 
