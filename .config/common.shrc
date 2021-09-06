@@ -55,6 +55,11 @@ tree() {
     fi
 }
 
+# Add cargo to path if Rust is installed.
+if [[ -e $HOME/.cargo/env ]]; then
+    . "$HOME/.cargo/env"
+fi
+
 # Source local customizations.
 [[ ! -f ~/.config/local.shrc ]] || source ~/.config/local.shrc
 
