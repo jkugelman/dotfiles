@@ -217,6 +217,10 @@ key[Ctrl-Right]="${terminfo[kRIT5]}"
 [[ -n "${key[Ctrl-Left]}"  ]] && bindkey -- "${key[Ctrl-Left]}"  backward-word
 [[ -n "${key[Ctrl-Right]}" ]] && bindkey -- "${key[Ctrl-Right]}" forward-word
 
+# VSCode needs extra bindings for Home and End.
+bindkey -- $'\e[H' beginning-of-line
+bindkey -- $'\e[F' end-of-line
+
 # Add to PATH. Don't allow duplicates.
 typeset -U path
 path=(~/.local/bin ~/bin $path)
