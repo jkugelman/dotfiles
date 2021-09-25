@@ -18,11 +18,6 @@
 	unstage = reset HEAD --
 	lg = log --graph --abbrev-commit --date=relative --format=format:'%C(bold blue)%aN%C(reset), %C(bold green)%ad%C(reset) - %C(auto)%h%d%C(reset)%n%C(bold)%B%-C()%n' --stat
 	pushf = push --force-with-lease
-[filter "lfs"]
-	process = git-lfs filter-process
-	required = true
-	clean = git-lfs clean -- %f
-	smudge = git-lfs smudge -- %f
 [diff "sqlite3"]
 	textconv = bash -c 'sqlite3 \"$1\" .dump' --
 [pager]
@@ -46,3 +41,8 @@
 	verbose = true
 [status]
 	showStash = true
+[filter "lfs"]
+	clean = git-lfs clean -- %f
+	smudge = git-lfs smudge -- %f
+	process = git-lfs filter-process
+	required = true
