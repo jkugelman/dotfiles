@@ -60,6 +60,12 @@ if [[ -e $HOME/.cargo/env ]]; then
     . "$HOME/.cargo/env"
 fi
 
+# Load nvm, the version manager for node.js, if it's installed.
+if [[ -d ~/.nvm ]]; then
+    export NVM_DIR="$HOME/.nvm"
+    . "$NVM_DIR/nvm.sh"
+fi
+
 # Source local customizations.
 [[ ! -f ~/.config/local.shrc ]] || source ~/.config/local.shrc
 
