@@ -124,16 +124,6 @@ if [[ -x /usr/lib/command-not-found ]] ; then
     fi
 fi
 
-# Press Alt-L to run `ls`.
-_zsh-ls() {
-    [[ -z $BUFFER ]] || return 0
-    BUFFER='ls'
-    zle accept-line
-}
-
-zle -N _zsh-ls
-bindkey '^[l' _zsh-ls
-
 # Press Alt-S to run `git status`.
 _zsh-git-status() { _zsh-run-command 'git status'; }
 zle -N _zsh-git-status
@@ -149,10 +139,10 @@ _zsh-git-diff-cached() { _zsh-run-command 'git diff --cached'; }
 zle -N _zsh-git-diff-cached
 bindkey '^[c' _zsh-git-diff-cached
 
-# Press Alt-G to run `git log`.
+# Press Alt-L to run `git log`.
 _zsh-git-log() { _zsh-run-command 'git lg'; }
 zle -N _zsh-git-log
-bindkey '^[g' _zsh-git-log
+bindkey '^[l' _zsh-git-log
 
 # Press Alt-R to reload the shell.
 _zsh-reload-shell() { _zsh-run-command "$(printf 'exec %q' "$SHELL")"; }
