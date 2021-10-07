@@ -5,7 +5,7 @@ hi LineNr ctermfg=darkblue
 hi CursorColumn ctermbg=darkblue
 
 " Show line numbers.
-set number
+"set number
 
 " Always show the current file name.
 set laststatus=2
