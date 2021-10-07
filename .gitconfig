@@ -16,7 +16,7 @@
 	ff = only
 [alias]
 	unstage = reset HEAD --
-	lg = log --graph --abbrev-commit --date=relative --format=format:'%C(bold blue)%aN%C(reset), %C(bold green)%ad%C(reset) - %C(auto)%h%d%C(reset)%n%C(bold)%B%-C()%n' --stat
+	lg = log --graph --abbrev-commit --date=relative --format=format:'%C(bold blue)%aN <%aE>%C(reset), %C(bold green)%ad%C(reset) - %C(auto)%h%d%C(reset)%n%C(bold)%B%-C()%n' --stat
 	pushf = push --force-with-lease
 [diff "sqlite3"]
 	textconv = bash -c 'sqlite3 \"$1\" .dump' --
