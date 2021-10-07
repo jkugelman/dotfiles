@@ -268,3 +268,6 @@ vmap  <expr>  <C-RIGHT>  DVB_Drag('right')
 vmap  <expr>  <C-DOWN>   DVB_Drag('down')
 vmap  <expr>  <C-UP>     DVB_Drag('up')
 vmap  <expr>  D          DVB_Duplicate()
+
+" Disable gray column on left.
+set signcolumn=auto
