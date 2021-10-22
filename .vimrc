@@ -226,6 +226,9 @@ Plug 'cespare/vim-toml'
 " Vim plugin for Nginx, including syntax highlighting.
 Plug 'chr4/nginx.vim'
 
+" Syntax highlighting for Dockerfiles.
+Plug 'honza/dockerfile.vim'
+
 call plug#end()
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
