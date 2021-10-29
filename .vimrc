@@ -229,6 +229,9 @@ Plug 'chr4/nginx.vim'
 " Syntax highlighting for Dockerfiles.
 Plug 'honza/dockerfile.vim'
 
+" Syntax highlighting for Typescript.
+Plug 'leafgarland/typescript-vim'
+
 call plug#end()
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
