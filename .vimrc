@@ -100,6 +100,11 @@ set copyindent
 " Customize C/C++/Java/JS formatting.
 set cinoptions=l1,g0,(s,L0,U1,Ws,j1,J1,#1
 
+" Disable annoying auto-indent of `#`.
+" https://vim.fandom.com/wiki/Restoring_indent_after_typing_hash
+set cinkeys-=0#
+set indentkeys-=0#
+
 " Indent <script> and <style> blocks in HTML.
 let html_indent_script1 = "inc"
 let html_indent_style1 = "inc"
