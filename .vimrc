@@ -57,6 +57,9 @@ set incsearch
 set hlsearch
 nnoremap <F7> :nohl<Enter>
 
+" F9 to toggle between light and dark mode.
+nnoremap <F9> :if &background == "light" \| set background=dark \| else \| set background=light \| endif<Enter>
+
 " Show ruler.
 set ruler
 
