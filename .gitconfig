@@ -27,7 +27,6 @@
 [log]
 	mailmap = true
 [fetch]
-	pruneTags = true
 	prune = true
 [core]
 	pager = diff-so-fancy | less -R
