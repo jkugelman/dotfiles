@@ -18,6 +18,7 @@
 	unstage = reset HEAD --
 	lg = log --graph --abbrev-commit --date=relative --format=format:'%C(bold blue)%aN <%aE>%C(reset), %C(bold green)%ad%C(reset) - %C(auto)%h%d%C(reset)%n%C(bold)%B%-C()%n' --stat
 	pushf = push --force-with-lease
+	children = "!bash -c 'c=${1:-HEAD}; set -- $(git rev-list --all --not \"$c\"^@ --children | grep $(git rev-parse \"$c\") ); shift; echo $1' -"
 [diff "sqlite3"]
 	textconv = bash -c 'sqlite3 \"$1\" .dump' --
 [pager]
@@ -46,3 +47,5 @@
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
+[rebase]
+	autosquash = true
