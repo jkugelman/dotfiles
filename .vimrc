@@ -219,10 +219,10 @@ Plug 'tpope/vim-repeat'
 " Run `:CocInstall coc-rust-analyzer` to add Rust support.
 "
 " COC requires Vim >= 8.1.1719.
-if has('nvim-0.4.0') || has('patch-8.1.1719')
-    Plug 'neoclide/coc.nvim', {'branch': 'release'}
-    source ~/.vimrc-coc
-endif
+"if has('nvim-0.4.0') || has('patch-8.1.1719')
+"    Plug 'neoclide/coc.nvim', {'branch': 'release'}
+"    source ~/.vimrc-coc
+"endif
 
 " This is a Vim plugin that provides Rust file detection, syntax highlighting,
 " formatting, Syntastic integration, and more.
