@@ -66,6 +66,12 @@ if [[ -d ~/.nvm ]]; then
     . "$NVM_DIR/nvm.sh"
 fi
 
+# Suppress `docker build` advertising message:
+#
+# > Use 'docker scan' to run Snyk tests against images to find vulnerabilities
+# > and learn how to fix them
+export DOCKER_SCAN_SUGGEST=false
+
 # Source local customizations.
 [[ ! -f ~/.config/local.shrc ]] || source ~/.config/local.shrc
 
