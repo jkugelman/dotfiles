@@ -55,7 +55,7 @@ inoremap <Up> <C-o>gk
 " Incremental search. F7 to disable highlighting.
 set incsearch
 set hlsearch
-nnoremap <F7> :nohl<Enter>
+nnoremap <F7> :set nocursorcolumn<Enter>:nohl<Enter>
 
 " F9 to toggle between light and dark mode.
 nnoremap <F9> :if &background == "light" \| set background=dark \| else \| set background=light \| endif<Enter>
