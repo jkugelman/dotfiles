@@ -40,6 +40,7 @@
 	renames = copies
 [commit]
 	verbose = true
+	cleanup = scissors
 [status]
 	showStash = true
 [filter "lfs"]
