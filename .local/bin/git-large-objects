@@ -1,4 +1,6 @@
 #!/bin/bash
+#
+# Source: <https://stackoverflow.com/a/42544963/68587>
 
 main() {
     if (($# == 0)); then
