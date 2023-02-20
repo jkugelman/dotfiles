@@ -166,6 +166,9 @@ set modeline
 " Don't add '.' to the 'iskeyword' list of characters that w, e, etc., use.
 let g:sh_noisk=1
 
+" For wordlist editing, sort and save with a single keypress.
+noremap <F9> :%!sort<Enter>:w<Enter>
+
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 " Load plugins with vim-plug. See ~/.vim/autoload/plug.vim and
