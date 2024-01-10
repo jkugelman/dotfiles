@@ -167,7 +167,7 @@ set modeline
 let g:sh_noisk=1
 
 " For wordlist editing, sort and save with a single keypress.
-noremap <F9> :%!sort<Enter>:w<Enter>
+autocmd BufRead jkugelman-wordlist.txt noremap <buffer> <F9> :%!sort -u<Enter>:w<Enter>:silent !./merge.py<Enter>:redraw!<Enter>
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
