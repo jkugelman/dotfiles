@@ -45,6 +45,10 @@ ssh() {
     command ssh -t "$host" "sh -c 'cd $(printf '%q' "$rel_pwd") 2>/dev/null; exec \"\$SHELL\" -l'"
 }
 
+rgl() {
+    rg -p "$@" | less -R
+}
+
 # tree's `ioctl(1, TCGETS, ...)` call fails for some reason despite stdout
 # being connected to a TTY.
 tree() {
