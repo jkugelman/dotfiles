@@ -19,12 +19,6 @@ source ~/.zplug/init.zsh
 # Use emacs keybindings even if our EDITOR is set to vi. Need to set this early.
 bindkey -e
 
-# Automatically cd to my favorite directories.
-setopt auto_cd
-cdpath=(
-    ~/
-)
-
 # Customize completion.
 setopt auto_list list_packed
 
