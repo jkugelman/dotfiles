@@ -13,11 +13,6 @@ set laststatus=2
 " Disable swap files.
 set uc=0
 
-" Jump to the last known cursor position.
-if has("autocmd")
-    au BufReadPost * if line("'\"") > 0 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
-endif
-
 " Automatically reload files that have changed.
 set autoread
 
@@ -233,6 +228,12 @@ call plug#end()
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
+
+" Jump to the last known cursor position. Skip for git commit messages, where
+" the file path is reused across unrelated commits.
+if has("autocmd")
+    au BufReadPost * if &ft !=# 'gitcommit' && line("'\"") > 0 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+endif
 
 autocmd BufRead,BufNewFile Dockerfile* set syntax=dockerfile
 autocmd BufRead,BufNewFile *.bats      set syntax=sh
