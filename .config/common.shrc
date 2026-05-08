@@ -46,7 +46,24 @@ ssh() {
 }
 
 rgl() {
-    rg -p "$@" | less -R
+    if [[ $1 == -l ]]; then
+        shift
+        search=$1
+        shift
+        rg "$search" "$@" | sort-by-length -v | rg -p "$search" | less -R
+    else
+        rg -p "$@" | less -R
+    fi
+}
+
+rgll() {
+    rgl -l "$@"
+}
+
+sort-by-length() {
+    awk '{text=$0; sub(/;.*/, "", text); sub(/[^a-zA-Z0-9]/, "", text); print length(text), $0}' |
+        sort -n |
+        if [[ -n $1 ]]; then cat; else sed 's/^[0-9]* //'; fi
 }
 
 # tree's `ioctl(1, TCGETS, ...)` call fails for some reason despite stdout
