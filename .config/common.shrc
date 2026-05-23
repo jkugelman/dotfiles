@@ -3,7 +3,7 @@
 # Simple QOL "aliases".
 unalias cat cp diff lack ls mv rm vim 2>/dev/null || :
 
-cat() { command cat -v "$@"; }
+[[ -n $CLAUDECODE ]] || cat() { command cat -v "$@"; }
 cp() { command cp -i "$@"; }
 diff() { command diff -u "$@"; }
 lack() { command ack --pager="less -R" "$@"; }
