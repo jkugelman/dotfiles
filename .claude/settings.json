@@ -1,0 +1,71 @@
+{
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "permissions": {
+    "allow": [
+      "Bash(awk *)",
+      "Bash(cat *)",
+      "Bash(comm *)",
+      "Bash(curl *)",
+      "Bash(date *)",
+      "Bash(dh *)",
+      "Bash(du *)",
+      "Bash(echo *)",
+      "Bash(fuser *)",
+      "Bash(gh run view *)",
+      "Bash(git check-ignore *)",
+      "Bash(git diff *)",
+      "Bash(git log *)",
+      "Bash(git show *)",
+      "Bash(git status *)",
+      "Bash(git -C * check-ignore *)",
+      "Bash(git -C * diff *)",
+      "Bash(git -C * log *)",
+      "Bash(git -C * show *)",
+      "Bash(git -C * status *)",
+      "Bash(grep *)",
+      "Bash(head *)",
+      "Bash(jq *)",
+      "Bash(ls *)",
+      "Bash(node /home/jkugelman/.claude/scripts/check-syntax.js:*)",
+      "Bash(node ~/.claude/scripts/check-syntax.js:*)",
+      "Bash(npm test *)",
+      "Bash(npx playwright *)",
+      "Bash(pdfinfo *)",
+      "Bash(ps *)",
+      "Bash(pwd *)",
+      "Bash(rg *)",
+      "Bash(sed *)",
+      "Bash(sort *)",
+      "Bash(tail *)",
+      "Bash(wc *)",
+      "Glob",
+      "Grep",
+      "Read",
+      "WebFetch(domain:*)",
+      "WebSearch",
+      "Bash(ip addr *)",
+      "Bash(python3 -m http.server 8000 --bind 0.0.0.0)",
+      "Bash(xxd)",
+      "Bash(ip -o addr show)",
+      "Bash(ip route *)",
+      "Skill(mobile-server)",
+      "Skill(mobile-server:*)",
+      "Skill(live-notes)",
+      "Skill(live-notes:*)",
+      "WebFetch(domain:www.crosserville.com)"
+    ],
+    "deny": [
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)"
+    ],
+    "additionalDirectories": [
+      "/tmp",
+      "/home/jkugelman/.claude"
+    ]
+  },
+  "effortLevel": "xhigh"
+}
