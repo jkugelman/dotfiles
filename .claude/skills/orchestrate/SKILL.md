@@ -113,7 +113,7 @@ Call out whenever human input is genuinely needed, and don't be stingy — errin
 
 **When the human is away.** Human gates are asynchronous — the human won't always be present, and you must not deadlock at the first one. On a *blocking* gate with no human, stop only if the remaining work depends on it (or it's a commit); otherwise record the pending item in the doc and continue with any chunk independent of the un-answered gate. Hard-stop only when everything left depends on a pending blocking gate or a commit.
 
-**Replay the backlog.** Informational FYIs and deferred verifications are easy to miss when they're interspersed with working output. Keep a running "since you were last here" log and **replay it as a digest every time you next stop for the human's attention** — so the accumulated FYIs and pending checks surface together at a moment the human is actually looking, not buried mid-stream.
+**Recap what they missed.** Informational notes and deferred checks are easy to miss when they're interspersed with working output. Keep a running list of what's accumulated since the human was last engaged, and **lead your next response to them with a short recap of it** — so those notes and pending checks land together at a moment they're actually looking, not buried mid-stream. No special label or preface; just put it at the front, the way you naturally would.
 
 ---
 
@@ -132,7 +132,7 @@ Trust workers' "done" in proportion to verifiability (see Delegation depth). Whe
 
 ## Transparency
 
-A worker run is a quiet interval: while it runs you're suspended and emit nothing, then its report lands in a burst. So transparency is **between-chunk**, not live narration — before spawning, say what you're handing off; after, say what came back and where you are in the plan. Keep these notes light but real, so a watching human can follow along and a human who stepped away can catch up from them and the doc. Replay the FYI / pending-check digest whenever you stop for the human (see *Calling out*).
+A worker run is a quiet interval: while it runs you're suspended and emit nothing, then its report lands in a burst. So transparency is **between-chunk**, not live narration — before spawning, say what you're handing off; after, say what came back and where you are in the plan. Keep these notes light but real, so a watching human can follow along and a human who stepped away can catch up from them and the doc. When you next stop for the human, lead with a short recap of anything that accumulated while they were away (see *Calling out*).
 
 ---
 
@@ -149,6 +149,6 @@ Never run `git commit`. At a commit seam, present a suggested message in convent
 - **Delegate by default for context economy.** Do a chunk yourself only when it's too small to be worth the ceremony. Trust the report in proportion to verifiability; review the diff yourself for subtle invariants and write down what you checked.
 - **Workers report; you ratify.** A worker does one bounded chunk, runs tests, reports, stops. Check it stayed in bounds before trusting it.
 - **Three kinds of stop, one doc update each.** Commit (shippable, human commits) · verification (eyeball-able, unshippable) · progress-capture (chunk-size ceiling, ~20–30 min). Commits are the shippable subset, often few.
-- **Two kinds of callout.** Blocking (gates progress) vs. deferred/informational (don't deadlock on it). Call out liberally; replay the digest when you next stop.
+- **Two kinds of callout.** Blocking (gates progress) vs. deferred/informational (don't deadlock on it). Call out liberally; lead your next response to the human with a recap of what they missed.
 - **Don't deadlock on an absent human.** Continue any work independent of a pending gate; hard-stop only when blocked or at a commit.
 - **Never commit.** Surface the message; the human commits.
