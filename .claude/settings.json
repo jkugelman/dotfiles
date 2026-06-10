@@ -58,8 +58,6 @@
       "WebFetch(domain:www.crosserville.com)"
     ],
     "deny": [
-      "Bash(git add *)",
-      "Bash(git commit *)",
       "Bash(git push *)"
     ],
     "additionalDirectories": [
@@ -67,5 +65,6 @@
       "/home/jkugelman/.claude"
     ]
   },
-  "effortLevel": "xhigh"
+  "effortLevel": "xhigh",
+  "agentPushNotifEnabled": true
 }
