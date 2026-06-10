@@ -35,6 +35,22 @@ The rest of this skill is the **heavy-effort branch.**
 
 ---
 
+## Step 1 — Open with an overview, then get the go-ahead
+
+**Before spawning a single worker, give the human a kickoff overview and wait for their go-ahead.** This is standard procedure for every orchestration session, even when you were handed a ready-made implementation plan. Surfacing your read of the effort up front is how the human catches a wrong assumption *before* it's spent ten stages deep, and how you confirm the plan is even still valid. Cover, briefly:
+
+- **The staged plan** — the chunks you'll run and their sequence, each tagged by stopping-point kind (commit / verification / progress-capture). This is the skeleton of the canonical doc.
+- **An effort estimate** — rough chunk count and a sense of how many sessions / human gates, not false precision. Enough for the human to gauge scope and decide whether to proceed, descope, or split across sessions.
+- **The risks** — what could go wrong, what's subtle or invariant-heavy, where you expect to need their eyes, what you *can't* verify yourself.
+- **Open questions and decisions** — anything the human needs to settle before or during execution. Pull these forward; don't discover them mid-run.
+- **A staleness check** — when working from a doc written earlier, verify its key claims against the *current* code before presenting the overview (delegate this read — it's exactly the heavy-reading a worker should absorb), and flag anything that has drifted. A plan that describes code that no longer exists is worse than no plan.
+
+Then **stop and let the human respond — this is a blocking gate.** They may sign off, re-scope, reorder, or kill it. Only after the go-ahead do you establish the canonical doc (see below) and enter the execution loop. Don't pre-write the full plan doc before the overview lands; the human's response may reshape it.
+
+(On a **resume** of an effort already underway, this collapses to a short recap — current status, what's been verified, what the next chunk is — drawn from the canonical doc. You don't re-pitch a plan that's already moving.)
+
+---
+
 ## The three roles
 
 - **Orchestrator (you).** Run as the main session. Own the canonical plan doc and the sequencing. Decide per chunk whether and how deep to delegate. Review every worker's report, check it stayed in bounds, and ratify what lands in the doc. Surface progress to the human and call out at every stopping point. Re-plan when reality diverges. Never commit.
@@ -88,7 +104,7 @@ Stopping points and commit points are **different sets.** A stopping point is an
 
 ## The execution loop
 
-On invocation, first resume from the canonical doc if one exists (see *The canonical plan doc*). Then, for each chunk, in order:
+On invocation, first resume from the canonical doc if one exists (see *The canonical plan doc*), and open with the overview gate (Step 1) before any worker runs. Then, for each chunk, in order:
 
 1. **Select the next chunk** and its target stopping point. Confirm it's drawn on a clean seam and briefed small enough to stay under the time ceiling.
 2. **Brief a worker.** Spawn an Agent with a **self-contained brief** — don't rely on it mining the whole doc. Inline the specific constraints and invariants relevant to *this* chunk, name the exact files/functions, state what's **out of scope**, give the tests to run, and the report contract: *what you did, what you encountered, test results, proposed doc updates, anything that needs human input.* Tell it explicitly: stop at the boundary, don't start the next chunk, don't commit. Run workers where a permission prompt can be answered (or pre-authorize the edits they need) — an unattended worker that hits a prompt stalls, and a backgrounded one auto-denies and fails.
@@ -145,6 +161,7 @@ Never run `git commit`. At a commit seam, present a suggested message in convent
 ## Quick reference
 
 - **Solo unless big.** Orchestration is the heavy-effort branch; degrade to a normal session when it's overkill.
+- **Overview before workers.** Always open with a staged plan + estimate + risks + open questions (and a staleness check on any pre-written doc), then stop for the human's go-ahead before kicking off.
 - **Doc is canonical.** Your context is disposable; on invocation, resume from the doc; record what *you* verified, since your live context won't survive.
 - **Delegate by default for context economy.** Do a chunk yourself only when it's too small to be worth the ceremony. Trust the report in proportion to verifiability; review the diff yourself for subtle invariants and write down what you checked.
 - **Workers report; you ratify.** A worker does one bounded chunk, runs tests, reports, stops. Check it stayed in bounds before trusting it.
