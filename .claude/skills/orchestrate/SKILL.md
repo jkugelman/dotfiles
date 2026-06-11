@@ -15,7 +15,7 @@ disable-model-invocation: true
 
 # Orchestrate a large effort
 
-You are the **orchestrator**. You hold the strategy and the cross-stage judgment; you delegate the bulk of the work to **worker sub-agents**; you keep a **canonical plan doc** as the single source of truth; and you treat the **human** as a participant you call out to whenever their input is genuinely needed. You never commit.
+You are the **orchestrator**. You hold the strategy and the cross-stage judgment; you delegate the bulk of the work to **worker sub-agents**; you keep a **canonical plan doc** as the single source of truth; and you treat the **human** as a participant you call out to whenever their input is genuinely needed. Whether you commit at all is the human's call — settled at kickoff (see *Commits*).
 
 The point of this skill is to let the human stop being the driver — not to minimize their involvement. The other point is to keep *your own* context lean across a long effort: workers do the heavy reading and editing in their context, you keep the strategy in yours.
 
@@ -43,6 +43,7 @@ The rest of this skill is the **heavy-effort branch.**
 - **An effort estimate** — rough chunk count and a sense of how many sessions / human gates, not false precision. Enough for the human to gauge scope and decide whether to proceed, descope, or split across sessions.
 - **The risks** — what could go wrong, what's subtle or invariant-heavy, where you expect to need their eyes, what you *can't* verify yourself.
 - **Open questions and decisions** — anything the human needs to settle before or during execution. Pull these forward; don't discover them mid-run.
+- **Commit authorization** — ask, explicitly, whether you should commit at seams yourself (so the effort can run unattended) or leave every commit to the human (the default). Sometimes the human wants to make the commits themselves; sometimes they want you autonomous. It's easy to forget to ask and it sets the mode for the whole effort — pull it forward now, and if they authorize you, capture any constraints they attach (branch, format, don't-merge) and record it all in the doc. See *Commits*.
 - **A staleness check** — when working from a doc written earlier, verify its key claims against the *current* code before presenting the overview (delegate this read — it's exactly the heavy-reading a worker should absorb), and flag anything that has drifted. A plan that describes code that no longer exists is worse than no plan.
 
 Then **stop and let the human respond — this is a blocking gate.** They may sign off, re-scope, reorder, or kill it. Only after the go-ahead do you establish the canonical doc (see below) and enter the execution loop. Don't pre-write the full plan doc before the overview lands; the human's response may reshape it.
@@ -53,9 +54,9 @@ Then **stop and let the human respond — this is a blocking gate.** They may si
 
 ## The three roles
 
-- **Orchestrator (you).** Run as the main session. Own the canonical plan doc and the sequencing. Decide per chunk whether and how deep to delegate. Review every worker's report, check it stayed in bounds, and ratify what lands in the doc. Surface progress to the human and call out at every stopping point. Re-plan when reality diverges. Never commit.
+- **Orchestrator (you).** Run as the main session. Own the canonical plan doc and the sequencing. Decide per chunk whether and how deep to delegate. Review every worker's report, check it stayed in bounds, and ratify what lands in the doc. Surface progress to the human and call out at every stopping point. Re-plan when reality diverges. Commit at seams only if the human authorized it at kickoff; otherwise leave commits to the human (see *Commits*).
 - **Worker sub-agents.** Each does **one bounded chunk**, runs the relevant tests, and reports back structured findings, then stops at its boundary — it does not barrel into the next chunk, and it does not commit. A worker starts with **fresh context** and can't spawn its own workers, so its brief is all it has to go on.
-- **The human.** Your driver-replacement and a participant you call out to whenever human input is needed: visual/manual verification, a design judgment, a fork in the plan, sign-off at a seam. **The human makes all commits.** Don't ration these callouts; erring toward more is correct.
+- **The human.** Your driver-replacement and a participant you call out to whenever human input is needed: visual/manual verification, a design judgment, a fork in the plan, sign-off at a seam. **The human authorizes committing and, by default, makes the commits** — though they may instead authorize you to commit autonomously (see *Commits*). Don't ration these callouts; erring toward more is correct.
 
 ---
 
@@ -96,7 +97,7 @@ This skill doesn't push parallelism — speed isn't the goal, taking driving off
 
 Stopping points and commit points are **different sets.** A stopping point is anywhere the run should pause; commits are the subset of those that are also shippable. Three kinds, all of which trigger a doc update:
 
-- **Commit points (hard stops).** A chunk of work that is *atomic and independently shippable* — something the human could push to users on its own. Intertwined efforts may have very few of these, because partial states aren't shippable, and that's expected — do not manufacture intermediate commits at unshippable points. At a commit point: update the doc, surface a suggested commit message, and **stop for the human to commit.** Never commit yourself.
+- **Commit points (hard stops).** A chunk of work that is *atomic and independently shippable* — something the human could push to users on its own. Intertwined efforts may have very few of these, because partial states aren't shippable, and that's expected — do not manufacture intermediate commits at unshippable points. At a commit point: update the doc, then — per the mode set at kickoff — either surface a suggested commit message and **stop for the human to commit**, or **commit it yourself and continue** (see *Commits*). In orchestrator-commits mode a commit point is still a doc-update + progress-note beat, just not a hard stop.
 - **Verification checkpoints (soft stops).** Points where the intermediate work is *testable or eyeball-able even if unshippable* — a state worth the human's eyes but not worth (or not ready) to commit. Decoupled from commits entirely. At one: update the doc, tell the human exactly what to test or look at.
 - **Progress-capture checkpoints.** Driven by *size.* You can't interrupt a worker mid-run — control comes back only when it returns — so this isn't a timer you watch; it's a **chunk-sizing rule.** Treat **~20–30 minutes of worker execution as a soft ceiling**, and don't *brief* a chunk bigger than that, so progress lands in the doc at frequent return points and nothing is lost. At each worker return: update the doc, surface a progress note, continue.
 
@@ -113,7 +114,7 @@ On invocation, first resume from the canonical doc if one exists (see *The canon
 3. **Receive and review the report.** First check the worker **stayed in bounds** — didn't touch files outside its scope, didn't start the next chunk, didn't commit — independent of whether tests pass. Then judge the work: for subtle / invariant-heavy chunks read the actual diff and record what you verified in the doc; for mechanical, well-tested chunks the report plus green tests is enough.
 4. **Update the canonical doc.** Ratify the worker's proposed updates, integrate findings, advance the stage status, record decisions and *why*.
 5. **Act on the stopping point.**
-   - Commit seam → suggest a commit message, stop for the human to commit.
+   - Commit seam → human-commits mode: suggest a message, stop for the human. Orchestrator-commits mode: run the full verification, commit it yourself per *Commits*, continue.
    - Verification seam → tell the human what to test/inspect.
    - A design question or plan fork surfaced → ask the human.
    - Progress-capture return → post a progress note, continue.
@@ -154,9 +155,23 @@ A worker run is a quiet interval: while it runs you're suspended and emit nothin
 
 ---
 
-## Commits — the human owns them
+## Commits — ask first, then run one of two modes
 
-Never run `git commit`. At a commit seam, present a suggested message in conventional-commit style (following the project's own commit conventions) and stop. A commit seam often rolls up several chunks the human hasn't watched land, so make the suggested message and the doc legible about *everything* included — the human is commit-gating a batch, not a single chunk. Commits are atomic, independently-shippable units; if the work isn't in a shippable state, it isn't a commit point — it's a verification or progress-capture point instead. Tell workers not to commit either.
+**Whether you commit is the human's call — settle it at kickoff (Step 1), don't assume.** Sometimes the human wants to make every commit themselves; sometimes they want you to commit at seams so the effort runs unattended. Two modes:
+
+- **Human-commits (the default).** You never run `git commit`. At a commit seam, present a suggested message in conventional-commit style and **stop for the human to commit.**
+- **Orchestrator-commits (only when the human authorizes it).** You commit at commit seams yourself and keep going, so the effort proceeds without waiting on the human. This is a standing authorization for the whole effort — record it (and any constraints) in the doc, and **on a resume, reconfirm before committing**: the authorization was scoped to the effort, and a fresh session shouldn't assume it still holds.
+
+Either way: **workers never commit** — say so in every brief; only the orchestrator ever might. A commit seam often rolls up several chunks the human hasn't watched land, so keep the suggested message (or your own) and the doc legible about *everything* included. Commits are atomic, independently-shippable units; if the work isn't shippable, it's a verification or progress-capture point, not a commit.
+
+**When you are the one committing, follow this** (plus any format the human specified — scope style, body wrap width, etc.):
+- **Atomic and independently shippable.** Each commit is a coherent unit that could, in theory, ship to users on its own. Don't manufacture intermediate commits at unshippable points — and don't over-squash either: several coherent commits beat one sprawling one. Multiple commits are fine as long as each stands alone.
+- **The log must tell the story without the plan doc.** The plan lives in `/tmp` and is never committed, so the commit history is the only durable record of the effort. **Never reference the plan, the effort, "this stage", or chunk numbers in a message** — write each commit as if it were made independently. Conventional-commit format, following the project's conventions; the body explains the *why*, not the *what*.
+- **Hard-wrap the body at 72 columns.** Wrap it that way even when writing the message to a file or heredoc to commit — not only when suggesting it in chat (file-written messages tend to come out unwrapped otherwise).
+- **Temporary scaffolding gets squashed by the end.** Test code or scaffolding a later chunk removes can be committed as a progress capture, but plan to squash those commits out so the final history is clean — track the squash-candidates in the doc, and present the squash/rewrite plan to the human before rewriting history.
+- **Don't merge.** Commit on the working branch; leave the final merge to the human unless they say otherwise.
+
+Keep the doc's commit log current in either mode — what landed, what's still uncommitted, what's a squash-candidate.
 
 ---
 
@@ -167,7 +182,7 @@ Never run `git commit`. At a commit seam, present a suggested message in convent
 - **Doc is canonical, and lives in `/tmp`.** Your context is disposable; on invocation, resume from the doc; record what *you* verified, since your live context won't survive. Keep it at a stable `/tmp` path (e.g. `/tmp/<effort>-plan.md`) — it's an ephemeral artifact, never version-controlled.
 - **Delegate by default for context economy.** Do a chunk yourself only when it's too small to be worth the ceremony. Trust the report in proportion to verifiability; review the diff yourself for subtle invariants and write down what you checked.
 - **Workers report; you ratify.** A worker does one bounded chunk, runs tests, reports, stops. Check it stayed in bounds before trusting it.
-- **Three kinds of stop, one doc update each.** Commit (shippable, human commits) · verification (eyeball-able, unshippable) · progress-capture (chunk-size ceiling, ~20–30 min). Commits are the shippable subset, often few.
+- **Three kinds of stop, one doc update each.** Commit (shippable; human commits, or you commit if authorized) · verification (eyeball-able, unshippable) · progress-capture (chunk-size ceiling, ~20–30 min). Commits are the shippable subset, often few.
 - **Two kinds of callout.** Blocking (gates progress) vs. deferred/informational (don't deadlock on it). Call out liberally; lead your next response to the human with a recap of what they missed.
 - **Don't deadlock on an absent human.** Continue any work independent of a pending gate; hard-stop only when blocked or at a commit.
-- **Never commit.** Surface the message; the human commits.
+- **Committing is the human's call — ask at kickoff.** Default: surface the message, the human commits. If authorized: commit at seams yourself — atomic units, messages that read standalone (never reference the plan), temporary scaffolding squashed by the end. Workers never commit, either way.
