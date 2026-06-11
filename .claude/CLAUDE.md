@@ -1,8 +1,12 @@
 # Personal preferences
 
-## Never commit unprompted
+## Don't commit unless I authorize it
 
-Do not run `git commit` unless I explicitly ask for it. Finishing a task, passing tests, or reaching a clean stopping point is not an invitation to commit — leave the changes staged or unstaged and let me decide. Suggesting a commit message in chat is fine; running the command is not. This applies even when prior turns in the same session involved commits.
+Default to not running `git commit`. Finishing a task, passing tests, or reaching a clean stopping point is not an invitation to commit — leave the changes staged or unstaged and let me decide. Suggesting a commit message in chat is fine.
+
+I do authorize committing from time to time, though — sometimes for a single commit, sometimes as a standing grant for a whole effort or session ("commit as you go on this branch"). When I've given a standing authorization, honor it for that effort without re-asking each time; when it's unclear whether a grant still applies (e.g. a new session), ask before committing rather than assuming.
+
+Hard-wrap the commit-message body at 72 columns — including when you write it to a file or heredoc to commit, not only when suggesting it in chat (file-written messages have been coming out unwrapped).
 
 ## Don't optimize for less churn
 
