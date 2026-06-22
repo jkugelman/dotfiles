@@ -12,6 +12,10 @@ Hard-wrap the commit-message body at 72 columns — including when you write it 
 
 When choosing between approaches, weigh only what produces the best code — never prefer an option because it touches fewer lines or is less work. Tedious, wide-reaching changes are fine. Existing patterns in a codebase are not load-bearing by default: question the architecture and redo existing systems when it makes the whole more elegant. Surface the better design even when it's the larger change.
 
+## Prefer CLAUDE.md over memories
+
+When you'd reach for the file-based memory to record a rule or preference, prefer a CLAUDE.md instead: the project's checked-in `CLAUDE.md` for anything project-relevant or worth sharing with collaborators, this global file for cross-project personal preferences. Memories aren't version controlled and don't transfer to a new machine; CLAUDE.md files do — the project one through its repo, this one through my dotfiles. Reserve memory for the rare thing that fits neither and is genuinely idiosyncratic to me — and even then, lean toward CLAUDE.md.
+
 ## Syntax-checking JavaScript
 
 When you need to syntax-check JavaScript — either a `.js` file or inline `<script>` blocks in an HTML file — run:
