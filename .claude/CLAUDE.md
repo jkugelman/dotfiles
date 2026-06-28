@@ -35,3 +35,7 @@ This script is pre-approved in `~/.claude/settings.json`, so it runs without a p
 When you finish implementing a feature whose design lived in a design document, run the `distill-design-doc` skill before considering the work fully done. The skill rewrites the doc from a plan ("we will build X because Y") into a present-tense record ("X works like this, here's why") — keeping a description of the feature and the whys behind it while dropping planning scaffolding (phases, pitch framing, exhausted mockups). The doc stays in place as living documentation. Do this once the feature is merged or otherwise settled; running it automatically as part of wrapping up is fine — no need to stop and ask first. Just say you've done it.
 
 The distillation belongs in the **same commit as the feature work**, not a separate doc-only commit — it's part of finishing the work. If you've already committed the feature, amend the distillation into it (when unpushed) rather than adding a follow-up commit. Describe it in the message by the doc changes the commit actually contains — don't narrate retiring the planning doc if it was never committed (there's nothing in the diff to match).
+
+## Don't warn me that `/tmp` files are ephemeral
+
+I know files written to `/tmp` can be deleted at any time — it's why I send things there. Don't caveat, warn, or hedge about that when writing to `/tmp`; just write the file.
