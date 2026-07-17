@@ -26,6 +26,41 @@ Investigating is always fine, and is the point: grep for the snippet, confirm
 the item still describes reality, read enough to say what the fix costs. Do that
 first, then talk. The rule is about edits, not about looking.
 
+**Prompt me; don't proceed on silence.** I want to explicitly approve each change
+before it happens — a real yes to the specific thing, not "I'll do this unless
+you object." Opt-out framing puts the burden on me to catch what got slipped in,
+and in a long message it's easy to miss an item and have it sail through
+unapproved. So: ask, wait for the yes, then act. Batch related changes into a
+short, scannable list I can approve at a glance rather than burying them in prose
+— keeping messages tight is part of this, not separate from it.
+
+
+The list is a starting point, not a boundary
+=============================================
+
+This list was seeded by one agent's pass over the repo, and I hadn't vetted it
+before it landed — so treat every item as a claim to check, not a decision
+already made. And the list is not the *scope*. This is a spring cleaning; the
+best finds won't be on it. Actively look for cleanup nobody wrote down, and add
+concrete ones here so this stays the shared queue instead of something to work
+around.
+
+Two kinds of off-list find weigh as much as bugs:
+
+  - **Delete what I no longer need.** A lot here is bespoke "good enough" tooling
+    built for a pre-AI workflow. If the job is a one-off an agent would now just
+    do on demand — a wrapper around a shell or git query — the tool earns nothing
+    and should go. `dush` and `git-large-objects` went on exactly this reasoning.
+  - **Re-engineer good-enough hacks.** Other things work fine but were quick
+    personal solutions. AI makes it cheap to redo them as robust versions now,
+    often a better use of my time than leaving the hack in place. Flag these even
+    when nothing is broken.
+
+Don't manufacture work to fill the list. Curate — a few high-value finds beat a
+long tail of trivia, and "this is fine, leave it" is a good answer. When a
+cleanup means deleting config for a tool I've stopped using, bring it as a
+reviewable delete-list I approve first, never a self-authorized sweep.
+
 
 Guiding preferences
 ===================
@@ -51,78 +86,58 @@ shouldn't also mkdir it or hardcode where it lives — those decisions stay
 decoupled, so the same rule works for someone whose setup makes different
 promises. The `undodir` line in `.vimrc` is the worked example.
 
+**Prefer managed installs over vendoring.** Reach for a plugin or package manager
+(vim-plug, tpm, pipx, brew, a zsh-plugin manager) for third-party code; where
+none fits, a documented setup step is the fallback — don't vendor upstream
+projects into the repo. Vendoring used to earn its keep by dodging brittle,
+bitrot-prone setup and making a fresh machine work on clone; AI-guided setup has
+largely erased that cost, so the trade now favors a lean repo over clone-and-go.
+Still a lean, not a law: a tiny single-file thing with no clean upstream can stay
+vendored when a manager would be more ceremony than it's worth.
 
-Suggested order: macOS first. It's better-defined than the restructuring work,
-and it's a useful forcing function — making these files portable is what reveals
-which parts are genuinely independent, which is exactly what the zsh/vim
-restructure needs to know. Guessing at the seams first means discovering the real
-constraints afterward.
+**Modularize by judgment, not by rule.** Split a config when it's genuinely
+unwieldy, sized to the case — a full sourced `.d/` directory when the complexity
+earns it, something lighter (like the existing config-plus-unversioned-`local`
+split) when that's enough. Aim for clarity balanced against simplicity; don't
+impose structure a file doesn't need.
 
 
-macOS: loud breaks
-==================
-
-These fail immediately and obviously on a Mac. Cheap to fix, high value.
-
-**`git-revise` has a hardcoded interpreter.** `#!/usr/bin/python3` finds Apple's
-stock Python, which won't have `gitrevise` installed. This is a pip-generated
-console shim that arguably shouldn't be tracked at all — consider untracking it
-and using `pipx install git-revise`.
+Rough order: the macOS-portability items are still a good near-term forcing
+function — a MacBook is incoming, and making these files portable reveals which
+parts are genuinely independent, which is what the zsh/vim restructures need to
+know. But the effort is broader than macOS now: deleting what's obsolete and
+moving off vendoring are first-class, not afterthoughts.
 
 
 macOS: silent breaks
 ====================
 
-These are the dangerous ones. Nothing errors; things just quietly stop doing what
-you think they do.
+Nothing errors; things just quietly stop doing what you think they do.
 
-**`.bashrc` never runs at all.** Terminal.app and iTerm2 start bash as a *login*
-shell, which reads `.bash_profile` / `.bash_login` / `.profile` — never
-`.bashrc`. There's no `.bash_profile` tracked; it was removed in "Remove outdated
-.bash_profile." So all of `.bashrc` — prompt, ssh-agent, exit-code trap, the
-`common.shrc` source — silently does nothing, and you get a bare `bash-3.2$` with
-no hint why. Track a `.bash_profile`:
+**`.bashrc` never runs at all.** (Gated by bash's future.) Terminal.app and
+iTerm2 start bash as a *login* shell — `.bash_profile` / `.bash_login` /
+`.profile`, never `.bashrc`. None is tracked (`.bash_profile` was removed in
+"Remove outdated .bash_profile"), so all of `.bashrc` silently does nothing and
+you get a bare `bash-3.2$`. If bash stays, track a `.bash_profile`:
 
     [[ -f ~/.bashrc ]] && . ~/.bashrc
 
-(`.bashrc`'s `[ -f /etc/bashrc ]` guard is fine as-is — macOS does ship one.)
+(`.bashrc`'s `[ -f /etc/bashrc ]` guard is fine — macOS ships one.)
 
-**The ssh-agent block detaches you from the macOS Keychain.** In `.bashrc`:
-
-    SSH_ENV=~/.ssh/environment
-    if ! { [[ -f $SSH_ENV ]] && [[ -n $SSH_AGENT_PID ]] && kill -0 "$SSH_AGENT_PID" ...
-
-macOS already runs an agent via launchd with Keychain-stored passphrases and
-exports `SSH_AUTH_SOCK`. This logic only ever consults `~/.ssh/environment`, so
-it spawns a redundant agent and overwrites `SSH_AUTH_SOCK`, detaching you from
-every Keychain-backed key. Nothing errors — you just start getting passphrase
-prompts you never used to get, permanently. Guard the whole block:
-
-    if [[ -z $SSH_AUTH_SOCK ]]; then ... fi
-
-`.zshrc`'s `plugins/ssh-agent` from oh-my-zsh is redundant on macOS for the same
-reason, though it at least respects an existing agent.
+**The ssh-agent block detaches you from the macOS Keychain.** (Gated by bash's
+future.) `.bashrc` consults only `~/.ssh/environment`, so on macOS — where
+launchd already runs an agent with Keychain passphrases and exports
+`SSH_AUTH_SOCK` — it spawns a redundant agent and overwrites the socket, and you
+start getting passphrase prompts permanently. Guard the block with
+`if [[ -z $SSH_AUTH_SOCK ]]; then ... fi`. (`.zshrc`'s oh-my-zsh
+`plugins/ssh-agent` is redundant on macOS too, but at least respects an existing
+agent.)
 
 **`.pythonrc.py` Tab completion is a no-op.** `readline.parse_and_bind('tab:
-complete')` — on macOS Python's `readline` is libedit-backed, not GNU readline,
-and libedit takes completely different bind syntax. It's accepted and ignored;
-Tab inserts a literal tab forever. Branch on it:
-
-    if 'libedit' in (getattr(readline, '__doc__', '') or ''):
-        readline.parse_and_bind('bind ^I rl_complete')
-    else:
-        readline.parse_and_bind('tab: complete')
-
-**`renumber-screen-windows` renumbers nothing.** macOS ships GNU screen 4.00.03;
-the `-Q` query flag arrived in 4.1.0, so every `screen -Q` call fails. Worse, the
-failure is masked from `set -euo pipefail`:
-
-    local currentWindow="$(screen -Q title)"
-
-`local` is itself a command, and its exit status wins — the classic bash trap. So
-the script exits 0 having done nothing. Split the declaration from the assignment
-so `set -e` can see the failure, and note the `brew install screen` dependency.
-It's bound to Ctrl-A Space in `.screenrc`, so it just quietly stops working.
+complete')` — macOS Python's readline is libedit-backed with different bind
+syntax, so Tab inserts a literal tab. Branch on `'libedit' in readline.__doc__`
+and use `bind ^I rl_complete`. (See also the redundancy note under Worth
+considering.)
 
 
 macOS: degraded
@@ -130,151 +145,178 @@ macOS: degraded
 
 Not broken, just worse than it should be.
 
-**Nothing from Homebrew is on `PATH`.** Neither `.bashrc`'s `PATH="$HOME/bin:...`
-nor `.zshrc`'s `path=(~/.local/bin ~/bin $path)` adds `/opt/homebrew/bin` (Apple
-Silicon) or `/usr/local/bin` (Intel), and no `.zprofile` is tracked to run `eval
-"$(/opt/homebrew/bin/brew shellenv)"`. On Apple Silicon `/opt/homebrew/bin` is
-*not* in the default PATH, so this cascades: no `rg` (breaks `rgl`/`rgll`), no
-`tree`, no `numfmt`, no modern `bash`/`screen`/`tmux`.
+**Nothing from Homebrew is on `PATH`.** Neither `.bashrc` nor `.zshrc` adds
+`/opt/homebrew/bin` (Apple Silicon) or `/usr/local/bin` (Intel), and no
+`.zprofile` runs `eval "$(/opt/homebrew/bin/brew shellenv)"`. On Apple Silicon
+that's not in the default PATH, so it cascades: no `rg` (breaks `rgl`/`rgll`), no
+`tree`, no modern `bash`.
 
-**`tree` isn't installed on macOS at all** — Homebrew only. The `-ACF` flags
-themselves are fine. Worth a note in the README's setup steps alongside Docker.
+**`tree` isn't installed on macOS** — Homebrew only. The `-ACF` flags are fine.
+Worth a note in the README setup steps alongside Docker.
 
-**`.inputrc` is two-thirds inert.** `$include /etc/inputrc` — macOS has no
-`/etc/inputrc`, so the include is silently skipped and you lose the bindings
-Debian's copy provides. And `set colored-stats On` needs readline 6.3+; macOS
-bash 3.2 bundles readline 5.2, which ignores unknown variables silently.
-`visible-stats` and `match-hidden-files` are old enough to work. All no-ops
-rather than errors — harmless, just not doing anything.
+**`.inputrc` is two-thirds inert.** (Relevance gated by bash's future.) `$include
+/etc/inputrc` — macOS has none, so those bindings vanish; `set colored-stats On`
+needs readline 6.3+ and macOS bash 3.2 ships 5.2. No-ops, not errors.
 
 **`.gitconfig`'s pager breaks under GUI apps.** `pager = diff-so-fancy | less -R`
-is fine from a shell, but GUI-launched apps on macOS (IDEs, GitHub Desktop) don't
-inherit your rc `PATH`, so git dies with `diff-so-fancy: command not found` on
-every `git log`. Consider an absolute path, or override in a local config.
-
-**`.tmux.conf` date format — verify on the device.** The status-right uses `%-d`
-and `%-I`; the `-` no-pad flag is a GNU strftime extension that BSD libc
-historically lacks, which would render the literal text instead of the date.
-Apple's libc may have picked it up — worth checking rather than assuming.
-Cosmetic. Portable alternatives are `%e` and `%l`, both POSIX.
+— GUI-launched macOS apps don't inherit your rc `PATH`, so git dies with
+`diff-so-fancy: command not found` on every `git log`. Resolved by the
+diff-so-fancy → delta/brew migration (see Vendoring migrations), or use an
+absolute path.
 
 **`tput` may print errors at zsh startup.** `.zshrc`'s `tput -T xterm kLFT5` uses
-ncurses extended capabilities that macOS's older ncurses may reject with
-`unknown terminfo capability` on stderr. The result is properly guarded, so
-nothing breaks — Ctrl-Left/Right word-jumping just stops working under
-screen/tmux. Add `2>/dev/null`, or hardcode `$'\e[1;5D'` / `$'\e[1;5C'`.
+extended capabilities older macOS ncurses may reject on stderr. It's guarded, so
+nothing breaks — Ctrl-Left/Right word-jumping just stops working. Add
+`2>/dev/null`, or hardcode `$'\e[1;5D'` / `$'\e[1;5C'`.
 
 
-Latent traps (not macOS-specific)
-=================================
+Big rebuild: replace zplug (the keystone)
+=========================================
 
-**Live p10k ordering bug in `.zshrc`.** The instant-prompt block near the top
-carries the rule in its own comment: *"Initialization code that may require
-console input (password prompts, [y/n] confirmations, etc.) must go above this
-block."* About 200 lines below it:
+`zplug` is abandoned (last release 2019) and a known startup drag, and it's the
+*root* of two other problems: the p10k instant-prompt ordering bug and both
+"Install plugins? [y/N]" hacks. Replacing it — antidote / zinit / sheldon, or
+plain native `source` — dissolves all three at once, and it's the natural moment
+to do the zsh spine/`rc.d` split below. A real project, not a cleanup pass; not
+necessarily now, but it subsumes a lot.
 
-    if ! zplug check --verbose; then
-        printf "Install plugins? [y/N]: "
-        if read -q; then
+**The ordering bug it fixes.** The instant-prompt block near the top of `.zshrc`
+says console input must go *above* it; the `zplug check` / `read -q` install
+prompt sits ~200 lines below, in violation. A manager that bootstraps at the top
+removes the contradiction.
 
-That's exactly the console input the rule forbids. It needs to move up with the
-zplug bootstrap block at the very top of the file, which already gets this right.
-Good evidence that the ordering constraints are real and worth making explicit —
-see the restructure section.
+**The spine/rc.d split it enables.** `.zshrc`'s problem isn't length, it's that a
+small order-*critical* spine (the plugin-manager/p10k lifecycle; `bindkey -e`
+early, since it resets the keymap) is tangled through a large order-*free* bulk
+(the Alt-S/Alt-D git keybindings, history options, the terminfo key table,
+dircycle). Split it: `.zshrc` keeps only order-critical lines, each with its
+reason stated, so reading top-to-bottom tells the whole lifecycle;
+`.config/zsh/rc.d/*.zsh` holds the order-free chunks, sourced from one slot.
+Invariant: if a chunk needs a number to order it, it belongs in the spine, not
+`rc.d` — that keeps `10-`/`20-`/`50-` from creeping back. Needs a `.gitignore`
+opt-in for `!/.config/zsh/`. Once it works for zsh, `.bashrc` could get the same
+treatment (smaller spine) — but settle bash's future first.
 
 
-Restructure: zsh spine + rc.d
-=============================
+bash's future (talk before touching `.bashrc`)
+==============================================
 
-The problem isn't that `.zshrc` is long, it's that a small order-*critical* spine
-is tangled up with a large order-*free* bulk, so everything reads as if it might
-be order-sensitive. Roughly 90% of the file has no ordering constraints at all:
-the Alt-S/Alt-D git keybindings, history options, the terminfo key table, the
-dircycle bindings.
-
-The real constraints are only these, and they're all in the zplug/p10k lifecycle:
-
-  - Input-requiring bootstrap must precede the p10k instant-prompt block.
-  - `source ~/.zplug/init.zsh` before any `zplug` call.
-  - All `zplug '...'` registrations before `zplug load`.
-  - `TAB_TITLE_PREFIX` after `zplug load` (its comment says so).
-  - `bindkey -e` early, because it resets the keymap and would clobber later
-    `bindkey` calls.
-
-The split:
-
-  - **`.zshrc` is the spine.** Short, and every line is in it *because* it's
-    order-critical — with the reason stated. Reading it top to bottom tells you
-    the whole lifecycle.
-  - **`.config/zsh/rc.d/*.zsh` holds the order-free chunks**, sourced from one
-    slot in the spine.
-  - **The invariant: if it needs a number, it doesn't belong in `rc.d` — it
-    belongs in the spine.** This is what keeps `10-`/`20-`/`50-` from creeping
-    back in. "Order matters here" becomes a structural fact rather than a naming
-    convention nobody maintains.
-
-Needs a `.gitignore` opt-in for `!/.config/zsh/`.
-
-Once this works for zsh, `.bashrc` gets the same treatment — it has the same
-shape, just a smaller spine (no plugin manager, so mostly the ssh-agent block and
-prompt setup).
+I use bash occasionally, usually for a minute — that's why the customization is
+still there. But roughly half of `.bashrc` is a parallel prompt universe
+(`__ps1_ssh`, `__ps1_branch`, the `__exit_code` cursor-position exit-code trap,
+manual ssh-agent) duplicating what zsh+p10k already give me, for a shell that on
+macOS doesn't even run as a login shell. Open question to talk through in detail:
+keep maintaining and porting all that, or freeze it and strip bash back to a
+script interpreter? The answer decides a cluster of items — the two macOS bash
+breaks above, `.inputrc`'s relevance, and the dead SVN branch-parser +
+`complete -r svn` still living in `.bashrc`.
 
 
 Restructure: vim via native mechanisms
 ======================================
 
-Don't build a loader — vim already has one, and several current autocmds are
-strictly worse than the native equivalent.
+Vim already has a loader; several autocmds reinvent it. (The dead vendored
+plugins that used to clutter `~/.vim/plugin` are gone now, so it's much closer to
+being yours.)
 
-**Move filetype detection to `~/.vim/ftdetect/`.** These are all reinventing it:
-
-    autocmd BufReadPre,BufNew *.gradle set filetype=groovy
-    autocmd BufReadPre,BufNew SCons*   set filetype=python
-    autocmd BufReadPre,BufNew ex*.log  set filetype=iislog
-
-`.vim/ftdetect/less.vim` already exists, so the mechanism is familiar.
+**Move filetype detection to `~/.vim/ftdetect/`.** `*.gradle → groovy`,
+`SCons* → python`, and `ex*.log → iislog` are reinventing it; `ftdetect/less.vim`
+already shows the pattern.
 
 **Move per-filetype config to `~/.vim/after/ftplugin/`.** The m4 syntax block and
 the wordlist `<F9>` map are the clear candidates.
 
-**Fix `syntax` vs `filetype` confusion.** These set the wrong option:
+**Fix `syntax` vs `filetype`.** `*.bats` and `Dockerfile*` set `syntax=`; you
+want `filetype=` (syntax follows from it).
 
-    autocmd BufRead,BufNewFile *.bats      set syntax=sh
-    autocmd BufRead,BufNewFile Dockerfile* set syntax=dockerfile
+**Delete the duplicate mappings.** `.vimrc` maps `<Up>`/`<Down>` to `gk`/`gj`
+twice, ~100 lines apart; the second block is entirely redundant with the first.
 
-`filetype` is what you want; `syntax` is a consequence of it.
+(The remaining hand-vendored tpope plugins move to vim-plug — see Vendoring
+migrations.)
 
-**Delete the duplicate mappings.** `.vimrc` maps `<Up>`/`<Down>` to `gk`/`gj` in
-normal and visual mode, then maps the same four again ~100 lines later under
-"Move up and down by visual lines not buffer lines." The second block is entirely
-redundant with the first. Exactly the symptom that motivates this whole section.
 
-**Retire the dead vendored plugins in `~/.vim/plugin/`.** This is what blocks
-using `plugin/` for your own config — right now it's third-party territory. Most
-of it is dead weight: `vcsbzr.vim` (Bazaar), `vcssvk.vim` (SVK), `vcscvs.vim`,
-`matchit.vim` (ships with Vim 8 — `packadd matchit`), and
-`EnhancedCommentify.vim.bak`, which is a tracked `.bak` file. Move anything still
-wanted to vim-plug, delete the rest, and `plugin/` becomes yours for order-free
-config.
+Vendoring migrations
+====================
+
+Per the "prefer managed installs over vendoring" lean, these vendored third-party
+tools move out of the repo. Each is *installed*, not deleted — except where a
+tool I already use replaces it.
+
+**`git-revise`** — pip-generated console shim with a hardcoded `#!/usr/bin/python3`
+that finds Apple's stock Python (no `gitrevise` there). Untrack; `pipx install
+git-revise`.
+
+**`ack`** — vendored fatpacked Perl pinned at v1.96 (~2011). I search with
+ripgrep now (the `rg` helpers in `common.shrc`); `ack` survives only via the
+`lack` wrapper. Drop the vendored copy and the wrapper, or `brew install` a
+current ack. (Confirm which.)
+
+**`diff-so-fancy`** — vendored fatpacked Perl (v1.2.6), actively used as the git
+pager. Replace with `delta` (brew) or `brew install diff-so-fancy`; this also
+fixes the macOS "pager breaks under GUI apps" item above.
+
+**vim tpope plugins** — `commentary`, `abolish`, `endwise` are hand-copied into
+`~/.vim/plugin` while the repo already uses vim-plug. Move them to `Plug` lines
+and delete the vendored copies. `commentary` is likely wanted; confirm `abolish`
+and `endwise`.
+
+The remaining vendored vim plugins (`dragvisuals`, live; `undowarnings` and
+`visualguide`, kept) have no clean single-repo upstream, so they stay vendored or
+get a documented install — not worth forcing.
+
+
+XDG relocation (opportunistic — easy wins only)
+===============================================
+
+A soft preference, not a crusade: switch to XDG paths when it's easy, lean
+practical when a tool resists — if it wants a non-XDG location and can't be
+cleanly repointed, accept that. Worth a detailed pass when we get to it. The
+zero-friction wins:
+
+  - `~/.config/gitignore-global → ~/.config/git/ignore` — git auto-detects it,
+    and it lets the `excludesFile` line in `.gitconfig` go too.
+  - `~/.gitconfig → ~/.config/git/config` — git auto-detects it; one fewer
+    top-level dotfile.
+  - Shell state out of `$HOME`: `.zsh_history`, `.zcompdump`, `.zplug` →
+    `~/.local/state` / `~/.cache`. (The p10k instant-prompt cache already honors
+    `XDG_CACHE_HOME`, so the pattern exists.)
+  - `PYTHONSTARTUP` can point into `~/.config` instead of `~/.pythonrc.py`.
+
+Don't force the ones without native XDG support (`.psqlrc`, `.sqliterc`). Related
+policy call: generated artifacts that were or are tracked — vim's `doc/tags` (now
+deleted) and the ~1000-line, mostly-boilerplate `.p10k.zsh` — should we stop
+tracking them (regenerate locally, keep only hand overrides) or accept them?
 
 
 Cleanup
 =======
 
-**`git-commit-with-hash` is misnamed.** It isn't a commit script at all — it's
-`git-find-blob`, and its own usage string says so: `usage: git-find-blob <blob>`.
-Rename it.
+**Delete `git-commit-with-hash`.** It's misnamed (`git-find-blob`, per its own
+usage string), but the real point is that it's a bespoke wrapper around a query
+git now does natively: `git log --all --find-object=<blob>`. Same family as the
+already-deleted `dush`/`git-large-objects` — delete, don't rename. (Confirm.)
 
-**`cargo-monitor` eats its first argument when run directly.** `shift` runs
-unconditionally before the `(($# > 0))` check. Correct when invoked as `cargo
-monitor` (cargo passes `monitor` as `$1`), wrong for `cargo-monitor clippy`.
+**Delete `cargo-monitor`.** It has a genuine bug (an unconditional `shift` eats
+the first arg when run directly, e.g. `cargo-monitor clippy`), but fixing it is
+moot: `bacon` — which I already configure — supersedes it, and its `cargo-watch`
+dependency is deprecated. Delete rather than fix. (Confirm.)
 
-**`.screenrc` errors on a machine with no local override.**
+**Dead/stale `.zshrc` bits.** The `TAB_TITLE_PREFIX` block near the end
+references `$_GET_PATH`/`$PROMPT_CHAR`, variables from oh-my-zsh screen/tmux
+plugins that aren't loaded — pure leftover. The window-title `precmd` gates on
+`termite` (discontinued 2020) and shells out three processes per prompt. The
+history section has a stale "Keep 1000 lines" comment above `HISTSIZE=100000` and
+a "Share history" heading over a disabled `share_history`. And `compinit` runs
+with no cache fast-path — `compinit -C` on a fresh `~/.zcompdump` speeds startup.
 
-    source ~/.config/local.screenrc
+**PATH order differs between shells.** `.bashrc` prepends `~/bin` then
+`~/.local/bin`; `.zshrc` does the reverse. A name present in both resolves
+differently depending on the shell. Unify — candidate for `common.shrc`.
 
-`.tmux.conf` gets this right with `source -q`. Make `.screenrc` match — screen
-has a `source` that tolerates missing files, or guard it.
+**`nvm.sh` is sourced eagerly.** `common.shrc` sources `nvm.sh` whenever `~/.nvm`
+exists, a well-known startup-latency cost both shells pay every launch.
+Lazy-load it, or move to fnm/mise.
 
 
 Worth considering
@@ -283,19 +325,23 @@ Worth considering
 Lower confidence — think about whether these are actually wanted.
 
 **Conditional git identity.** `.gitconfig` hardcodes `email = john@kugelman.name`.
-If the Mac is a work machine, `[includeIf "gitdir:~/work/"]` is the clean answer
-and keeps the work address out of the public repo.
+If the Mac is a work machine, `[includeIf "gitdir:~/work/"]` keeps a work address
+out of the public repo.
 
 **Periodic `git gc` on `.dotfiles`.** The 260 MB of unreachable loose objects
-that prompted the July 2026 prune came from staging accidents in the era before
-`.gitignore` denied `$HOME` by default. That hardening should prevent a
-recurrence, so this may be unnecessary — but a bare repo gets no automatic gc
-from routine `git` invocations the way a normal checkout does. Worth a look in
-six months to see whether it's creeping again.
+behind the July 2026 prune came from staging accidents before `.gitignore` denied
+`$HOME` by default. That hardening should prevent a recurrence, but a bare repo
+gets no automatic gc from routine `git` invocations. Worth a look in six months.
 
-**Untrack the pip/npm console shims in `~/.local/bin`.** `git-revise` is a
-pip-generated shim; `ack` and `diff-so-fancy` are vendored fatpacked Perl. They're
-tracked as though they were your scripts, but they're really vendored
-dependencies pinned at whatever version was current when you added them. A
-setup-script install (`pipx`, `brew`) may serve better than vendoring — at the
-cost of the "clone and go" property.
+**`.pythonrc.py` is mostly redundant.** Beyond the macOS libedit no-op above:
+CPython's `sys.__interactivehook__` has auto-enabled completion and history since
+3.4, so about all this file still adds over stock behavior is its custom history
+path. Consider slimming to that delta, or dropping it.
+
+**`.sqliterc` is stale.** `.mode column` (2014) predates the nicer `.mode
+box`/`.mode table` (sqlite 3.39+). Modernize it — or drop it, and the
+`.gitconfig` sqlite textconv with it, if the sqlite CLI isn't used.
+
+**`.gitconfig` polish.** Already well-tended; optional additions if
+re-engineering for robustness: `rerere.enabled`, `column.ui=auto`,
+`branch.sort=-committerdate`, `git maintenance start`.
