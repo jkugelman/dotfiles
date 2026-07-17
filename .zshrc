@@ -220,10 +220,6 @@ fi
 # Then, source plugins and add commands to $PATH.
 zplug load
 
-# Customize plugins/screen status line. Have to do this after it's loaded.
-TAB_TITLE_PREFIX='"`'$_GET_PATH' | sed "s:..*/::"`$PROMPT_CHAR"'
-TAB_TITLE_PROMPT=''
-
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 

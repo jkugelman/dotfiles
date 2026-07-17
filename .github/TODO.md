@@ -286,13 +286,12 @@ tracking them (regenerate locally, keep only hand overrides) or accept them?
 Cleanup
 =======
 
-**Dead/stale `.zshrc` bits.** The `TAB_TITLE_PREFIX` block near the end
-references `$_GET_PATH`/`$PROMPT_CHAR`, variables from oh-my-zsh screen/tmux
-plugins that aren't loaded — pure leftover. The window-title `precmd` gates on
-`termite` (discontinued 2020) and shells out three processes per prompt. The
-history section has a stale "Keep 1000 lines" comment above `HISTSIZE=100000` and
-a "Share history" heading over a disabled `share_history`. And `compinit` runs
-with no cache fast-path — `compinit -C` on a fresh `~/.zcompdump` speeds startup.
+**Dead/stale `.zshrc` bits.** The window-title `precmd` gates on
+`termite` (discontinued 2020) and shells out three processes per prompt.
+The history section has a stale "Keep 1000 lines" comment above
+`HISTSIZE=100000` and a "Share history" heading over a disabled
+`share_history`. And `compinit` runs with no cache fast-path —
+`compinit -C` on a fresh `~/.zcompdump` speeds startup.
 
 **PATH order differs between shells.** `.bashrc` prepends `~/bin` then
 `~/.local/bin`; `.zshrc` does the reverse. A name present in both resolves
