@@ -65,6 +65,18 @@ hides untracked files rather than protecting them, and has to be re-run by hand
 on every machine because `--local` config isn't cloned.)
 
 
+Command-line tools
+==================
+
+A few tools these configs reference aren't tracked in the repo — install them
+per machine:
+
+- **[delta]** — the Git pager, set as `core.pager`. `cargo install git-delta`,
+  or `brew install git-delta` on macOS.
+
+[delta]: https://github.com/dandavison/delta
+
+
 Docker
 ======
 

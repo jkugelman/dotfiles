@@ -30,10 +30,11 @@
 [fetch]
 	prune = true
 [core]
-	pager = diff-so-fancy | less -R
-[diff-so-fancy]
-	stripLeadingSymbols = false
-	markEmptyLines = false
+	pager = delta
+[interactive]
+	diffFilter = delta --color-only
+[delta]
+	navigate = true
 [diff]
 	colorMoved = default
 	renames = copies

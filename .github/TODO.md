@@ -241,10 +241,6 @@ tool I already use replaces it.
 that finds Apple's stock Python (no `gitrevise` there). Untrack; `pipx install
 git-revise`.
 
-**`diff-so-fancy`** — vendored fatpacked Perl (v1.2.6), actively used as the git
-pager. Replace with `delta` (brew) or `brew install diff-so-fancy`; this also
-fixes the macOS "pager breaks under GUI apps" item above.
-
 **vim tpope plugins** — `commentary`, `abolish`, `endwise` are hand-copied into
 `~/.vim/plugin` while the repo already uses vim-plug. Move them to `Plug` lines
 and delete the vendored copies. `commentary` is likely wanted; confirm `abolish`
