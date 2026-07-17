@@ -39,3 +39,7 @@ The distillation belongs in the **same commit as the feature work**, not a separ
 ## Don't warn me that `/tmp` files are ephemeral
 
 I know files written to `/tmp` can be deleted at any time — it's why I send things there. Don't caveat, warn, or hedge about that when writing to `/tmp`; just write the file.
+
+# The dotfiles repo
+
+`$HOME` is the work tree of a bare Git repo at `~/.dotfiles`, published publicly at `github.com/jkugelman/dotfiles`. So files under `~` may be tracked, and plain `git` there does not work — use the `dotfiles` function. Before doing real work on my config, invoke the `dotfiles` skill.
