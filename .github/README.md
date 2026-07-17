@@ -15,12 +15,6 @@ Dotfiles
     work tree, while storing the Git state at `.dotfiles`.
 
 3.  ```sh
-    $ dotfiles config --local status.showUntrackedFiles no
-    ```
-
-    Set a local configuration setting in `.dotfiles` to ignore untracked files.
-
-4.  ```sh
     $ dotfiles checkout
     ```
 
@@ -46,6 +40,29 @@ Dotfiles
 repository **EXPLAINED**][dotfiles-explained].)
 
 [dotfiles-explained]: https://www.ackama.com/blog/posts/the-best-way-to-store-your-dotfiles-a-bare-git-repository-explained
+
+
+Adding new files
+================
+
+Because `$HOME` is the work tree, `~/.gitignore` ignores everything by default
+and opts in only to the directories whose new files should be tracked
+automatically — `.claude/skills/`, `.vim/plugin/`, and friends. Without it a
+`dotfiles add -A` would sweep the whole home directory into this public repo:
+caches, shell history, and real secrets like `.cargo/credentials`.
+
+Git ignores nothing that is already tracked, so this only governs *new* files.
+Deliberately not opted in are `~/.ssh` (keys), `~/.local/bin` (mixed in with pip
+and npm console shims), and new top-level dotfiles — tracking those should be a
+conscious choice:
+
+```sh
+$ dotfiles add -f ~/.newrc
+```
+
+(The blog post above instead sets `status.showUntrackedFiles no`, which only
+hides untracked files rather than protecting them, and has to be re-run by hand
+on every machine because `--local` config isn't cloned.)
 
 
 Neovim

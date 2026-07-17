@@ -1,1 +1,49 @@
-/.dotfiles/
+# $HOME is this repo's work tree, so ignore everything by default. Otherwise an
+# `add -A` sweeps the whole home directory into this public repo — caches, shell
+# history, and real secrets like .cargo/credentials and .claude/.credentials.json.
+#
+# Git ignores nothing that's already tracked, so the tracked files need no entry
+# here; this list is only about what happens to *new* files. It opts in to the
+# directories where anything new should be picked up automatically. Everywhere
+# else, start tracking a new file explicitly:
+#
+#     dotfiles add -f ~/.newrc
+#
+# Deliberately NOT opted in: ~/.ssh (keys), ~/.local/bin (mixed with pip and npm
+# console shims), and new top-level dotfiles — those should be a conscious choice.
+#
+# Git never looks inside an ignored directory, so re-including a nested one takes
+# three steps: un-ignore the directory, re-ignore its contents with `/dir/*`,
+# then un-ignore the specific children.
+
+/*
+
+# Wholly ours.
+!/.github/
+!/.tmux/
+
+# Everything else in ~/.claude is local state: credentials, chat history, caches.
+!/.claude/
+/.claude/*
+!/.claude/commands/
+!/.claude/scripts/
+!/.claude/skills/
+
+# Most of ~/.config belongs to other programs. Denying by default also keeps the
+# untracked local.* overrides out, which is their whole point.
+!/.config/
+/.config/*
+!/.config/bacon/
+!/.config/colorls/
+
+# ~/.vim is nearly all ours, but vim-plug installs into plugged/ and netrw
+# writes .netrwhist.
+!/.vim/
+/.vim/*
+!/.vim/autoload/
+!/.vim/colors/
+!/.vim/doc/
+!/.vim/ftdetect/
+!/.vim/ftplugin/
+!/.vim/plugin/
+!/.vim/syntax/
