@@ -10,6 +10,23 @@ is done; delete the heading too.
 Line numbers drift, so each item quotes the offending code. Grep for the snippet
 rather than trusting the number.
 
+
+Discuss before implementing
+===========================
+
+**These items are conversation starters, not a work queue to burn down.** Bring
+one back with what you found — whether it's still live, what the fix would
+actually cost, what it trades against — and get agreement before editing a file.
+Appearing on this list is not approval to implement: several items are written
+down precisely *because* the right answer isn't settled, and the ones that read
+as mechanical are often the ones hiding a design choice. An item that turns out
+to be wrong, stale, or not worth it is a good outcome — say so and delete it.
+
+Investigating is always fine, and is the point: grep for the snippet, confirm
+the item still describes reality, read enough to say what the fix costs. Do that
+first, then talk. The rule is about edits, not about looking.
+
+
 Suggested order: macOS first. It's better-defined than the restructuring work,
 and it's a useful forcing function — making these files portable is what reveals
 which parts are genuinely independent, which is exactly what the zsh/vim
