@@ -20,31 +20,7 @@ constraints afterward.
 macOS: loud breaks
 ==================
 
-These fail immediately and obviously on a Mac. Cheap to fix, high value — the
-first two make every interactive shell unusable.
-
-**`ls --color=auto` breaks every `ls`.** In `.config/common.shrc`:
-
-    ls() { command ls --color=auto -F "$@"; }
-
-BSD `ls` has no `--color`, and since the arg isn't exactly `--`, getopt parses
-the second `-` as an option letter: `ls: illegal option -- -`. Both `.bashrc` and
-`.zshrc` source this file, so it hits every interactive shell. Detect once at rc
-time rather than branching per call:
-
-    if command ls --color=auto . >/dev/null 2>&1; then
-        ls() { command ls --color=auto -F "$@"; }
-    else
-        ls() { command ls -G -F "$@"; }   # BSD spelling
-    fi
-
-**`rm --preserve-root` breaks every `rm`.** Same `illegal option -- -` failure:
-
-    rm() { command rm --preserve-root -I "$@"; }
-
-BSD `rm` *does* support `-I`; only `--preserve-root` is GNU-only — and it's been
-GNU's default since coreutils 6.2, so it's pure redundancy. Just delete it:
-`rm() { command rm -I "$@"; }` behaves identically on both platforms.
+These fail immediately and obviously on a Mac. Cheap to fix, high value.
 
 **`dush` dies on `du -0`.** `-0`/`--null` is GNU coreutils; BSD `du` says
 `illegal option -- 0`. (`sort -z` and `xargs -0` are both fine on macOS — only
@@ -84,19 +60,6 @@ no hint why. Track a `.bash_profile`:
 
 (`.bashrc`'s `[ -f /etc/bashrc ]` guard is fine as-is — macOS does ship one.)
 
-**`ssh()` silently drops you in `$HOME`.** In `.config/common.shrc`:
-
-    local rel_pwd; rel_pwd="$(realpath --relative-base ~ "$PWD")"
-
-`--relative-base` is GNU-only; macOS `realpath` is BSD's or absent, so `rel_pwd`
-comes back empty. The remote command degrades to `cd '' 2>/dev/null`, which
-fails, gets swallowed by the `2>/dev/null` that's there on purpose, and then
-`exec $SHELL -l` runs anyway. The whole point of the function evaporates with no
-error. Needs no `realpath` at all:
-
-    local rel_pwd=$PWD
-    case $PWD in "$HOME"/*) rel_pwd=${PWD#"$HOME"/};; "$HOME") rel_pwd=.;; esac
-
 **The ssh-agent block detaches you from the macOS Keychain.** In `.bashrc`:
 
     SSH_ENV=~/.ssh/environment
@@ -134,11 +97,6 @@ the script exits 0 having done nothing. Split the declaration from the assignmen
 so `set -e` can see the failure, and note the `brew install screen` dependency.
 It's bound to Ctrl-A Space in `.screenrc`, so it just quietly stops working.
 
-**`MAKEFLAGS` is hardcoded to `-j8`.** Under-uses a 16-core Mac, oversubscribes a
-4-core box. `getconf _NPROCESSORS_ONLN` works on both platforms with no branch:
-
-    export MAKEFLAGS=-j$(getconf _NPROCESSORS_ONLN)
-
 
 macOS: degraded
 ===============
@@ -150,11 +108,10 @@ nor `.zshrc`'s `path=(~/.local/bin ~/bin $path)` adds `/opt/homebrew/bin` (Apple
 Silicon) or `/usr/local/bin` (Intel), and no `.zprofile` is tracked to run `eval
 "$(/opt/homebrew/bin/brew shellenv)"`. On Apple Silicon `/opt/homebrew/bin` is
 *not* in the default PATH, so this cascades: no `rg` (breaks `rgl`/`rgll`), no
-`tree`, no `nvim`, no `numfmt`, no modern `bash`/`screen`/`tmux`.
+`tree`, no `numfmt`, no modern `bash`/`screen`/`tmux`.
 
 **`tree` isn't installed on macOS at all** — Homebrew only. The `-ACF` flags
-themselves are fine. Worth a note in the README's setup steps alongside neovim
-and Docker.
+themselves are fine. Worth a note in the README's setup steps alongside Docker.
 
 **`.inputrc` is two-thirds inert.** `$include /etc/inputrc` — macOS has no
 `/etc/inputrc`, so the include is silently skipped and you lose the bindings
@@ -183,21 +140,6 @@ screen/tmux. Add `2>/dev/null`, or hardcode `$'\e[1;5D'` / `$'\e[1;5C'`.
 
 Latent traps (not macOS-specific)
 =================================
-
-**Installing neovim silently disables all 288 lines of `.vimrc`.**
-`.config/common.shrc`'s `vim()` prefers `nvim -p` when nvim exists, and the
-README tells you to install nvim into `~/.local/bin`. But nvim doesn't read
-`~/.vimrc` — it reads `~/.config/nvim/init.vim`, which isn't tracked. So
-following your own README (or `brew install neovim`) makes your entire vim config
-silently evaporate. It hasn't bitten yet only because nvim isn't installed on the
-Linux box. Track `~/.config/nvim/init.vim`:
-
-    set runtimepath^=~/.vim runtimepath+=~/.vim/after
-    let &packpath = &runtimepath
-    source ~/.vimrc
-
-This needs a `.gitignore` opt-in — `/.config/*` is denied by default, so add
-`!/.config/nvim/` alongside the `bacon` and `colorls` entries.
 
 **`~/.vimundo` doesn't exist, so undo history goes somewhere else.**
 
@@ -302,22 +244,9 @@ config.
 Cleanup
 =======
 
-**`dotfiles()` is defined twice** — once in `.zshrc`, once in
-`.config/common.shrc`. `.zshrc` sources `common.shrc`, so the `.zshrc` copy is
-dead. Delete it.
-
 **`git-commit-with-hash` is misnamed.** It isn't a commit script at all — it's
 `git-find-blob`, and its own usage string says so: `usage: git-find-blob <blob>`.
 Rename it.
-
-**The `wt` shell-init lines are duplicated.** Some installer appended an identical
-line to both `.bashrc` and `.zshrc`:
-
-    if command -v wt >/dev/null 2>&1; then eval "$(command wt config shell init bash)"; fi
-
-Shell-agnostic logic belongs in `common.shrc` (with `$0`/`ZSH_VERSION` picking
-the arg). Currently uncommitted in both files — a tidy illustration of the drift
-the restructure is meant to prevent.
 
 **`cargo-monitor` eats its first argument when run directly.** `shift` runs
 unconditionally before the `(($# > 0))` check. Correct when invoked as `cargo

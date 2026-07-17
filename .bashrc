@@ -114,4 +114,3 @@ command -v clang++ &> /dev/null && export CXX=$(which clang++)
 
 # Do this after sourcing common.shrc.
 [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
-

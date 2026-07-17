@@ -65,15 +65,6 @@ hides untracked files rather than protecting them, and has to be re-run by hand
 on every machine because `--local` config isn't cloned.)
 
 
-Neovim
-======
-
-```sh
-$ curl -L https://github.com/neovim/neovim/releases/latest/download/nvim.appimage -o ~/.local/bin/nvim
-$ chmod +x ~/.local/bin/nvim
-```
-
-
 Docker
 ======
 

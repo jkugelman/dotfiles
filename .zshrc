@@ -209,11 +209,6 @@ bindkey -- $'\e[F' end-of-line
 typeset -U path
 path=(~/.local/bin ~/bin $path)
 
-# Alias to make working with .dotfiles easier.
-dotfiles() {
-    git --git-dir="$HOME"/.dotfiles --work-tree="$HOME" "$@"
-}
-
 # Install plugins if there are plugins that have not been installed.
 if ! zplug check --verbose; then
     printf "Install plugins? [y/N]: "

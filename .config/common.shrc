@@ -7,42 +7,32 @@ unalias cat cp diff lack ls mv rm vim 2>/dev/null || :
 cp() { command cp -i "$@"; }
 diff() { command diff -u "$@"; }
 lack() { command ack --pager="less -R" "$@"; }
-ls() { command ls --color=auto -F "$@"; }
 mv() { command mv -i "$@"; }
-rm() { command rm --preserve-root -I "$@"; }
+rm() { command rm -I "$@"; }
+vim() { command vim -p "$@"; }
+
+# GNU and BSD ls spell "colorize" differently, and BSD getopt chokes on the
+# long option rather than ignoring it. Probe once here instead of every call.
+if command ls --color=auto /dev/null >/dev/null 2>&1; then
+    ls() { command ls --color=auto -F "$@"; }
+else
+    ls() { command ls -G -F "$@"; }
+fi
 
 export EDITOR=vim
 export LESS=' -R -P?f%f - .?ltLine?lbs. %lt?lb-%lb.?L of %L.?PB - %PB\%.:?pb%pb\%:?btByte %bt?pB - %pB\%.:-...?e (END).'
-export MAKEFLAGS=-j8
 export PYTHONSTARTUP=~/.pythonrc.py
 export VISUAL=vim
 
-# Use nvim if it's installed. Open files in tabs.
-vim() {
-    if command -v nvim >/dev/null 2>&1; then
-        nvim -p "$@"
-    else
-        command vim -p "$@"
-    fi
-}
+# Build with all but two cores, so a big build leaves the machine usable.
+# getconf is portable where nproc isn't.
+_ncpus=$(getconf _NPROCESSORS_ONLN)
+export MAKEFLAGS=-j$(( _ncpus > 2 ? _ncpus - 2 : 1 ))
+unset _ncpus
 
 # Add a `dotfiles` alias for working with the `.dotfiles` repo.
 dotfiles() {
     git --git-dir="$HOME"/.dotfiles --work-tree="$HOME" "$@"
-}
-
-# Maintain the same working directory when ssh-ing to a host.
-ssh() {
-    if (($# != 1)) || [[ $1 == -* ]]; then
-        command ssh "$@"
-        return
-    fi
-
-    local host="$1"
-
-    # Get current directory relative to $HOME, unless $PWD isn't in $HOME.
-    local rel_pwd; rel_pwd="$(realpath --relative-base ~ "$PWD")"
-    command ssh -t "$host" "sh -c 'cd $(printf '%q' "$rel_pwd") 2>/dev/null; exec \"\$SHELL\" -l'"
 }
 
 rgl() {
@@ -87,11 +77,17 @@ if [[ -d ~/.nvm ]]; then
     . "$NVM_DIR/nvm.sh"
 fi
 
-# Suppress `docker build` advertising message:
-#
-# > Use 'docker scan' to run Snyk tests against images to find vulnerabilities
-# > and learn how to fix them
-export DOCKER_SCAN_SUGGEST=false
+# Load worktrunk's shell integration if it's installed. The emitted script
+# genuinely differs per shell (bash `complete` vs zsh `compdef`/`zstyle`), so
+# the shell name has to be passed through. The outer guard keeps `wt config`
+# from erroring out when wt isn't installed at all.
+if command -v wt >/dev/null 2>&1; then
+    if [[ -n $ZSH_VERSION ]]; then
+        eval "$(command wt config shell init zsh)"
+    else
+        eval "$(command wt config shell init bash)"
+    fi
+fi
 
 # Source local customizations.
 [[ ! -f ~/.config/local.shrc ]] || source ~/.config/local.shrc
