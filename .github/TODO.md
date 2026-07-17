@@ -279,14 +279,6 @@ deleted) and the ~1000-line, mostly-boilerplate `.p10k.zsh` — should we stop
 tracking them (regenerate locally, keep only hand overrides) or accept them?
 
 
-Cleanup
-=======
-
-**`nvm.sh` is sourced eagerly.** `common.shrc` sources `nvm.sh` whenever `~/.nvm`
-exists, a well-known startup-latency cost both shells pay every launch.
-Lazy-load it, or move to fnm/mise.
-
-
 Worth considering
 =================
 

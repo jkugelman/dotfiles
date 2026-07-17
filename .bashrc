@@ -109,6 +109,3 @@ command -v clang++ &> /dev/null && export CXX=$(which clang++)
 
 # Source local customizations.
 [[ ! -f ~/.config/local.bashrc ]] || source ~/.config/local.bashrc
-
-# Do this after sourcing common.shrc.
-[ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"

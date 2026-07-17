@@ -100,10 +100,15 @@ if [[ -e $HOME/.cargo/env ]]; then
     . "$HOME/.cargo/env"
 fi
 
-# Load nvm, the version manager for node.js, if it's installed.
-if [[ -d ~/.nvm ]]; then
-    export NVM_DIR="$HOME/.nvm"
-    . "$NVM_DIR/nvm.sh"
+# Load fnm (Fast Node Manager) if it's installed. --use-on-cd switches the
+# Node version on entering a directory with a .node-version or .nvmrc file.
+# fnm's init is near-instant, so eager loading costs nothing meaningful.
+if command -v fnm >/dev/null 2>&1; then
+    if [[ -n $ZSH_VERSION ]]; then
+        eval "$(fnm env --use-on-cd --shell zsh)"
+    else
+        eval "$(fnm env --use-on-cd --shell bash)"
+    fi
 fi
 
 # Load worktrunk's shell integration if it's installed. The emitted script
