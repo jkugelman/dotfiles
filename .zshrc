@@ -25,7 +25,17 @@ setopt auto_list list_packed
 autoload -U compinit
 zstyle ':completion:*' menu select=2
 zmodload zsh/complist
-compinit
+
+# compinit's security audit is the slow part of zsh startup. Rebuild the
+# dump and run the audit only when it's over a day old; otherwise (fresh,
+# or missing on first run) trust the cache with -C.
+_zcompdump_stale=(~/.zcompdump(Nmh+24))
+if (( $#_zcompdump_stale )); then
+    compinit
+else
+    compinit -C
+fi
+unset _zcompdump_stale
 _comp_options+=(globdots)       # Include hidden files.
 
 # Set window title.

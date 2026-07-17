@@ -290,8 +290,7 @@ Cleanup
 `termite` (discontinued 2020) and shells out three processes per prompt.
 The history section has a stale "Keep 1000 lines" comment above
 `HISTSIZE=100000` and a "Share history" heading over a disabled
-`share_history`. And `compinit` runs with no cache fast-path —
-`compinit -C` on a fresh `~/.zcompdump` speeds startup.
+`share_history`.
 
 **PATH order differs between shells.** `.bashrc` prepends `~/bin` then
 `~/.local/bin`; `.zshrc` does the reverse. A name present in both resolves
