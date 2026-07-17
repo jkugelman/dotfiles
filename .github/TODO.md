@@ -286,10 +286,6 @@ tracking them (regenerate locally, keep only hand overrides) or accept them?
 Cleanup
 =======
 
-**Dead/stale `.zshrc` bits.** The history section has a stale
-"Keep 1000 lines" comment above `HISTSIZE=100000` and a "Share history"
-heading over a disabled `share_history`.
-
 **PATH order differs between shells.** `.bashrc` prepends `~/bin` then
 `~/.local/bin`; `.zshrc` does the reverse. A name present in both resolves
 differently depending on the shell. Unify — candidate for `common.shrc`.

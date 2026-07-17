@@ -164,11 +164,12 @@ _zsh-run-command() {
     zle accept-line
 }
 
-# Share history among sessions.
+# Drop older duplicates from history; live sharing across sessions is
+# deliberately off.
 setopt hist_ignore_all_dups
 #setopt share_history
 
-# Keep 1000 lines of history within the shell and save it to ~/.zsh_history.
+# Keep a large history in memory and on disk.
 HISTSIZE=100000
 SAVEHIST=100000
 HISTFILE=~/.zsh_history
