@@ -64,16 +64,6 @@ macOS: loud breaks
 
 These fail immediately and obviously on a Mac. Cheap to fix, high value.
 
-**`git-large-objects` silently emits nothing.** The `numfmt` call is already
-half-macOS-aware:
-
-    "$(command -v gnumfmt || echo numfmt)" --field=2 --to=iec-i ...
-
-but the fallback is `numfmt`, absent on a Mac without `brew install coreutils`.
-It's the last stage of a pipeline, so `command not found` discards all the work
-upstream and you get zero output. Fall back to an `awk` formatter, or fail with a
-message that names the missing dependency.
-
 **`git-revise` has a hardcoded interpreter.** `#!/usr/bin/python3` finds Apple's
 stock Python, which won't have `gitrevise` installed. This is a pip-generated
 console shim that arguably shouldn't be tracked at all — consider untracking it
