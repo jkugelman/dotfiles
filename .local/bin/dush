@@ -1,3 +1,0 @@
-#!/bin/bash
-
-du -0s "$@" | sort -zn | while IFS=$'\t' read -d $'\0' size file; do printf '%s\0' "$file"; done | xargs -0 du -sh

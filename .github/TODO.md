@@ -64,11 +64,6 @@ macOS: loud breaks
 
 These fail immediately and obviously on a Mac. Cheap to fix, high value.
 
-**`dush` dies on `du -0`.** `-0`/`--null` is GNU coreutils; BSD `du` says
-`illegal option -- 0`. (`sort -z` and `xargs -0` are both fine on macOS — only
-`du -0` is fatal.) Either use `gdu` when present, or reframe around `find
--print0`.
-
 **`git-large-objects` silently emits nothing.** The `numfmt` call is already
 half-macOS-aware:
 
