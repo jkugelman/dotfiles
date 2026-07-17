@@ -268,10 +268,6 @@ practical when a tool resists — if it wants a non-XDG location and can't be
 cleanly repointed, accept that. Worth a detailed pass when we get to it. The
 zero-friction wins:
 
-  - `~/.config/gitignore-global → ~/.config/git/ignore` — git auto-detects it,
-    and it lets the `excludesFile` line in `.gitconfig` go too.
-  - `~/.gitconfig → ~/.config/git/config` — git auto-detects it; one fewer
-    top-level dotfile.
   - Shell state out of `$HOME`: `.zsh_history`, `.zcompdump`, `.zplug` →
     `~/.local/state` / `~/.cache`. (The p10k instant-prompt cache already honors
     `XDG_CACHE_HOME`, so the pattern exists.)

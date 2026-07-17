@@ -33,6 +33,7 @@
 !/.config/
 /.config/*
 !/.config/bacon/
+!/.config/git/
 
 # ~/.vim is nearly all ours, but vim-plug installs into plugged/ and netrw
 # writes .netrwhist.

@@ -31,7 +31,6 @@
 	prune = true
 [core]
 	pager = diff-so-fancy | less -R
-	excludesFile = ~/.config/gitignore-global
 [diff-so-fancy]
 	stripLeadingSymbols = false
 	markEmptyLines = false
