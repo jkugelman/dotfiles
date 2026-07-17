@@ -158,16 +158,6 @@ screen/tmux. Add `2>/dev/null`, or hardcode `$'\e[1;5D'` / `$'\e[1;5C'`.
 Latent traps (not macOS-specific)
 =================================
 
-**`~/.vimundo` doesn't exist, so undo history goes somewhere else.**
-
-    set undodir=~/.vimundo//,/var/tmp//,/tmp//,.
-
-Vim won't create the directory, so it silently falls through to `/var/tmp` —
-which gets pruned. Both paths exist on macOS too, so there's no error there
-either. Create it from `.vimrc`:
-
-    if !isdirectory(expand('~/.vimundo')) | call mkdir(expand('~/.vimundo'), 'p') | endif
-
 **Live p10k ordering bug in `.zshrc`.** The instant-prompt block near the top
 carries the rule in its own comment: *"Initialization code that may require
 console input (password prompts, [y/n] confirmations, etc.) must go above this

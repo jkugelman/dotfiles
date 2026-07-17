@@ -25,10 +25,18 @@ autocmd FocusGained,BufEnter,CursorHold,CursorHoldI * if mode() != 'c' | checkti
 autocmd FileChangedShellPost *
   \ echohl WarningMsg | echo "File changed on disk. Buffer reloaded." | echohl None
 
-" Store undo history across vim invocations.
+" Store undo history across vim invocations. Undo files are per-machine state
+" rather than config, so prefer XDG's state dir, where Neovim keeps its own.
+"
+" Vim never creates these; it uses the first entry that already exists. Keep
+" that a self-contained rule — $XDG_STATE_HOME if set, its spec default if not,
+" temp dirs as a last resort. This repo guarantees the second entry by tracking
+" a .gitkeep there, but the rule doesn't depend on knowing that; without such a
+" guarantee the tail matters, since /var/tmp gets pruned and undo history
+" silently vanishes.
 if has('persistent_undo')
     set undofile
-    set undodir=~/.vimundo//,/var/tmp//,/tmp//,.
+    set undodir=$XDG_STATE_HOME/vim/undo//,~/.local/state/vim/undo//,/var/tmp//,/tmp//,.
 endif
 
 " Allow backspace and delete to delete line wraps, and allow cursor to move
