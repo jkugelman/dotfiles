@@ -237,6 +237,10 @@ Plug 'leafgarland/typescript-vim'
 
 call plug#end()
 
+" Load matchit from Vim's bundled packages for `%` matching between keyword
+" pairs. Was a vendored plugin in ~/.vim/plugin; now loaded from Vim itself.
+packadd! matchit
+
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 
