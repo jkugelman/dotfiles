@@ -1,10 +1,18 @@
 # Personal preferences
 
-## Don't commit unless I authorize it
+## Committing
 
-Default to not running `git commit`. Finishing a task, passing tests, or reaching a clean stopping point is not an invitation to commit — leave the changes staged or unstaged and let me decide. Suggesting a commit message in chat is fine.
+When changes reach a complete, shippable point, commit them — don't stop at proposing a message. This is a standing default across every repo and session; you don't need to ask each time.
 
-I do authorize committing from time to time, though — sometimes for a single commit, sometimes as a standing grant for a whole effort or session ("commit as you go on this branch"). When I've given a standing authorization, honor it for that effort without re-asking each time; when it's unclear whether a grant still applies (e.g. a new session), ask before committing rather than assuming.
+A commit is an atomic piece of work that could theoretically ship on its own — commit boundaries track shippability, not convenience or progress. Group work into atomic, independently-shippable chunks, not one commit per task step. When an effort will sit in an unusable/partial state for a long stretch (big intertwined reworks), prefer a few large shippable commits over many small broken ones; don't create intermediate commits at the partial points. (Local throwaway WIP checkpoints meant to be squashed before pushing aren't real commits — squash them out.)
+
+Stopping points are a *superset* of commit points. Good places to pause — for my eyes on intermediate (even unshippable) work, or to capture progress on a long-running chunk — often don't line up with shippable commit boundaries. Offer pause/review checkpoints at those non-commit points too.
+
+When I ask for tweaks to something you just committed, prefer amending over a new commit whenever the changes belong with the original — especially bug fixes to code that hasn't been pushed yet. When several commits from this session are in play, that can mean rebasing and squashing a fix back into the older commit it fixes, not just amending the latest one.
+
+If amending is the right call but the target commit has already been pushed, ask me first rather than rewriting published history on your own. Sometimes I'll want a fresh commit; other times I'll approve amending and force-pushing to fix a buggy commit that got deployed — where I'm the only developer, rewriting recent published history is fine when I okay it.
+
+This covers local commits only. Pushing is outward-facing — ask before `git push`.
 
 Hard-wrap the commit-message body at 72 columns — including when you write it to a file or heredoc to commit, not only when suggesting it in chat (file-written messages have been coming out unwrapped).
 
@@ -29,6 +37,12 @@ It accepts one or more file paths, or JS on stdin. For `.html`/`.htm` it extract
 This script is pre-approved in `~/.claude/settings.json`, so it runs without a permission prompt. Use it instead of ad-hoc `node -e "..."` regex one-liners — those trigger a prompt every time.
 
 **Only run it when you actually changed JavaScript.** Editing CSS, HTML markup, or other non-`<script>` content in an `.html` file does not warrant a syntax check — the JS in the file hasn't changed. Don't run the checker as a routine "after every edit" step.
+
+## Planning docs
+
+A plan written to think through imminent work — one you'll implement right away and then discard — is ephemeral: write it to `/tmp`, not into the repo, and don't commit it. Only a plan that stays useful in version control for a while, and isn't about to be implemented, belongs in the repo.
+
+For a substantial rearchitecture whose feasibility is hard to judge up front, write the plan as a standalone doc and have an independent agent vet it before writing any code. Structure it so a reviewer can check the reasoning: load-bearing claims carry `file:line` anchors, validated claims stay separate from uncertain ones, and it closes with a list of what to verify during implementation.
 
 ## Distilling design docs after they ship
 
