@@ -158,7 +158,7 @@ Worth a note in the README setup steps alongside Docker.
 /etc/inputrc` — macOS has none, so those bindings vanish; `set colored-stats On`
 needs readline 6.3+ and macOS bash 3.2 ships 5.2. No-ops, not errors.
 
-**`.gitconfig`'s pager breaks under GUI apps.** `pager = diff-so-fancy | less -R`
+**`~/.config/git/config`'s pager breaks under GUI apps.** `pager = diff-so-fancy | less -R`
 — GUI-launched macOS apps don't inherit your rc `PATH`, so git dies with
 `diff-so-fancy: command not found` on every `git log`. Resolved by the
 diff-so-fancy → delta/brew migration (see Vendoring migrations), or use an
@@ -292,7 +292,7 @@ Worth considering
 
 Lower confidence — think about whether these are actually wanted.
 
-**Conditional git identity.** `.gitconfig` hardcodes `email = john@kugelman.name`.
+**Conditional git identity.** `~/.config/git/config` hardcodes `email = john@kugelman.name`.
 If the Mac is a work machine, `[includeIf "gitdir:~/work/"]` keeps a work address
 out of the public repo.
 
@@ -308,8 +308,8 @@ path. Consider slimming to that delta, or dropping it.
 
 **`.sqliterc` is stale.** `.mode column` (2014) predates the nicer `.mode
 box`/`.mode table` (sqlite 3.39+). Modernize it — or drop it, and the
-`.gitconfig` sqlite textconv with it, if the sqlite CLI isn't used.
+`~/.config/git/config` sqlite textconv with it, if the sqlite CLI isn't used.
 
-**`.gitconfig` polish.** Already well-tended; optional additions if
+**`~/.config/git/config` polish.** Already well-tended; optional additions if
 re-engineering for robustness: `rerere.enabled`, `column.ui=auto`,
 `branch.sort=-committerdate`, `git maintenance start`.

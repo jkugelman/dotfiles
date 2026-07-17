@@ -1,6 +1,6 @@
 ---
 name: dotfiles
-description: Working on John's config files — any edit to a dotfile under $HOME (~/.zshrc, ~/.bashrc, ~/.gitconfig, ~/.vimrc, ~/.tmux.conf, ~/.claude/, ~/.local/bin/, ~/.ssh/config, ...) or any Git operation on them. $HOME is the work tree of a bare repo at ~/.dotfiles, so plain `git` does not work there, edits change live config, and new files need `add -f`. Covers the `dotfiles` command, the ignore allowlist, why worktree isolation doesn't apply here, and local.* machine overrides.
+description: Working on John's config files — any edit to a dotfile under $HOME (~/.zshrc, ~/.bashrc, ~/.config/git/config, ~/.vimrc, ~/.tmux.conf, ~/.claude/, ~/.local/bin/, ~/.ssh/config, ...) or any Git operation on them. $HOME is the work tree of a bare repo at ~/.dotfiles, so plain `git` does not work there, edits change live config, and new files need `add -f`. Covers the `dotfiles` command, the ignore allowlist, why worktree isolation doesn't apply here, and local.* machine overrides.
 ---
 
 # Working on the dotfiles repo
