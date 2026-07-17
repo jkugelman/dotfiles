@@ -27,6 +27,31 @@ the item still describes reality, read enough to say what the fix costs. Do that
 first, then talk. The rule is about edits, not about looking.
 
 
+Guiding preferences
+===================
+
+Leanings, not laws — I'm working these out as I go, so weigh them against the
+specific case and push back when they don't fit. They're written down to save
+repeating them, not to settle anything. Expect this list to grow.
+
+**Keep `$HOME` uncluttered.** All else equal, prefer a home directory with few
+top-level entries, even hidden ones. Config goes in `~/.config`; the XDG base
+dirs have a home for most other things too — `~/.local/state` for per-machine
+state that should persist (undo history, logs), `~/.cache` for the throwaway,
+`~/.local/share` for the portable. Reach for a new `~/.something` only when a
+tool gives no other option.
+
+**Write config in a general, self-contained style.** Prefer a config file that
+states a rule anyone could lift out and reuse over one wired to this repo's
+specifics. Two habits fall out of that. Favor "use whatever exists" fallbacks
+(a list tried by existence) over a hardcoded path or a made-up default. And let
+the config *consume* guarantees rather than *create* them: if the repo can
+ensure a directory exists (by tracking it) or set an env var, the config
+shouldn't also mkdir it or hardcode where it lives — those decisions stay
+decoupled, so the same rule works for someone whose setup makes different
+promises. The `undodir` line in `.vimrc` is the worked example.
+
+
 Suggested order: macOS first. It's better-defined than the restructuring work,
 and it's a useful forcing function — making these files portable is what reveals
 which parts are genuinely independent, which is exactly what the zsh/vim
