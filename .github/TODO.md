@@ -265,10 +265,6 @@ Worth considering
 
 Lower confidence — think about whether these are actually wanted.
 
-**Conditional git identity.** `~/.config/git/config` hardcodes `email = john@kugelman.name`.
-If the Mac is a work machine, `[includeIf "gitdir:~/work/"]` keeps a work address
-out of the public repo.
-
 **Periodic `git gc` on `.dotfiles`.** The 260 MB of unreachable loose objects
 behind the July 2026 prune came from staging accidents before `.gitignore` denied
 `$HOME` by default. That hardening should prevent a recurrence, but a bare repo

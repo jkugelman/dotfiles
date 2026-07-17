@@ -108,6 +108,7 @@ override rather than in a tracked file. Each config sources one if it exists:
 | `.bashrc` | `~/.config/local.bashrc` |
 | `.zshrc` | `~/.config/local.zshrc` |
 | `.config/common.shrc` | `~/.config/local.shrc` |
+| `.config/git/config` | `~/.config/local.gitconfig` |
 | `.tmux.conf` | `~/.config/local.tmux.conf` |
 | `.screenrc` | `~/.config/local.screenrc` |
 | `.ssh/config` | `~/.ssh/config.local` |

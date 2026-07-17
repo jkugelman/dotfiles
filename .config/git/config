@@ -56,3 +56,5 @@
 	ui = auto
 [branch]
 	sort = -committerdate
+[include]
+	path = ~/.config/local.gitconfig
