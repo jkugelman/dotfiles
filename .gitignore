@@ -20,7 +20,6 @@
 
 # Wholly ours.
 !/.github/
-!/.tmux/
 
 # Everything else in ~/.claude is local state: credentials, chat history, caches.
 !/.claude/
