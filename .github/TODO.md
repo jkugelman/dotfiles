@@ -241,11 +241,6 @@ tool I already use replaces it.
 that finds Apple's stock Python (no `gitrevise` there). Untrack; `pipx install
 git-revise`.
 
-**`ack`** — vendored fatpacked Perl pinned at v1.96 (~2011). I search with
-ripgrep now (the `rg` helpers in `common.shrc`); `ack` survives only via the
-`lack` wrapper. Drop the vendored copy and the wrapper, or `brew install` a
-current ack. (Confirm which.)
-
 **`diff-so-fancy`** — vendored fatpacked Perl (v1.2.6), actively used as the git
 pager. Replace with `delta` (brew) or `brew install diff-so-fancy`; this also
 fixes the macOS "pager breaks under GUI apps" item above.

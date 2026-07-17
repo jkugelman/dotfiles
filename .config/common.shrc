@@ -9,10 +9,9 @@ esac
 export PATH
 
 # Simple QOL "aliases".
-unalias cat cp diff lack ls mv rm vim 2>/dev/null || :
+unalias cat cp diff ls mv rm vim 2>/dev/null || :
 
 diff() { command diff -u "$@"; }
-lack() { command ack --pager="less -R" "$@"; }
 vim() { command vim -p "$@"; }
 
 # These only mean anything with a human at the keyboard. -i and -I ask a
