@@ -35,7 +35,6 @@ fi
 
 export EDITOR=vim
 export LESS=' -R -P?f%f - .?ltLine?lbs. %lt?lb-%lb.?L of %L.?PB - %PB\%.:?pb%pb\%:?btByte %bt?pB - %pB\%.:-...?e (END).'
-export PYTHONSTARTUP=~/.pythonrc.py
 export VISUAL=vim
 
 # Build with all but two cores, so a big build leaves the machine usable.

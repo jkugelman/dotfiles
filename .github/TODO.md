@@ -133,12 +133,6 @@ start getting passphrase prompts permanently. Guard the block with
 `plugins/ssh-agent` is redundant on macOS too, but at least respects an existing
 agent.)
 
-**`.pythonrc.py` Tab completion is a no-op.** `readline.parse_and_bind('tab:
-complete')` — macOS Python's readline is libedit-backed with different bind
-syntax, so Tab inserts a literal tab. Branch on `'libedit' in readline.__doc__`
-and use `bind ^I rl_complete`. (See also the redundancy note under Worth
-considering.)
-
 
 macOS: degraded
 ===============
@@ -157,12 +151,6 @@ Worth a note in the README setup steps alongside Docker.
 **`.inputrc` is two-thirds inert.** (Relevance gated by bash's future.) `$include
 /etc/inputrc` — macOS has none, so those bindings vanish; `set colored-stats On`
 needs readline 6.3+ and macOS bash 3.2 ships 5.2. No-ops, not errors.
-
-**`~/.config/git/config`'s pager breaks under GUI apps.** `pager = diff-so-fancy | less -R`
-— GUI-launched macOS apps don't inherit your rc `PATH`, so git dies with
-`diff-so-fancy: command not found` on every `git log`. Resolved by the
-diff-so-fancy → delta/brew migration (see Vendoring migrations), or use an
-absolute path.
 
 **`tput` may print errors at zsh startup.** `.zshrc`'s `tput -T xterm kLFT5` uses
 extended capabilities older macOS ncurses may reject on stderr. It's guarded, so
@@ -265,7 +253,6 @@ zero-friction wins:
   - Shell state out of `$HOME`: `.zsh_history`, `.zcompdump`, `.zplug` →
     `~/.local/state` / `~/.cache`. (The p10k instant-prompt cache already honors
     `XDG_CACHE_HOME`, so the pattern exists.)
-  - `PYTHONSTARTUP` can point into `~/.config` instead of `~/.pythonrc.py`.
 
 Don't force the ones without native XDG support (`.psqlrc`, `.sqliterc`). Related
 policy call: generated artifacts that were or are tracked — vim's `doc/tags` (now
@@ -287,15 +274,5 @@ behind the July 2026 prune came from staging accidents before `.gitignore` denie
 `$HOME` by default. That hardening should prevent a recurrence, but a bare repo
 gets no automatic gc from routine `git` invocations. Worth a look in six months.
 
-**`.pythonrc.py` is mostly redundant.** Beyond the macOS libedit no-op above:
-CPython's `sys.__interactivehook__` has auto-enabled completion and history since
-3.4, so about all this file still adds over stock behavior is its custom history
-path. Consider slimming to that delta, or dropping it.
-
-**`.sqliterc` is stale.** `.mode column` (2014) predates the nicer `.mode
-box`/`.mode table` (sqlite 3.39+). Modernize it — or drop it, and the
-`~/.config/git/config` sqlite textconv with it, if the sqlite CLI isn't used.
-
-**`~/.config/git/config` polish.** Already well-tended; optional additions if
-re-engineering for robustness: `rerere.enabled`, `column.ui=auto`,
-`branch.sort=-committerdate`, `git maintenance start`.
+**`~/.config/git/config` polish.** Already well-tended; one optional addition
+remains if re-engineering for robustness: `git maintenance start`.
