@@ -35,25 +35,39 @@ dotfiles() {
     git --git-dir="$HOME"/.dotfiles --work-tree="$HOME" "$@"
 }
 
+# Search with ripgrep and page the results. rg reads stdin when it's a pipe, so
+# this works at the tail of a pipeline as well as against a file.
 rgl() {
-    if [[ $1 == -l ]]; then
-        shift
-        search=$1
-        shift
-        rg "$search" "$@" | sort-by-length -v | rg -p "$search" | less -R
-    else
-        rg -p "$@" | less -R
-    fi
+    rg -p "$@" | less -R
 }
 
+# Like rgl, but pages a crossword wordlist's matches shortest entry first.
+# Entries are `word;score` lines, and "shortest" counts the squares an entry
+# fills, not the characters it's spelled with: `'Allo 'Allo;51` is an 8, not
+# a 12.
 rgll() {
-    rgl -l "$@"
-}
+    local pattern=$1
+    shift
 
-sort-by-length() {
-    awk '{text=$0; sub(/;.*/, "", text); sub(/[^a-zA-Z0-9]/, "", text); print length(text), $0}' |
-        sort -n |
-        if [[ -n $1 ]]; then cat; else sed 's/^[0-9]* //'; fi
+    # Highlight in the same pass that matches, rather than re-grepping the
+    # sorted output to colorize it: that way `^nose` only ever meets the
+    # wordlist line, never one with a length column stuck on the front. The
+    # cost is that the escapes have to come back out before measuring.
+    rg --color=always "$pattern" "$@" |
+        awk -v esc=$'\033' -v OFS='\t' '{
+            sub(/\r$/, "")                       # some lists are CRLF
+
+            entry = $0
+            gsub(esc "\\[[0-9;]*m", "", entry)   # the highlighting
+            sub(/;.*/, "", entry)                # the score
+            gsub(/[^a-zA-Z0-9]/, "", entry)      # spaces and punctuation
+            print length(entry), entry, $0
+        }' |
+        # Sorting on the bare entry too breaks length ties alphabetically,
+        # rather than by wherever the highlight happened to land.
+        sort -t$'\t' -k1,1n -k2,2 |
+        awk -F'\t' '{ printf "%2d  %s\n", $1, $3 }' |
+        less -R
 }
 
 # tree's `ioctl(1, TCGETS, ...)` call fails for some reason despite stdout
