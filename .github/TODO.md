@@ -292,11 +292,6 @@ tracking them (regenerate locally, keep only hand overrides) or accept them?
 Cleanup
 =======
 
-**Delete `git-commit-with-hash`.** It's misnamed (`git-find-blob`, per its own
-usage string), but the real point is that it's a bespoke wrapper around a query
-git now does natively: `git log --all --find-object=<blob>`. Same family as the
-already-deleted `dush`/`git-large-objects` — delete, don't rename. (Confirm.)
-
 **Delete `cargo-monitor`.** It has a genuine bug (an unconditional `shift` eats
 the first arg when run directly, e.g. `cargo-monitor clippy`), but fixing it is
 moot: `bacon` — which I already configure — supersedes it, and its `cargo-watch`
