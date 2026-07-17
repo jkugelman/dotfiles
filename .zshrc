@@ -41,11 +41,10 @@ _comp_options+=(globdots)       # Include hidden files.
 # Set window title.
 # Based on <https://github.com/mdarocha/zsh-windows-title>
 case $TERM in
-    xterm*|termite)
-        precmd () {
-            dir=${PWD/#$HOME/'~'}
-            command=$(history | tail -n1 | awk '{for (i=2;i<=NF-1;i++) printf $i " "; print $NF}')
-            print -Pn "\e]0;$dir ❯ $command\a"
+    xterm*)
+        precmd() {
+            local dir=${PWD/#$HOME/'~'}
+            print -n "\e]0;$dir ❯ ${history[1]}\a"
         }
         ;;
 esac
