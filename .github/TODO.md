@@ -212,6 +212,18 @@ breaks above, `.inputrc`'s relevance, and the dead SVN branch-parser +
 `complete -r svn` still living in `.bashrc`.
 
 
+Scrub the vim config — vim is now secondary
+===========================================
+
+Vim is no longer my primary editor; VS Code and Claude Code are the daily
+drivers, and vim is a "pop in real quick" tool now. So the whole `~/.vim` tree
+and `.vimrc` are open to aggressive trimming — the bar for keeping a mapping,
+plugin, or autocmd is "do I still reach for this in a quick edit," and deleting
+likely beats porting. Worth doing *before* the native-mechanism restructure
+below, since some of what that would move may just be cut instead. Bring a
+reviewable delete-list to approve first.
+
+
 Restructure: vim via native mechanisms
 ======================================
 
@@ -236,11 +248,6 @@ Vendoring migrations
 Per the "prefer managed installs over vendoring" lean, these vendored third-party
 tools move out of the repo. Each is *installed*, not deleted — except where a
 tool I already use replaces it.
-
-**vim tpope plugins** — `commentary`, `abolish`, `endwise` are hand-copied into
-`~/.vim/plugin` while the repo already uses vim-plug. Move them to `Plug` lines
-and delete the vendored copies. `commentary` is likely wanted; confirm `abolish`
-and `endwise`.
 
 The remaining vendored vim plugins (`dragvisuals`, live; `undowarnings` and
 `visualguide`, kept) have no clean single-repo upstream, so they stay vendored or
