@@ -226,12 +226,6 @@ already shows the pattern.
 **Move per-filetype config to `~/.vim/after/ftplugin/`.** The m4 syntax block and
 the wordlist `<F9>` map are the clear candidates.
 
-**Fix `syntax` vs `filetype`.** `*.bats` and `Dockerfile*` set `syntax=`; you
-want `filetype=` (syntax follows from it).
-
-**Delete the duplicate mappings.** `.vimrc` maps `<Up>`/`<Down>` to `gk`/`gj`
-twice, ~100 lines apart; the second block is entirely redundant with the first.
-
 (The remaining hand-vendored tpope plugins move to vim-plug — see Vendoring
 migrations.)
 

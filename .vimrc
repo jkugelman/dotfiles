@@ -146,12 +146,6 @@ set pastetoggle=<F5>
 vnoremap < <gv
 vnoremap > >gv
 
-" Move up and down by visual lines not buffer lines.
-nnoremap <Up>   gk
-vnoremap <Up>   gk
-nnoremap <Down> gj
-vnoremap <Down> gj
-
 " Customize syntax highlighting.
 let java_highlight_functions="style"
 let java_allow_cpp_keywords=1
@@ -250,8 +244,8 @@ if has("autocmd")
     au BufReadPost * if &ft !=# 'gitcommit' && line("'\"") > 0 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
 endif
 
-autocmd BufRead,BufNewFile Dockerfile* set syntax=dockerfile
-autocmd BufRead,BufNewFile *.bats      set syntax=sh
+autocmd BufRead,BufNewFile Dockerfile* set filetype=dockerfile
+autocmd BufRead,BufNewFile *.bats      set filetype=sh
 
 
 "=======[ Fix smartindent stupidities ]============
