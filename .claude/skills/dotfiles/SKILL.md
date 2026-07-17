@@ -1,6 +1,6 @@
 ---
 name: dotfiles
-description: Working on John's config files — any edit to a dotfile under $HOME (~/.zshrc, ~/.bashrc, ~/.gitconfig, ~/.vimrc, ~/.tmux.conf, ~/.claude/, ~/.local/bin/, ~/.ssh/config, ...) or any Git operation on them. $HOME is the work tree of a bare repo at ~/.dotfiles, so plain `git` does not work there, edits change live config, and new files need `add -f`. Covers the `dotfiles` command, the ignore allowlist, worktree isolation for sweeping or parallel edits, and local.* machine overrides.
+description: Working on John's config files — any edit to a dotfile under $HOME (~/.zshrc, ~/.bashrc, ~/.gitconfig, ~/.vimrc, ~/.tmux.conf, ~/.claude/, ~/.local/bin/, ~/.ssh/config, ...) or any Git operation on them. $HOME is the work tree of a bare repo at ~/.dotfiles, so plain `git` does not work there, edits change live config, and new files need `add -f`. Covers the `dotfiles` command, the ignore allowlist, why worktree isolation doesn't apply here, and local.* machine overrides.
 ---
 
 # Working on the dotfiles repo
@@ -35,7 +35,9 @@ git --git-dir="$HOME"/.dotfiles --work-tree="$HOME" "$@"
 
 Interactive shells and Claude Code's tool calls have it. Non-interactive shells
 (`sh -c`, `zsh -c`, scripts) do **not** — they never source the rc files. Spell
-out the full `--git-dir` form there.
+out the full `--git-dir` form there, and write `"$HOME"`, not `~`: a tilde in
+`--git-dir=~/...` is not expanded (it isn't at the start of the word), and Git
+fails with `fatal: not a git repository: '~/.dotfiles'`.
 
 ## Tracking a new file needs `add -f`
 
@@ -78,23 +80,23 @@ bash -n ~/.bashrc
 zsh -n ~/.zshrc
 ```
 
-## Isolate sweeping or parallel work in a worktree
+## Don't isolate this work in a worktree
 
-The bare repo spawns ordinary worktrees, and plain `git` works normally inside
-one:
+Edit `$HOME` in place. `EnterWorktree` needs a `.git` in the working directory
+to recognize a repo, and `$HOME` has none, so it fails with "not in a git
+repository and no WorktreeCreate hooks are configured". Agents that isolate by
+default — background jobs — should skip the attempt rather than try it and fall
+back. Nothing enforces isolation here, so edits to `$HOME` land either way, and
+I work one agent at a time on this repo, so the collisions isolation would
+prevent don't arise.
 
-```sh
-git --git-dir="$HOME"/.dotfiles worktree add /tmp/dotfiles-wt main
-```
-
-Write `"$HOME"`, not `~`: the tilde in `--git-dir=~/...` is not expanded (it
-isn't at the start of the word), and Git fails with `fatal: not a git
-repository: '~/.dotfiles'`.
-
-Use a worktree for anything sweeping, and whenever several agents work at once —
-otherwise they collide in `$HOME` and rewrite my live config while I'm using it.
-The tradeoff: a worktree's changes aren't live, so anything that needs a real
-shell test still has to land in `$HOME`.
+Don't hand-roll a worktree with `git worktree add` either, and don't try to make
+`EnterWorktree` work by configuring `WorktreeCreate` hooks. Claude Code checks
+for that hook *before* it checks for a git repo, so a hook in
+`~/.claude/settings.json` would hijack worktree creation in **every** repo, not
+just this one — and hook-based worktrees skip the built-in path's
+`.worktreeinclude` copying, `symlinkDirectories`, and resume/reset handling.
+That was investigated and deliberately rejected.
 
 ## Machine-specific settings go in `local.*`
 

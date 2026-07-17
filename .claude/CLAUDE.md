@@ -43,3 +43,5 @@ I know files written to `/tmp` can be deleted at any time — it's why I send th
 # The dotfiles repo
 
 `$HOME` is the work tree of a bare Git repo at `~/.dotfiles`, published publicly at `github.com/jkugelman/dotfiles`. So files under `~` may be tracked, and plain `git` there does not work — use the `dotfiles` function. Before doing real work on my config, invoke the `dotfiles` skill.
+
+**Don't isolate dotfiles work in a worktree — edit `$HOME` in place.** `$HOME` has no `.git`, so Claude Code doesn't recognize it as a repo and `EnterWorktree` fails. That's expected, not a problem to route around: nothing enforces isolation here, so edits land normally, and I keep to one agent at a time on this repo. This overrides the background-job default of isolating before editing — skip the attempt rather than trying and falling back.
