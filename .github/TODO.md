@@ -237,10 +237,6 @@ Per the "prefer managed installs over vendoring" lean, these vendored third-part
 tools move out of the repo. Each is *installed*, not deleted — except where a
 tool I already use replaces it.
 
-**`git-revise`** — pip-generated console shim with a hardcoded `#!/usr/bin/python3`
-that finds Apple's stock Python (no `gitrevise` there). Untrack; `pipx install
-git-revise`.
-
 **vim tpope plugins** — `commentary`, `abolish`, `endwise` are hand-copied into
 `~/.vim/plugin` while the repo already uses vim-plug. Move them to `Plug` lines
 and delete the vendored copies. `commentary` is likely wanted; confirm `abolish`

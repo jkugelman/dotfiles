@@ -73,8 +73,11 @@ per machine:
 
 - **[delta]** — the Git pager, set as `core.pager`. `cargo install git-delta`,
   or `brew install git-delta` on macOS.
+- **[git-revise]** — history-editing helper (`git revise`). `pipx install
+  git-revise`.
 
 [delta]: https://github.com/dandavison/delta
+[git-revise]: https://github.com/mystor/git-revise
 
 
 Docker
