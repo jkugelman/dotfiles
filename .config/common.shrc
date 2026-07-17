@@ -3,13 +3,20 @@
 # Simple QOL "aliases".
 unalias cat cp diff lack ls mv rm vim 2>/dev/null || :
 
-[[ -n $CLAUDECODE ]] || cat() { command cat -v "$@"; }
-cp() { command cp -i "$@"; }
 diff() { command diff -u "$@"; }
 lack() { command ack --pager="less -R" "$@"; }
-mv() { command mv -i "$@"; }
-rm() { command rm -I "$@"; }
 vim() { command vim -p "$@"; }
+
+# These only mean anything with a human at the keyboard. -i and -I ask a
+# question, and an unanswered question reads as "no" -- while still exiting 0,
+# so under Claude Code a `cp` quietly copies nothing and reports success. `cat
+# -v` is likewise only ever for human eyes.
+if [[ -z $CLAUDECODE ]]; then
+    cat() { command cat -v "$@"; }
+    cp() { command cp -i "$@"; }
+    mv() { command mv -i "$@"; }
+    rm() { command rm -I "$@"; }
+fi
 
 # GNU and BSD ls spell "colorize" differently, and BSD getopt chokes on the
 # long option rather than ignoring it. Probe once here instead of every call.
