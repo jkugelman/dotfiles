@@ -292,11 +292,6 @@ tracking them (regenerate locally, keep only hand overrides) or accept them?
 Cleanup
 =======
 
-**Delete `cargo-monitor`.** It has a genuine bug (an unconditional `shift` eats
-the first arg when run directly, e.g. `cargo-monitor clippy`), but fixing it is
-moot: `bacon` — which I already configure — supersedes it, and its `cargo-watch`
-dependency is deprecated. Delete rather than fix. (Confirm.)
-
 **Dead/stale `.zshrc` bits.** The `TAB_TITLE_PREFIX` block near the end
 references `$_GET_PATH`/`$PROMPT_CHAR`, variables from oh-my-zsh screen/tmux
 plugins that aren't loaded — pure leftover. The window-title `precmd` gates on
