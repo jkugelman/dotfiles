@@ -61,11 +61,14 @@
     "deny": [
       "Bash(git push *)"
     ],
+    "defaultMode": "auto",
     "additionalDirectories": [
       "/tmp",
       "/home/jkugelman/.claude"
     ]
   },
   "effortLevel": "xhigh",
-  "agentPushNotifEnabled": true
+  "theme": "auto",
+  "agentPushNotifEnabled": true,
+  "tui": "fullscreen"
 }
