@@ -215,9 +215,8 @@ key[Ctrl-Right]="${terminfo[kRIT5]}"
 bindkey -- $'\e[H' beginning-of-line
 bindkey -- $'\e[F' end-of-line
 
-# Add to PATH. Don't allow duplicates.
+# Keep $PATH free of duplicate entries.
 typeset -U path
-path=(~/.local/bin ~/bin $path)
 
 # Install plugins if there are plugins that have not been installed.
 if ! zplug check --verbose; then

@@ -1,5 +1,13 @@
 # Functions and aliases shared by bash and zsh.
 
+# Prepend ~/.local/bin to PATH once, for both shells. The guard keeps a
+# re-source (e.g. exec zsh) from stacking duplicates.
+case ":$PATH:" in
+    *":$HOME/.local/bin:"*) ;;
+    *) PATH="$HOME/.local/bin:$PATH" ;;
+esac
+export PATH
+
 # Simple QOL "aliases".
 unalias cat cp diff lack ls mv rm vim 2>/dev/null || :
 

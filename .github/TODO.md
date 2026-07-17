@@ -286,10 +286,6 @@ tracking them (regenerate locally, keep only hand overrides) or accept them?
 Cleanup
 =======
 
-**PATH order differs between shells.** `.bashrc` prepends `~/bin` then
-`~/.local/bin`; `.zshrc` does the reverse. A name present in both resolves
-differently depending on the shell. Unify — candidate for `common.shrc`.
-
 **`nvm.sh` is sourced eagerly.** `common.shrc` sources `nvm.sh` whenever `~/.nvm`
 exists, a well-known startup-latency cost both shells pay every launch.
 Lazy-load it, or move to fnm/mise.
