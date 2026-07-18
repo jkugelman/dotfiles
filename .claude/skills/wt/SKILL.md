@@ -1,0 +1,99 @@
+---
+name: wt
+description: Lifecycle helper for git worktrees — works with any worktree regardless of where it lives or how its branch is named (created by `git worktree add`, a tool like worktrunk, or Claude Code's EnterWorktree). Operates on the worktree your cwd is in, or one named/pathed as an argument. Subcommands — `/wt merge`: rebase the worktree's branch onto the default branch, resolve any conflicts, fast-forward the default branch (no merge commit), then tear the worktree down with the same safety-checked cleanup as `/wt delete`. `/wt delete`: that teardown on its own — remove the worktree + delete the branch, confirming first if it's unmerged or dirty. Everything is read from git; nothing about location or naming is assumed. Local-only — it never pushes.
+---
+
+# wt — git worktree lifecycle
+
+Merge or tear down a git worktree. Works with **any** worktree — one you made with `git worktree add`, one from a tool like worktrunk, or one Claude Code's `EnterWorktree` created — because it reads everything (location, branch, the default branch, where the default branch is checked out) from git rather than assuming a layout.
+
+`/wt merge` is the merge steps followed by exactly the same teardown as `/wt delete`; the removal logic lives in one shared section (*Removing the worktree + branch*) that both use.
+
+## Resolve the target worktree
+
+The target is a **linked worktree** — never the primary working tree, which can't be removed. The source of truth is `git worktree list --porcelain`.
+
+- **No argument** → the worktree your cwd is in: `WT=$(git rev-parse --show-toplevel)`. It must be a linked worktree; if it isn't (you're in the main tree, or not in a worktree at all), stop and ask for a name or path.
+- **An argument** → match it against `git worktree list`: by exact path, by the worktree directory's basename, or by branch short-name. Unique match wins; if it's ambiguous, list the candidates and ask; if nothing matches, say so.
+
+Then read the rest from git:
+
+```
+BR=$(git -C "$WT" symbolic-ref --quiet --short HEAD)   # the worktree's branch; empty if detached HEAD
+TIP=$(git -C "$WT" rev-parse HEAD)                      # the worktree's commit, branch or not
+DEFAULT=$(git symbolic-ref --quiet --short refs/remotes/origin/HEAD 2>/dev/null | sed 's@^origin/@@')
+DEFAULT=${DEFAULT:-$(git show-ref --verify --quiet refs/heads/main && echo main || echo master)}
+SAFE=$(git worktree list --porcelain | sed -n 's/^worktree //p' | head -n1)   # primary worktree: a safe cwd for repo-level ops
+```
+
+Guards: `$WT` is a linked worktree (not `$SAFE`/the primary). If `$BR` is set it must not be `$DEFAULT`. **Detached HEAD** (`$BR` empty): `merge` can't run — there's no branch to fast-forward from or delete — so say so and stop; `delete` still works (it removes the worktree, with the merged check done against `$TIP`).
+
+Run every worktree-removing / branch-deleting command from `$SAFE` (or any directory outside `$WT`), **never** from inside `$WT` — removing a worktree from within it fails and strands your cwd (`cd "$SAFE"` afterward if the shell was inside it).
+
+## /wt merge — rebase onto the default branch, fast-forward, then tear down
+
+Bring the worktree's commits into the default branch with **no merge commit**, then tear the worktree down (the same cleanup as `/wt delete`).
+
+Find where the default branch is checked out — it needn't be the primary worktree, and might not be checked out at all:
+
+```
+DEFAULT_WT=$(git worktree list --porcelain | while read -r key val; do
+  [ "$key" = worktree ] && wtp=$val
+  [ "$key" = branch ] && [ "$val" = "refs/heads/$DEFAULT" ] && { printf '%s\n' "$wtp"; break; }
+done)
+```
+
+**Preconditions** — stop clearly if any fail:
+1. `$WT` has no uncommitted changes to **tracked** files: `git -C "$WT" status --porcelain --untracked-files=no` empty (else commit/stash first). Untracked files don't block the rebase — it carries them along, and the teardown confirms before discarding any.
+2. `$BR` set and `!= $DEFAULT`.
+
+The worktree is the only working tree checked proactively. There's deliberately **no** cleanliness gate on the default-branch checkout — the fast-forward in step 2 polices itself, and pre-checking it is both redundant and too strict (it would trip over harmless untracked files like a sibling skill awaiting this merge's gitignore change).
+
+**Steps:**
+1. Rebase onto the default branch, in the worktree:
+   ```
+   git -C "$WT" rebase "$DEFAULT"
+   ```
+   Conflicts → list `git -C "$WT" diff --name-only --diff-filter=U`; resolve in the worktree (`git -C "$WT" add <files>`, `git -C "$WT" rebase --continue`); surface non-trivial conflicts and wait; bail with `git -C "$WT" rebase --abort` (restores the pre-rebase state).
+2. Fast-forward the default branch to `$BR` — after the rebase it's a strict ancestor, so this can't create a merge commit:
+   - Checked out somewhere → advance its working tree there:
+     ```
+     git -C "$DEFAULT_WT" merge --ff-only "$BR"
+     ```
+   - Checked out nowhere (`$DEFAULT_WT` empty) → move the ref, which is the same fast-forward without a working tree to touch:
+     ```
+     git branch -f "$DEFAULT" "$BR"
+     ```
+   `merge --ff-only` polices this itself: it ignores untracked files (so an unrelated untracked file in the default-branch checkout doesn't block it) and refuses only on a genuine conflict. If it errors, that checkout has conflicting local changes — surface them and stop; the rebase is already done, so re-running after the user resolves them just retries the fast-forward. No commits beyond the default branch → no-op ("nothing to merge"); still tear down.
+3. **Tear down** the worktree + branch — run *Removing the worktree + branch* below. After the fast-forward the branch is merged and the worktree is normally clean, so it removes without prompting; if conflict resolution left untracked files behind, the dirty check there catches them and confirms first.
+4. **Report:** `$BR` fast-forwarded onto `$DEFAULT` (N commits), worktree + branch removed. `$DEFAULT` is now **ahead of origin — do not push** (the user pushes when ready).
+
+## /wt delete — tear down a worktree, confirming if unmerged
+
+Remove a worktree + its branch. This is just the shared teardown below, plus a report.
+
+1. **Tear down** — run *Removing the worktree + branch* below.
+2. **Report** what was removed and whether it had been merged. `cd "$SAFE"` if the shell was inside it.
+
+## Removing the worktree + branch
+
+The shared teardown used by both subcommands — the whole of `/wt delete`, and the final step of `/wt merge`. Given the resolved `$WT`, `$BR`, `$TIP`, `$DEFAULT`, `$SAFE`:
+
+1. Assess:
+   - **Merged?** `git -C "$SAFE" merge-base --is-ancestor "$TIP" "$DEFAULT"` (exit 0 = the worktree's commit is already in the default branch — always true right after `/wt merge`'s fast-forward; works whether or not it's on a branch).
+   - **Dirty?** `git -C "$WT" status --porcelain` non-empty (uncommitted or untracked files — e.g. conflict-resolution leftovers).
+2. If **not** (merged AND clean) → removing would discard commits and/or files. Confirm (AskUserQuestion), naming exactly what's lost (N unmerged commits, and/or uncommitted changes). Proceed only on explicit confirmation; otherwise stop and change nothing.
+3. Remove — unlock first (a harmless no-op if it wasn't locked), run from `$SAFE`, never from inside `$WT`:
+   ```
+   git -C "$SAFE" worktree unlock "$WT" 2>/dev/null || true
+   git -C "$SAFE" worktree remove "$WT"          # add --force if dirty or unmerged (once confirmed)
+   [ -n "$BR" ] && git -C "$SAFE" branch -d "$BR"    # -D if unmerged (once confirmed); skip when detached
+   ```
+
+## Notes
+
+- Works with any git worktree — `git worktree add`, worktrunk, `EnterWorktree`, whatever put it there. Nothing assumes where worktrees live or how branches are named; it's all read from `git worktree list` and `git`.
+- `git worktree unlock` is a harmless no-op on an unlocked worktree, so the teardown doesn't care whether it was locked (`EnterWorktree` locks its own; most worktrees aren't).
+- **Local-only. Never push, never touch origin.** `/wt merge` leaves the default branch ahead of origin for the user to push when ready.
+- Always read the branch from git and handle detached HEAD; run removals from `$SAFE`, never from inside the target.
+- The worktree-list parsing avoids awk `$0` and positional `$1`/`$2`: when the skill is invoked with an argument (`/wt merge <name>`), the launcher substitutes those placeholders with the argument tokens, which would corrupt any snippet using them. Named `$VARS` are untouched.
