@@ -101,11 +101,18 @@ fi
 # Load fnm (Fast Node Manager) if it's installed. --use-on-cd switches the
 # Node version on entering a directory with a .node-version or .nvmrc file.
 # fnm's init is near-instant, so eager loading costs nothing meaningful.
+#
+# Silence fnm's "Using Node vX" chatter, which otherwise trips Powerlevel10k's
+# instant-prompt warning when a shell starts inside a project directory:
+#   - 2>/dev/null drops the line `fnm env --use-on-cd` writes to stderr as it
+#     applies the project's version at startup (--log-level does not gag it).
+#   - --log-level error silences the same line from the on-cd hook on later
+#     directory changes, while still letting genuine errors through.
 if command -v fnm >/dev/null 2>&1; then
     if [[ -n $ZSH_VERSION ]]; then
-        eval "$(fnm env --use-on-cd --shell zsh)"
+        eval "$(fnm env --use-on-cd --log-level error --shell zsh 2>/dev/null)"
     else
-        eval "$(fnm env --use-on-cd --shell bash)"
+        eval "$(fnm env --use-on-cd --log-level error --shell bash 2>/dev/null)"
     fi
 fi
 
