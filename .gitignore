@@ -37,8 +37,6 @@
 !/.config/bacon/
 !/.config/git/
 !/.config/zsh/
-/.config/zsh/*
-!/.config/zsh/.zsh_plugins.txt
 
 # ~/.vim is nearly all ours, but vim-plug installs into plugged/ and netrw
 # writes .netrwhist.

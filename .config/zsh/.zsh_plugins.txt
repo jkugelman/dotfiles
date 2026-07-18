@@ -6,7 +6,8 @@
 romkatv/powerlevel10k conditional:is-256color
 
 # Directory-stack navigation: Alt-Left/Right cycle through visited dirs like a
-# browser's back/forward buttons. Keys are bound in ~/.zshrc.
+# browser's back/forward buttons. Keys are bound in
+# ~/.config/zsh/rc.d/dir-navigation-keys.zsh.
 ohmyzsh/ohmyzsh path:plugins/dircycle
 
 # Fish-like autosuggestions from history and completions as you type.

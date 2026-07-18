@@ -145,22 +145,6 @@ nothing breaks — Ctrl-Left/Right word-jumping just stops working. Add
 `2>/dev/null`, or hardcode `$'\e[1;5D'` / `$'\e[1;5C'`.
 
 
-Restructure: split .zshrc into a spine + rc.d
-=============================================
-
-`.zshrc`'s problem isn't length, it's that a small order-*critical* spine (the
-antidote/p10k lifecycle; `bindkey -e` early, since it resets the keymap) is
-tangled through a large order-*free* bulk (the Alt-S/Alt-D git keybindings,
-history options, the terminfo key table, dircycle). Split it: `.zshrc` keeps
-only order-critical lines, each with its reason stated, so reading top-to-bottom
-tells the whole lifecycle; `.config/zsh/rc.d/*.zsh` holds the order-free chunks,
-sourced from one slot. Invariant: if a chunk needs a number to order it, it
-belongs in the spine, not `rc.d` — that keeps `10-`/`20-`/`50-` from creeping
-back. `.config/zsh/` is already opted into `.gitignore`, but only for its single
-plugin-list file — widen that to the whole directory so `rc.d/*.zsh` is tracked.
-(Frozen bash is now too small to want the same split.)
-
-
 Scrub the vim config — vim is now secondary
 ===========================================
 
