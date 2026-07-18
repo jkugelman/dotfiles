@@ -27,6 +27,8 @@
 !/.claude/commands/
 !/.claude/scripts/
 !/.claude/skills/
+# ...except mobile-bridge: machine-local WSL/LAN glue, deliberately unshared.
+/.claude/skills/mobile-bridge/
 
 # Most of ~/.config belongs to other programs. Denying by default also keeps the
 # untracked local.* overrides out, which is their whole point.
@@ -34,6 +36,9 @@
 /.config/*
 !/.config/bacon/
 !/.config/git/
+!/.config/zsh/
+/.config/zsh/*
+!/.config/zsh/.zsh_plugins.txt
 
 # ~/.vim is nearly all ours, but vim-plug installs into plugged/ and netrw
 # writes .netrwhist.
