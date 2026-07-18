@@ -171,9 +171,7 @@ zero-friction wins:
 
   - Shell state out of `$HOME`: `.zsh_history`, `.zcompdump` →
     `~/.local/state` / `~/.cache`. (The p10k instant-prompt cache already honors
-    `XDG_CACHE_HOME`, so the pattern exists.) The stale `~/.zplug/` dir is dead
-    cruft — antidote replaced zplug and already lives under `~/.local/share`;
-    just delete it, no relocation needed.
+    `XDG_CACHE_HOME`, so the pattern exists.)
 
 Don't force the ones without native XDG support (`.psqlrc`, `.sqliterc`). Related
 policy call: generated artifacts that were or are tracked — vim's `doc/tags` (now
