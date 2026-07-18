@@ -51,22 +51,32 @@ done)
 
 The worktree is the only working tree checked proactively. There's deliberately **no** cleanliness gate on the default-branch checkout — the fast-forward in step 2 polices itself, and pre-checking it is both redundant and too strict (it would trip over harmless untracked files like a sibling skill awaiting this merge's gitignore change).
 
+**Concurrent merges race on the default branch — detect and retry.** Two `/wt merge`s at once (different sessions, same repo) both rebase and then both try to advance `$DEFAULT`. That one ref update is the only contended resource, and git makes it atomic: `merge --ff-only` refuses anything that isn't a true fast-forward, and the bare-ref path below is a *compare-and-swap* (`update-ref` with an expected old value), never a force-move — so a lost race **refuses rather than clobbers**. Step 2 attempts the fast-forward and, on failure, checks whether it *got beaten* (another merge advanced `$DEFAULT` out from under it); if so it re-runs the whole process — rebase onto the now-current tip, then fast-forward again — until it lands.
+
 **Steps:**
 1. Rebase onto the default branch, in the worktree:
    ```
    git -C "$WT" rebase "$DEFAULT"
    ```
    Conflicts → list `git -C "$WT" diff --name-only --diff-filter=U`; resolve in the worktree (`git -C "$WT" add <files>`, `git -C "$WT" rebase --continue`); surface non-trivial conflicts and wait; bail with `git -C "$WT" rebase --abort` (restores the pre-rebase state).
-2. Fast-forward the default branch to `$BR` — after the rebase it's a strict ancestor, so this can't create a merge commit:
-   - Checked out somewhere → advance its working tree there:
+2. Fast-forward the default branch to `$BR`. After the rebase `$BR` is a strict descendant of `$DEFAULT`, so this can't create a merge commit:
+   - Checked out somewhere → advance that working tree there:
      ```
      git -C "$DEFAULT_WT" merge --ff-only "$BR"
      ```
-   - Checked out nowhere (`$DEFAULT_WT` empty) → move the ref, which is the same fast-forward without a working tree to touch:
+   - Checked out nowhere (`$DEFAULT_WT` empty) → move the ref with a compare-and-swap:
      ```
-     git branch -f "$DEFAULT" "$BR"
+     CUR=$(git -C "$SAFE" rev-parse "refs/heads/$DEFAULT")
+     git -C "$SAFE" update-ref "refs/heads/$DEFAULT" "$BR" "$CUR"
      ```
-   `merge --ff-only` polices this itself: it ignores untracked files (so an unrelated untracked file in the default-branch checkout doesn't block it) and refuses only on a genuine conflict. If it errors, that checkout has conflicting local changes — surface them and stop; the rebase is already done, so re-running after the user resolves them just retries the fast-forward. No commits beyond the default branch → no-op ("nothing to merge"); still tear down.
+   Both self-guard against a concurrent merge: `merge --ff-only` refuses anything but a true fast-forward (it ignores untracked files, failing only on a real conflict), and the CAS `update-ref` refuses if `$DEFAULT` moved since `$CUR` was read. **Never `git branch -f`** — it force-moves the ref and would silently discard a commit another session just landed. Success (including a clean no-op — "Already up to date" — when `$BR` has no commits beyond `$DEFAULT`) → tear down.
+
+   On **failure**, find out whether you got **beaten** — another merge advanced `$DEFAULT` out from under you:
+   ```
+   git -C "$WT" merge-base --is-ancestor "$DEFAULT" "$BR"
+   ```
+   - **Non-zero → beaten.** `$DEFAULT` now points onto a commit that isn't in `$BR`'s history. Go back to **step 1** and redo the whole thing: `git -C "$WT" rebase "$DEFAULT"` picks up the now-current tip (re-resolve any fresh conflicts against the just-landed work, as in step 1), then re-attempt this fast-forward. Loop until it lands.
+   - **Zero → genuine error, not a race.** `$BR` still descends from the current `$DEFAULT`, so the failure is real: the default-branch checkout has conflicting local changes (or, rarely, two sessions hit its index at the same instant). Surface it and stop — the rebase is already done, so re-running just retries the fast-forward, which also clears a transient collision.
 3. **Tear down** the worktree + branch — run *Removing the worktree + branch* below. After the fast-forward the branch is merged and the worktree is normally clean, so it removes without prompting; if conflict resolution left untracked files behind, the dirty check there catches them and confirms first.
 4. **Report:** `$BR` fast-forwarded onto `$DEFAULT` (N commits), worktree + branch removed. `$DEFAULT` is now **ahead of origin — do not push** (the user pushes when ready).
 
@@ -102,5 +112,6 @@ The shared teardown used by both subcommands — the whole of `/wt delete`, and 
 - `git worktree unlock` is a harmless no-op on an unlocked worktree, so the teardown doesn't care whether it was locked (`EnterWorktree` locks its own; most worktrees aren't).
 - Tearing down the worktree the **current Claude Code session lives in** detaches the harness with `ExitWorktree action: "keep"` before the git removal (see *Removing the worktree + branch*), because the harness pins the session's cwd inside it. `keep` carries no discard guard, so a `/wt merge` whose commits are already fast-forwarded onto the local default branch tears down without a false "N commits will be discarded" prompt.
 - **Local-only. Never push, never touch origin.** `/wt merge` leaves the default branch ahead of origin for the user to push when ready.
+- **Concurrent `/wt merge`s rely on git's atomic ref update.** `merge --ff-only` and the CAS `update-ref` both *refuse* a stale fast-forward rather than clobber, so a race can never lose commits; the bare-ref path uses `update-ref` with an expected old value, never `git branch -f` (a force-move that could). The loser detects it got beaten (step 2's `is-ancestor` check) and re-runs the whole process — rebase onto the now-current default, then fast-forward — until it lands. `/wt delete` doesn't race — it touches only its own worktree.
 - Always read the branch from git and handle detached HEAD; run removals from `$SAFE`, never from inside the target.
 - The worktree-list parsing avoids awk `$0` and positional `$1`/`$2`: when the skill is invoked with an argument (`/wt merge <name>`), the launcher substitutes those placeholders with the argument tokens, which would corrupt any snippet using them. Named `$VARS` are untouched.
