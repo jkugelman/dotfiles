@@ -145,32 +145,20 @@ nothing breaks — Ctrl-Left/Right word-jumping just stops working. Add
 `2>/dev/null`, or hardcode `$'\e[1;5D'` / `$'\e[1;5C'`.
 
 
-Big rebuild: replace zplug (the keystone)
-=========================================
+Restructure: split .zshrc into a spine + rc.d
+=============================================
 
-`zplug` is abandoned (last release 2019) and a known startup drag, and it's the
-*root* of two other problems: the p10k instant-prompt ordering bug and both
-"Install plugins? [y/N]" hacks. Replacing it — antidote / zinit / sheldon, or
-plain native `source` — dissolves all three at once, and it's the natural moment
-to do the zsh spine/`rc.d` split below. A real project, not a cleanup pass; not
-necessarily now, but it subsumes a lot.
-
-**The ordering bug it fixes.** The instant-prompt block near the top of `.zshrc`
-says console input must go *above* it; the `zplug check` / `read -q` install
-prompt sits ~200 lines below, in violation. A manager that bootstraps at the top
-removes the contradiction.
-
-**The spine/rc.d split it enables.** `.zshrc`'s problem isn't length, it's that a
-small order-*critical* spine (the plugin-manager/p10k lifecycle; `bindkey -e`
-early, since it resets the keymap) is tangled through a large order-*free* bulk
-(the Alt-S/Alt-D git keybindings, history options, the terminfo key table,
-dircycle). Split it: `.zshrc` keeps only order-critical lines, each with its
-reason stated, so reading top-to-bottom tells the whole lifecycle;
-`.config/zsh/rc.d/*.zsh` holds the order-free chunks, sourced from one slot.
-Invariant: if a chunk needs a number to order it, it belongs in the spine, not
-`rc.d` — that keeps `10-`/`20-`/`50-` from creeping back. Needs a `.gitignore`
-opt-in for `!/.config/zsh/`. (Frozen bash is now too small to want the same
-split.)
+`.zshrc`'s problem isn't length, it's that a small order-*critical* spine (the
+antidote/p10k lifecycle; `bindkey -e` early, since it resets the keymap) is
+tangled through a large order-*free* bulk (the Alt-S/Alt-D git keybindings,
+history options, the terminfo key table, dircycle). Split it: `.zshrc` keeps
+only order-critical lines, each with its reason stated, so reading top-to-bottom
+tells the whole lifecycle; `.config/zsh/rc.d/*.zsh` holds the order-free chunks,
+sourced from one slot. Invariant: if a chunk needs a number to order it, it
+belongs in the spine, not `rc.d` — that keeps `10-`/`20-`/`50-` from creeping
+back. `.config/zsh/` is already opted into `.gitignore`, but only for its single
+plugin-list file — widen that to the whole directory so `rc.d/*.zsh` is tracked.
+(Frozen bash is now too small to want the same split.)
 
 
 Scrub the vim config — vim is now secondary

@@ -1,10 +1,23 @@
-if ! [[ -d ~/.zplug ]]; then
-    printf 'Install zplug? [y/N]: '
-    read -q || return
-    echo
-    curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
-    sleep 1 # Why is this needed? Without it, init.zsh is missing on Raspberry Pi.
-    echo
+# Bootstrap antidote (zsh plugin manager) and compile the plugin list, both on
+# first run only. Deliberately above the instant-prompt block: it may print git
+# output the first time, and unlike the old zplug installer it never needs
+# input — so nothing here can conflict with instant prompt.
+ANTIDOTE_DIR=${XDG_DATA_HOME:-$HOME/.local/share}/antidote
+if [[ ! -e $ANTIDOTE_DIR/antidote.zsh ]]; then
+    git clone --depth 1 https://github.com/mattmc3/antidote.git $ANTIDOTE_DIR
+fi
+
+# antidote compiles ~/.config/zsh/.zsh_plugins.txt into a static file under the
+# XDG cache; regenerate only when the plugin list changes. Sourcing it (loading
+# the plugins) happens later, once the keybindings below are in place.
+zsh_plugins_txt=~/.config/zsh/.zsh_plugins.txt
+zsh_plugins_zsh=${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zsh_plugins.zsh
+if [[ ! $zsh_plugins_zsh -nt $zsh_plugins_txt ]]; then
+    mkdir -p ${zsh_plugins_zsh:h}
+    (
+        source $ANTIDOTE_DIR/antidote.zsh
+        antidote bundle <$zsh_plugins_txt >$zsh_plugins_zsh
+    )
 fi
 
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
@@ -13,8 +26,6 @@ fi
 if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
     source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
-
-source ~/.zplug/init.zsh
 
 # Use emacs keybindings even if our EDITOR is set to vi. Need to set this early.
 bindkey -e
@@ -49,17 +60,7 @@ case $TERM in
         ;;
 esac
 
-# Shell theme. Same Powerlevel9k just faster.
-zplug 'romkatv/powerlevel10k', as:theme, if:'[[ $TERM == *256* ]]'
-
-# This plugin enables directory navigation similar to using back and forward on
-# browsers or common file explorers like Finder or Nautilus. It uses a small zle
-# trick that lets you cycle through your directory stack left or right using
-# Ctrl + Shift + Left / Right. This is useful when moving back and forth between
-# directories in development environments, and can be thought of as kind of a
-# nondestructive pushd/popd.
-zplug 'plugins/dircycle', from:oh-my-zsh
-
+# Alt-Left/Right cycle the directory stack (dircycle plugin, loaded below).
 bindkey '^[[1;3D' insert-cycledleft     # Alt-Left
 bindkey '^[[1;3C' insert-cycledright    # Alt-Right
 
@@ -90,34 +91,11 @@ zle -N _chdir-descendant
 bindkey '^[[1;3A' _chdir-parent         # Alt-Up
 bindkey '^[[1;3B' _chdir-descendant     # Alt-Down
 
-# * ccat <file> [files]: colorize the contents of the file (or files, if more
-#   than one are provided). If no arguments are passed it will colorize the
-#   standard input or stdin.
-#
-# * cless <file> [files]: colorize the contents of the file (or files, if more
-#   than one are provided) and open less. If no arguments are passed it will
-#   colorize the standard input or stdin.
-zplug 'plugins/colorize', from:oh-my-zsh
-
-# Fish-like fast/unobtrusive autosuggestions for zsh. It suggests commands as
-# you type based on history and completions.
-zplug 'zsh-users/zsh-autosuggestions'
-
-# This package provides syntax highlighting for the shell zsh. It enables
-# highlighting of commands whilst they are typed at a zsh prompt into an
-# interactive terminal. This helps in reviewing commands before running them,
-# particularly in catching syntax errors.
-zplug 'zsh-users/zsh-syntax-highlighting', defer:2
-
-# This plugin starts automatically ssh-agent to set up and load whichever
-# credentials you want for ssh connections.
-zplug 'plugins/ssh-agent', from:oh-my-zsh
-
 # If a command is not recognized in the $PATH, this will use Ubuntu's
 # command-not-found package to find it or suggest spelling mistakes.
 #
-# Don't use this, it doesn't print an error if there's no suggestion:
-# zplug 'plugins/command-not-found', from:oh-my-zsh
+# The oh-my-zsh command-not-found plugin isn't used: it doesn't print an error
+# when there's no suggestion.
 if [[ -x /usr/lib/command-not-found ]] ; then
     if (( ! ${+functions[command_not_found_handler]} )) ; then
         function command_not_found_handler {
@@ -218,16 +196,14 @@ bindkey -- $'\e[F' end-of-line
 # Keep $PATH free of duplicate entries.
 typeset -U path
 
-# Install plugins if there are plugins that have not been installed.
-if ! zplug check --verbose; then
-    printf "Install plugins? [y/N]: "
-    if read -q; then
-        echo; zplug install
-    fi
-fi
+# Enable Powerlevel10k only on 256-color terminals; antidote calls this when it
+# sources the plugin list (the conditional: in .zsh_plugins.txt).
+is-256color() { [[ $TERM == *256* ]] }
 
-# Then, source plugins and add commands to $PATH.
-zplug load
+# Load the plugins — late on purpose, so zsh-syntax-highlighting wraps the final
+# set of widgets and keybindings defined above.
+[[ -r $zsh_plugins_zsh ]] && source $zsh_plugins_zsh
+unset ANTIDOTE_DIR zsh_plugins_txt zsh_plugins_zsh
 
 # To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
 [[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh

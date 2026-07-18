@@ -1,0 +1,17 @@
+# Zsh plugins, loaded by antidote from ~/.zshrc.
+# Order matters here: zsh-syntax-highlighting must come last.
+
+# Powerlevel10k prompt theme, on 256-color terminals only (see is-256color in
+# ~/.zshrc). Configured separately by ~/.p10k.zsh.
+romkatv/powerlevel10k conditional:is-256color
+
+# Directory-stack navigation: Alt-Left/Right cycle through visited dirs like a
+# browser's back/forward buttons. Keys are bound in ~/.zshrc.
+ohmyzsh/ohmyzsh path:plugins/dircycle
+
+# Fish-like autosuggestions from history and completions as you type.
+zsh-users/zsh-autosuggestions
+
+# Command-line syntax highlighting — catches typos before you hit enter.
+# Deferred until just after the first prompt (was defer:2 under zplug).
+zsh-users/zsh-syntax-highlighting kind:defer
