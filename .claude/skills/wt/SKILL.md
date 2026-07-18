@@ -79,21 +79,26 @@ Remove a worktree + its branch. This is just the shared teardown below, plus a r
 
 The shared teardown used by both subcommands — the whole of `/wt delete`, and the final step of `/wt merge`. Given the resolved `$WT`, `$BR`, `$TIP`, `$DEFAULT`, `$SAFE`:
 
-1. Assess:
+1. **Assess:**
    - **Merged?** `git -C "$SAFE" merge-base --is-ancestor "$TIP" "$DEFAULT"` (exit 0 = the worktree's commit is already in the default branch — always true right after `/wt merge`'s fast-forward; works whether or not it's on a branch).
    - **Dirty?** `git -C "$WT" status --porcelain` non-empty (uncommitted or untracked files — e.g. conflict-resolution leftovers).
 2. If **not** (merged AND clean) → removing would discard commits and/or files. Confirm (AskUserQuestion), naming exactly what's lost (N unmerged commits, and/or uncommitted changes). Proceed only on explicit confirmation; otherwise stop and change nothing.
-3. Remove — unlock first (a harmless no-op if it wasn't locked), run from `$SAFE`, never from inside `$WT`:
+3. **If the session lives in `$WT`, detach the harness first.** When the current Claude Code session is working *inside* `$WT` — an `EnterWorktree`-made worktree; the usual no-argument `/wt merge`/`/wt delete`, or an argument naming your own worktree — the harness pins the session's cwd inside `$WT` and keeps resetting it back there, so the raw `git worktree remove` in step 4 would strand it. Detach first with the **`ExitWorktree` tool, `action: "keep"`**: `keep` leaves the worktree *and* branch on disk untouched (step 4 does the actual removal) and restores the session's cwd to outside `$WT`. Because it's `keep`, not `remove`, it trips **none** of `ExitWorktree`'s guards — no spurious "N commits will be discarded" refusal for work `/wt merge` already fast-forwarded onto `$DEFAULT`.
+   - **Only when it's the session's own worktree.** If `$WT` is a *different* worktree you aren't sitting in (named as an argument from elsewhere), **skip** this step — never `ExitWorktree` a worktree you aren't targeting, since it acts on the session's worktree, not `$WT`. And if `$WT` isn't an `EnterWorktree` session worktree at all, `ExitWorktree` is a documented no-op — harmless; proceed to step 4 either way.
+4. **Remove** — unlock first (a harmless no-op if it wasn't locked), run from `$SAFE`, never from inside `$WT`:
    ```
    git -C "$SAFE" worktree unlock "$WT" 2>/dev/null || true
    git -C "$SAFE" worktree remove "$WT"          # add --force if dirty or unmerged (once confirmed)
    [ -n "$BR" ] && git -C "$SAFE" branch -d "$BR"    # -D if unmerged (once confirmed); skip when detached
    ```
 
+**On `ExitWorktree`'s guards.** The *removal* is done with git (step 4), never `ExitWorktree action: "remove"`, so this skill's own merged/dirty check (steps 1–2) stays the single guard across every worktree type. `ExitWorktree`'s `remove` guard measures "unmerged" against the branch's *original* base (typically `origin/$DEFAULT`), so after a local fast-forward it still counts the now-merged commits as discardable and refuses without `discard_changes: true` — a guard that's simply wrong for `/wt`, which intentionally lands work on the **local** default branch and never pushes. `keep` sidesteps it. If you ever must remove *through* `ExitWorktree` (keep is somehow unavailable), passing `discard_changes: true` is authorized — but only **after** step 1 shows merged or step 2's confirmation was given, never before.
+
 ## Notes
 
 - Works with any git worktree — `git worktree add`, worktrunk, `EnterWorktree`, whatever put it there. Nothing assumes where worktrees live or how branches are named; it's all read from `git worktree list` and `git`.
 - `git worktree unlock` is a harmless no-op on an unlocked worktree, so the teardown doesn't care whether it was locked (`EnterWorktree` locks its own; most worktrees aren't).
+- Tearing down the worktree the **current Claude Code session lives in** detaches the harness with `ExitWorktree action: "keep"` before the git removal (see *Removing the worktree + branch*), because the harness pins the session's cwd inside it. `keep` carries no discard guard, so a `/wt merge` whose commits are already fast-forwarded onto the local default branch tears down without a false "N commits will be discarded" prompt.
 - **Local-only. Never push, never touch origin.** `/wt merge` leaves the default branch ahead of origin for the user to push when ready.
 - Always read the branch from git and handle detached HEAD; run removals from `$SAFE`, never from inside the target.
 - The worktree-list parsing avoids awk `$0` and positional `$1`/`$2`: when the skill is invoked with an argument (`/wt merge <name>`), the launcher substitutes those placeholders with the argument tokens, which would corrupt any snippet using them. Named `$VARS` are untouched.
