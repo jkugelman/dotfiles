@@ -75,9 +75,13 @@ per machine:
   or `brew install git-delta` on macOS.
 - **[git-revise]** — history-editing helper (`git revise`). `pipx install
   git-revise`.
+- **[tree]** — directory-tree lister, wrapped by `common.shrc`. Ships with or
+  packages for most Linux distros (`apt install tree`); `brew install tree` on
+  macOS, which has no system copy.
 
 [delta]: https://github.com/dandavison/delta
 [git-revise]: https://github.com/mystor/git-revise
+[tree]: https://oldmanprogrammer.net/source.php?dir=projects/tree
 
 
 Docker

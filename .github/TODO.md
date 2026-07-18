@@ -114,9 +114,6 @@ macOS: degraded
 
 Not broken, just worse than it should be.
 
-**`tree` isn't installed on macOS** — Homebrew only. The `-ACF` flags are fine.
-Worth a note in the README setup steps alongside Docker.
-
 **`.inputrc` is two-thirds inert.** `$include /etc/inputrc` — macOS has none,
 so those bindings vanish; `set colored-stats On` needs readline 6.3+ and macOS
 bash 3.2 ships 5.2. No-ops, not errors.
