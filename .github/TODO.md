@@ -114,24 +114,17 @@ macOS: silent breaks
 
 Nothing errors; things just quietly stop doing what you think they do.
 
-**`.bashrc` never runs at all.** (Gated by bash's future.) Terminal.app and
-iTerm2 start bash as a *login* shell — `.bash_profile` / `.bash_login` /
-`.profile`, never `.bashrc`. None is tracked (`.bash_profile` was removed in
-"Remove outdated .bash_profile"), so all of `.bashrc` silently does nothing and
-you get a bare `bash-3.2$`. If bash stays, track a `.bash_profile`:
+**`.bashrc` never runs at all.** Terminal.app and iTerm2 start bash as a
+*login* shell — `.bash_profile` / `.bash_login` / `.profile`, never `.bashrc`.
+None is tracked (`.bash_profile` was removed in "Remove outdated
+.bash_profile"), so all of `.bashrc` silently does nothing and you get a bare
+`bash-3.2$`. Frozen bash's `.bashrc` is now just shell options plus the shared
+`common.shrc` aliases — decide whether that's worth loading on macOS via a
+tracked `.bash_profile`:
 
     [[ -f ~/.bashrc ]] && . ~/.bashrc
 
 (`.bashrc`'s `[ -f /etc/bashrc ]` guard is fine — macOS ships one.)
-
-**The ssh-agent block detaches you from the macOS Keychain.** (Gated by bash's
-future.) `.bashrc` consults only `~/.ssh/environment`, so on macOS — where
-launchd already runs an agent with Keychain passphrases and exports
-`SSH_AUTH_SOCK` — it spawns a redundant agent and overwrites the socket, and you
-start getting passphrase prompts permanently. Guard the block with
-`if [[ -z $SSH_AUTH_SOCK ]]; then ... fi`. (`.zshrc`'s oh-my-zsh
-`plugins/ssh-agent` is redundant on macOS too, but at least respects an existing
-agent.)
 
 
 macOS: degraded
@@ -148,9 +141,9 @@ that's not in the default PATH, so it cascades: no `rg` (breaks `rgl`/`rgll`), n
 **`tree` isn't installed on macOS** — Homebrew only. The `-ACF` flags are fine.
 Worth a note in the README setup steps alongside Docker.
 
-**`.inputrc` is two-thirds inert.** (Relevance gated by bash's future.) `$include
-/etc/inputrc` — macOS has none, so those bindings vanish; `set colored-stats On`
-needs readline 6.3+ and macOS bash 3.2 ships 5.2. No-ops, not errors.
+**`.inputrc` is two-thirds inert.** `$include /etc/inputrc` — macOS has none,
+so those bindings vanish; `set colored-stats On` needs readline 6.3+ and macOS
+bash 3.2 ships 5.2. No-ops, not errors.
 
 **`tput` may print errors at zsh startup.** `.zshrc`'s `tput -T xterm kLFT5` uses
 extended capabilities older macOS ncurses may reject on stderr. It's guarded, so
@@ -182,22 +175,8 @@ reason stated, so reading top-to-bottom tells the whole lifecycle;
 `.config/zsh/rc.d/*.zsh` holds the order-free chunks, sourced from one slot.
 Invariant: if a chunk needs a number to order it, it belongs in the spine, not
 `rc.d` — that keeps `10-`/`20-`/`50-` from creeping back. Needs a `.gitignore`
-opt-in for `!/.config/zsh/`. Once it works for zsh, `.bashrc` could get the same
-treatment (smaller spine) — but settle bash's future first.
-
-
-bash's future (talk before touching `.bashrc`)
-==============================================
-
-I use bash occasionally, usually for a minute — that's why the customization is
-still there. But roughly half of `.bashrc` is a parallel prompt universe
-(`__ps1_ssh`, `__ps1_branch`, the `__exit_code` cursor-position exit-code trap,
-manual ssh-agent) duplicating what zsh+p10k already give me, for a shell that on
-macOS doesn't even run as a login shell. Open question to talk through in detail:
-keep maintaining and porting all that, or freeze it and strip bash back to a
-script interpreter? The answer decides a cluster of items — the two macOS bash
-breaks above, `.inputrc`'s relevance, and the dead SVN branch-parser +
-`complete -r svn` still living in `.bashrc`.
+opt-in for `!/.config/zsh/`. (Frozen bash is now too small to want the same
+split.)
 
 
 Scrub the vim config — vim is now secondary
