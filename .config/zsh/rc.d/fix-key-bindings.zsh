@@ -16,9 +16,14 @@ key[Shift-Tab]="${terminfo[kcbt]}"
 key[Ctrl-Left]="${terminfo[kLFT5]}"
 key[Ctrl-Right]="${terminfo[kRIT5]}"
 
-# TERM=screen-256color is missing these key entries.
-[[ -z "${key[Ctrl-Left]}"  ]] && key[Ctrl-Left]="$(tput -T xterm kLFT5)"
-[[ -z "${key[Ctrl-Right]}" ]] && key[Ctrl-Right]="$(tput -T xterm kRIT5)"
+# terminfo omits these under TERM=screen-256color (tmux/screen); fall back to
+# the standard xterm control sequences so Ctrl-Left/Right word-jumping keeps
+# working there. Hardcoding the two constants also avoids `tput`, whose
+# extended-capability lookup older macOS ncurses rejects on stderr. (The
+# fallback is a plain assignment, not a `${...:-$'\e…'}` default — zsh does not
+# ANSI-C-expand $'…' inside a :- word, so that form would bind literal `$'…'`.)
+[[ -n "${key[Ctrl-Left]}"  ]] || key[Ctrl-Left]=$'\e[1;5D'
+[[ -n "${key[Ctrl-Right]}" ]] || key[Ctrl-Right]=$'\e[1;5C'
 
 [[ -n "${key[Home]}"       ]] && bindkey -- "${key[Home]}"       beginning-of-line
 [[ -n "${key[End]}"        ]] && bindkey -- "${key[End]}"        end-of-line
@@ -38,3 +43,17 @@ key[Ctrl-Right]="${terminfo[kRIT5]}"
 # VSCode needs extra bindings for Home and End.
 bindkey -- $'\e[H' beginning-of-line
 bindkey -- $'\e[F' end-of-line
+
+# The $terminfo sequences above are only what the terminal sends while it's in
+# keypad application mode. Put it into that mode whenever the line editor is
+# active, so those bindings match the bytes that actually arrive. Registering
+# through add-zle-hook-widget — rather than a raw `zle -N zle-line-init` —
+# composes with the hooks Powerlevel10k sets on the same events instead of
+# replacing them.
+if (( ${+terminfo[smkx]} && ${+terminfo[rmkx]} )); then
+    autoload -Uz add-zle-hook-widget
+    _zle-application-mode-start()  { echoti smkx }
+    _zle-application-mode-finish() { echoti rmkx }
+    add-zle-hook-widget line-init   _zle-application-mode-start
+    add-zle-hook-widget line-finish _zle-application-mode-finish
+fi

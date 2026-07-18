@@ -121,12 +121,6 @@ Worth a note in the README setup steps alongside Docker.
 so those bindings vanish; `set colored-stats On` needs readline 6.3+ and macOS
 bash 3.2 ships 5.2. No-ops, not errors.
 
-**`tput` may print errors at zsh startup.** `~/.config/zsh/rc.d/fix-key-bindings.zsh`'s
-`tput -T xterm kLFT5` uses extended capabilities older macOS ncurses may reject
-on stderr. It's guarded, so
-nothing breaks — Ctrl-Left/Right word-jumping just stops working. Add
-`2>/dev/null`, or hardcode `$'\e[1;5D'` / `$'\e[1;5C'`.
-
 
 Scrub the vim config — vim is now secondary
 ===========================================
