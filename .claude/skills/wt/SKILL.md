@@ -26,7 +26,7 @@ DEFAULT=${DEFAULT:-$(git show-ref --verify --quiet refs/heads/main && echo main 
 SAFE=$(git worktree list --porcelain | sed -n 's/^worktree //p' | head -n1)   # primary worktree: a safe cwd for repo-level ops
 ```
 
-**Resolve these silently — they're internal bookkeeping.** Don't echo or narrate `$WT` / `$BR` / `$TIP` / `$DEFAULT` / `$SAFE` (or `$DEFAULT_WT`, resolved in `/wt merge`) back to the user — no "Variables: WT = …, BR = …" preamble. Surface only the outcome: each subcommand's *Report* step, plus any conflict or confirmation that genuinely needs the user.
+**Resolve these silently — they're internal bookkeeping.** Don't echo or narrate `$WT` / `$BR` / `$TIP` / `$DEFAULT` / `$SAFE` (or `$DEFAULT_WT`, resolved in `/wt merge`) back to the user — no "Variables: WT = …, BR = …" preamble. Surface only the outcome: each subcommand's *Report* step, plus any conflict or confirmation that genuinely needs the user. Where a value *does* surface — a *Report* line, or the one-line **description** on each Bash call this skill runs — write the **resolved value** (the actual branch name, default-branch name, path), never the literal `$BR`/`$DEFAULT`/`$WT` token; the placeholders in this doc stand in for their values. Describe the fast-forward step as e.g. `Fast-forward main onto add-widget`, not `Merged "$BR"` — a description that echoes the raw token instead of the branch name is the exact leak to avoid.
 
 Guards: `$WT` is a linked worktree (not `$SAFE`/the primary). If `$BR` is set it must not be `$DEFAULT`. **Detached HEAD** (`$BR` empty): `merge` can't run — there's no branch to fast-forward from or delete — so say so and stop; `delete` still works (it removes the worktree, with the merged check done against `$TIP`).
 
