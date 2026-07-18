@@ -26,6 +26,8 @@ DEFAULT=${DEFAULT:-$(git show-ref --verify --quiet refs/heads/main && echo main 
 SAFE=$(git worktree list --porcelain | sed -n 's/^worktree //p' | head -n1)   # primary worktree: a safe cwd for repo-level ops
 ```
 
+**Resolve these silently — they're internal bookkeeping.** Don't echo or narrate `$WT` / `$BR` / `$TIP` / `$DEFAULT` / `$SAFE` (or `$DEFAULT_WT`, resolved in `/wt merge`) back to the user — no "Variables: WT = …, BR = …" preamble. Surface only the outcome: each subcommand's *Report* step, plus any conflict or confirmation that genuinely needs the user.
+
 Guards: `$WT` is a linked worktree (not `$SAFE`/the primary). If `$BR` is set it must not be `$DEFAULT`. **Detached HEAD** (`$BR` empty): `merge` can't run — there's no branch to fast-forward from or delete — so say so and stop; `delete` still works (it removes the worktree, with the merged check done against `$TIP`).
 
 Run every worktree-removing / branch-deleting command from `$SAFE` (or any directory outside `$WT`), **never** from inside `$WT` — removing a worktree from within it fails and strands your cwd (`cd "$SAFE"` afterward if the shell was inside it).
