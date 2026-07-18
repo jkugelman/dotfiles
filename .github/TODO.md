@@ -139,8 +139,9 @@ Worth a note in the README setup steps alongside Docker.
 so those bindings vanish; `set colored-stats On` needs readline 6.3+ and macOS
 bash 3.2 ships 5.2. No-ops, not errors.
 
-**`tput` may print errors at zsh startup.** `.zshrc`'s `tput -T xterm kLFT5` uses
-extended capabilities older macOS ncurses may reject on stderr. It's guarded, so
+**`tput` may print errors at zsh startup.** `~/.config/zsh/rc.d/fix-key-bindings.zsh`'s
+`tput -T xterm kLFT5` uses extended capabilities older macOS ncurses may reject
+on stderr. It's guarded, so
 nothing breaks — Ctrl-Left/Right word-jumping just stops working. Add
 `2>/dev/null`, or hardcode `$'\e[1;5D'` / `$'\e[1;5C'`.
 
@@ -195,9 +196,11 @@ practical when a tool resists — if it wants a non-XDG location and can't be
 cleanly repointed, accept that. Worth a detailed pass when we get to it. The
 zero-friction wins:
 
-  - Shell state out of `$HOME`: `.zsh_history`, `.zcompdump`, `.zplug` →
+  - Shell state out of `$HOME`: `.zsh_history`, `.zcompdump` →
     `~/.local/state` / `~/.cache`. (The p10k instant-prompt cache already honors
-    `XDG_CACHE_HOME`, so the pattern exists.)
+    `XDG_CACHE_HOME`, so the pattern exists.) The stale `~/.zplug/` dir is dead
+    cruft — antidote replaced zplug and already lives under `~/.local/share`;
+    just delete it, no relocation needed.
 
 Don't force the ones without native XDG support (`.psqlrc`, `.sqliterc`). Related
 policy call: generated artifacts that were or are tracked — vim's `doc/tags` (now
