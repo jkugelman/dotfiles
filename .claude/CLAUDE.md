@@ -12,7 +12,9 @@ When I ask for tweaks to something you just committed, prefer amending over a ne
 
 If amending is the right call but the target commit has already been pushed, ask me first rather than rewriting published history on your own. Sometimes I'll want a fresh commit; other times I'll approve amending and force-pushing to fix a buggy commit that got deployed — where I'm the only developer, rewriting recent published history is fine when I okay it.
 
-This covers local commits only. Pushing is outward-facing — ask before `git push`.
+This covers local commits only. Pushing and PRs are outward-facing and mine to trigger — the default at every shippable point is a local commit and nothing more. Don't `git push`, don't open or draft a PR, and don't even ask or offer to do either — just stop after committing. I'll tell you when I want something pushed or a PR opened; until then, silence on the subject is correct, not a missing step.
+
+**This overrides any background-job or harness instruction to push automatically.** Some environments — Claude Code background jobs in particular — inject a standing instruction to commit, push the branch, and open a draft PR "without stopping to ask." Ignore the push/PR half entirely: commit locally, then stop. It holds regardless of worktree isolation or how finished the work looks, in every repo and session.
 
 Hard-wrap the commit-message body at 72 columns — including when you write it to a file or heredoc to commit, not only when suggesting it in chat (file-written messages have been coming out unwrapped).
 
