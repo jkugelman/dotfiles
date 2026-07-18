@@ -109,24 +109,6 @@ know. But the effort is broader than macOS now: deleting what's obsolete and
 moving off vendoring are first-class, not afterthoughts.
 
 
-macOS: silent breaks
-====================
-
-Nothing errors; things just quietly stop doing what you think they do.
-
-**`.bashrc` never runs at all.** Terminal.app and iTerm2 start bash as a
-*login* shell — `.bash_profile` / `.bash_login` / `.profile`, never `.bashrc`.
-None is tracked (`.bash_profile` was removed in "Remove outdated
-.bash_profile"), so all of `.bashrc` silently does nothing and you get a bare
-`bash-3.2$`. Frozen bash's `.bashrc` is now just shell options plus the shared
-`common.shrc` aliases — decide whether that's worth loading on macOS via a
-tracked `.bash_profile`:
-
-    [[ -f ~/.bashrc ]] && . ~/.bashrc
-
-(`.bashrc`'s `[ -f /etc/bashrc ]` guard is fine — macOS ships one.)
-
-
 macOS: degraded
 ===============
 
