@@ -132,12 +132,6 @@ macOS: degraded
 
 Not broken, just worse than it should be.
 
-**Nothing from Homebrew is on `PATH`.** Neither `.bashrc` nor `.zshrc` adds
-`/opt/homebrew/bin` (Apple Silicon) or `/usr/local/bin` (Intel), and no
-`.zprofile` runs `eval "$(/opt/homebrew/bin/brew shellenv)"`. On Apple Silicon
-that's not in the default PATH, so it cascades: no `rg` (breaks `rgl`/`rgll`), no
-`tree`, no modern `bash`.
-
 **`tree` isn't installed on macOS** — Homebrew only. The `-ACF` flags are fine.
 Worth a note in the README setup steps alongside Docker.
 
