@@ -166,12 +166,7 @@ XDG relocation (opportunistic — easy wins only)
 
 A soft preference, not a crusade: switch to XDG paths when it's easy, lean
 practical when a tool resists — if it wants a non-XDG location and can't be
-cleanly repointed, accept that. Worth a detailed pass when we get to it. The
-zero-friction wins:
-
-  - Shell state out of `$HOME`: `.zsh_history`, `.zcompdump` →
-    `~/.local/state` / `~/.cache`. (The p10k instant-prompt cache already honors
-    `XDG_CACHE_HOME`, so the pattern exists.)
+cleanly repointed, accept that. Worth a detailed pass when we get to it.
 
 Don't force the ones without native XDG support (`.psqlrc`, `.sqliterc`). Related
 policy call: generated artifacts that were or are tracked — vim's `doc/tags` (now

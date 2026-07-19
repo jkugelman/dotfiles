@@ -40,14 +40,16 @@ zmodload zsh/complist
 
 # compinit's security audit is the slow part of zsh startup. Rebuild the
 # dump and run the audit only when it's over a day old; otherwise (fresh,
-# or missing on first run) trust the cache with -C.
-_zcompdump_stale=(~/.zcompdump(Nmh+24))
+# or missing on first run) trust the cache with -C. Keep the dump under the
+# XDG cache — the antidote block above already ensures ~/.cache/zsh exists.
+_zcompdump=${XDG_CACHE_HOME:-$HOME/.cache}/zsh/zcompdump
+_zcompdump_stale=($_zcompdump(Nmh+24))
 if (( $#_zcompdump_stale )); then
-    compinit
+    compinit -d $_zcompdump
 else
-    compinit -C
+    compinit -C -d $_zcompdump
 fi
-unset _zcompdump_stale
+unset _zcompdump _zcompdump_stale
 _comp_options+=(globdots)       # Include hidden files.
 
 # Source the order-free config chunks. Everything under rc.d is
