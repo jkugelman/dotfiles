@@ -67,6 +67,20 @@
       "/home/jkugelman/.claude"
     ]
   },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Edit|Write|MultiEdit|EnterWorktree",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/scripts/dotfiles-guard.sh",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
+  },
   "effortLevel": "xhigh",
   "theme": "auto",
   "agentPushNotifEnabled": true,
