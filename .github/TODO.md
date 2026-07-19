@@ -145,21 +145,6 @@ already shows the pattern.
 **Move per-filetype config to `~/.vim/after/ftplugin/`.** The m4 syntax block and
 the wordlist `<F9>` map are the clear candidates.
 
-(The remaining hand-vendored tpope plugins move to vim-plug — see Vendoring
-migrations.)
-
-
-Vendoring migrations
-====================
-
-Per the "prefer managed installs over vendoring" lean, these vendored third-party
-tools move out of the repo. Each is *installed*, not deleted — except where a
-tool I already use replaces it.
-
-The remaining vendored vim plugins (`dragvisuals`, live; `undowarnings` and
-`visualguide`, kept) have no clean single-repo upstream, so they stay vendored or
-get a documented install — not worth forcing.
-
 
 XDG relocation (opportunistic — easy wins only)
 ===============================================
