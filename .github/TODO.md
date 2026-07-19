@@ -109,16 +109,6 @@ know. But the effort is broader than macOS now: deleting what's obsolete and
 moving off vendoring are first-class, not afterthoughts.
 
 
-macOS: degraded
-===============
-
-Not broken, just worse than it should be.
-
-**`.inputrc` is two-thirds inert.** `$include /etc/inputrc` — macOS has none,
-so those bindings vanish; `set colored-stats On` needs readline 6.3+ and macOS
-bash 3.2 ships 5.2. No-ops, not errors.
-
-
 Scrub the vim config — vim is now secondary
 ===========================================
 
@@ -168,6 +158,3 @@ Lower confidence — think about whether these are actually wanted.
 behind the July 2026 prune came from staging accidents before `.gitignore` denied
 `$HOME` by default. That hardening should prevent a recurrence, but a bare repo
 gets no automatic gc from routine `git` invocations. Worth a look in six months.
-
-**`~/.config/git/config` polish.** Already well-tended; one optional addition
-remains if re-engineering for robustness: `git maintenance start`.
