@@ -69,8 +69,8 @@
       # aws_eb_env            # aws elastic beanstalk environment (https://aws.amazon.com/elasticbeanstalk/)
       # azure                 # azure account name (https://docs.microsoft.com/en-us/cli/azure)
       # context               # user@hostname
-      user                    # user
-      host                    # hostname
+      # user                    # user
+      # host                    # hostname
       # os_icon               # os identifier
       nordvpn                 # nordvpn connection status, linux only (https://nordvpn.com/)
       ranger                  # ranger shell (https://github.com/ranger/ranger)
@@ -405,7 +405,7 @@
 
     # If local branch name or tag is at most 32 characters long, show it in full.
     # Otherwise show the first 12 … the last 12.
-    (( $#where > 32 )) && where[13,-13]="…"
+    # (( $#where > 32 )) && where[13,-13]="…"
     res+="${clean}${where//\%/%%}"  # escape %
 
     # Show tracking branch name if it differs from local branch.
