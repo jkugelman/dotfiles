@@ -80,6 +80,6 @@
 	process = git-lfs filter-process
 	required = true
 
-# Machine-local overrides
+# Machine-local overrides (path is relative to this file's directory)
 [include]
-	path = ~/.config/local.gitconfig
+	path = config.local

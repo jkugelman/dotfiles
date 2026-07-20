@@ -36,6 +36,8 @@
 /.config/*
 !/.config/bacon/
 !/.config/git/
+# ...except the machine-local override, untracked like the other local.* files.
+/.config/git/config.local
 !/.config/zsh/
 
 # ~/.vim is nearly all ours, but vim-plug installs into plugged/ and netrw
