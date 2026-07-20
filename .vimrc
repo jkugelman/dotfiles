@@ -2,16 +2,12 @@
 syntax on
 hi Comment ctermfg=darkgray
 hi LineNr ctermfg=darkblue
-hi CursorColumn ctermbg=darkblue
-
-" Show line numbers.
-"set number
 
 " Always show the current file name.
 set laststatus=2
 
 " Disable swap files.
-set uc=0
+set noswapfile
 
 " Automatically reload files that have changed.
 set autoread
@@ -58,7 +54,7 @@ inoremap <Up> <C-o>gk
 " Incremental search. F7 to disable highlighting.
 set incsearch
 set hlsearch
-nnoremap <F7> :set nocursorcolumn<Enter>:nohl<Enter>
+nnoremap <F7> :nohl<Enter>
 
 " F9 to toggle between light and dark mode.
 nnoremap <F9> :if &background == "light" \| set background=dark \| else \| set background=light \| endif<Enter>
@@ -92,60 +88,36 @@ set backspace=indent,eol,start
 set tabstop=8 shiftwidth=4 autoindent shiftround
 set expandtab softtabstop=4
 
-" Use same indentation characters as previous lines.
-set preserveindent
-set copyindent
-
-" Customize C/C++/Java/JS formatting.
-set cinoptions=l1,g0,(s,L0,U1,Ws,j1,J1,#1
-
 " Disable annoying auto-indent of `#`.
 " https://vim.fandom.com/wiki/Restoring_indent_after_typing_hash
 set cinkeys-=0#
 set indentkeys-=0#
-
-" Indent <script> and <style> blocks in HTML.
-let html_indent_script1 = "inc"
-let html_indent_style1 = "inc"
 
 " Automatically show matching brackets.
 set showmatch
 
 " Auto-complete file names after <TAB> like bash does.
 set wildmode=longest,list
-set wildignore=.svn,CVS,*.swp
 
 " Show current mode and currently-typed command.
 set showmode
 set showcmd
 
 " Use mouse if possible.
-" set mouse=a
+set mouse=a
 
 " Confirm saving and quitting.
 set confirm
 
-" Fix Ctrl-Left and Ctrl-Right in screen.
-set <C-Left>=[1;5D
-set <C-Right>=[1;5C
-
 " So yank behaves like delete, i.e. Y = D.
 map Y y$
-
-" Toggle paste mode with F5.
-set pastetoggle=<F5>
 
 " Don't exit visual mode when shifting.
 vnoremap < <gv
 vnoremap > >gv
 
 " Customize syntax highlighting.
-let java_highlight_functions="style"
-let java_allow_cpp_keywords=1
-
 let python_highlight_all=1
-
-let sql_type_default="mysql"
 
 " Tab navigation.
 nnoremap <C-N> :tabnext<Enter>
@@ -222,27 +194,7 @@ endif
 autocmd BufRead,BufNewFile *.bats      set filetype=sh
 
 
-"=======[ Fix smartindent stupidities ]============
-
-inoremap # X<C-H>#|                         "No magic outdent for comments
-
 "=====[ Make Visual modes work better ]==================
 
 "Square up visual selections...
 set virtualedit=block
-
-"=====[ Show help files in a new tab ]==============
-
-"Only apply to .txt files...
-augroup HelpInTabs
-    autocmd!
-    autocmd BufEnter  *.txt   call HelpInNewTab()
-augroup END
-
-"Only apply to help files...
-function! HelpInNewTab ()
-    if &buftype == 'help'
-        "Convert the help window to a tab...
-        execute "normal \<C-W>T"
-    endif
-endfunction
