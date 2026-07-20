@@ -69,13 +69,6 @@ set ruler
 " Try to keep 2 lines above/below the current line in view for context.
 set scrolloff=2
 
-" Other file types.
-autocmd BufReadPre,BufNew *.xml    set filetype=xml
-autocmd BufReadPre,BufNew *.fxml   set filetype=xml
-autocmd BufReadPre,BufNew SCons*   set filetype=python
-autocmd BufReadPre,BufNew ex*.log  set filetype=iislog
-autocmd BufReadPre,BufNew *.gradle set filetype=groovy
-
 " Flag problematic whitespace (trailing spaces, spaces before tabs).
 let c_space_errors=1
 let c_no_trail_space_error=1
@@ -154,11 +147,6 @@ let python_highlight_all=1
 
 let sql_type_default="mysql"
 
-autocmd BufRead,BufNewFile *.m4 hi link m4Custom   Special
-autocmd BufRead,BufNewFile *.m4 hi link m4Constant Special
-autocmd BufRead,BufNewFile *.m4 syn region m4Command  matchgroup=m4Type start="\<m4_\(\w*\)("he=e-1 end=")" contains=@m4Top
-autocmd BufRead,BufNewFile *.m4 syn match  m4Constant "\<M4_\([a-zA-Z0-9_]*\)"
-
 " Tab navigation.
 nnoremap <C-N> :tabnext<Enter>
 nnoremap <C-P> :tabprev<Enter>
@@ -170,9 +158,6 @@ set modeline
 
 " Don't add '.' to the 'iskeyword' list of characters that w, e, etc., use.
 let g:sh_noisk=1
-
-" For wordlist editing, sort and save with a single keypress.
-autocmd BufRead jkugelman-wordlist.txt noremap <buffer> <F9> :%!sort -u<Enter>:w<Enter>:silent !./merge.py<Enter>:redraw!<Enter>
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -272,12 +257,3 @@ function! HelpInNewTab ()
         execute "normal \<C-W>T"
     endif
 endfunction
-
-"=====[ Use Ctrl-UP/LEFT/DOWN/RIGHT to drag blocks in visual mode. ]==============
-
-" runtime plugin/dragvisuals.vim
-vmap  <expr>  <C-LEFT>   DVB_Drag('left')
-vmap  <expr>  <C-RIGHT>  DVB_Drag('right')
-vmap  <expr>  <C-DOWN>   DVB_Drag('down')
-vmap  <expr>  <C-UP>     DVB_Drag('up')
-vmap  <expr>  D          DVB_Duplicate()
