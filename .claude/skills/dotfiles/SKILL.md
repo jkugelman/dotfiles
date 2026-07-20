@@ -114,3 +114,43 @@ override rather than in a tracked file. Each config sources one if it exists:
 | `.ssh/config` | `~/.ssh/config.local` |
 
 `~/.gitignore` keeps these out of the repo, which is their whole point.
+
+## Design preferences
+
+Leanings, not laws — weigh them against the specific case and push back when they
+don't fit. Written down to save repeating them, not to settle anything; expect
+the list to grow.
+
+**Keep `$HOME` uncluttered.** All else equal, prefer a home directory with few
+top-level entries, even hidden ones. Config goes in `~/.config`; the XDG base
+dirs have a home for most other things too — `~/.local/state` for per-machine
+state that should persist (undo history, logs), `~/.cache` for the throwaway,
+`~/.local/share` for the portable. Reach for a new `~/.something` only when a
+tool gives no other option.
+
+**Write config in a general, self-contained style.** Prefer a config file that
+states a rule anyone could lift out and reuse over one wired to this repo's
+specifics. Two habits fall out of that. Favor "use whatever exists" fallbacks
+(a list tried by existence) over a hardcoded path or a made-up default. And let
+the config *consume* guarantees rather than *create* them: if the repo can
+ensure a directory exists (by tracking it) or set an env var, the config
+shouldn't also mkdir it or hardcode where it lives — those decisions stay
+decoupled, so the same rule works for someone whose setup makes different
+promises. The `undodir` line in `.vimrc` is the worked example.
+
+**Prefer managed installs over vendoring.** Reach for a plugin or package manager
+(vim-plug, tpm, pipx, brew, a zsh-plugin manager) for third-party code; where
+none fits, a documented setup step is the fallback — don't vendor upstream
+projects into the repo. Vendoring used to earn its keep by dodging brittle,
+bitrot-prone setup and making a fresh machine work on clone; AI-guided setup has
+largely erased that cost, so the trade now favors a lean repo over clone-and-go.
+Still a lean, not a law: a tiny single-file thing with no clean upstream can stay
+vendored when a manager would be more ceremony than it's worth. `~/.zshrc` and
+`~/.vimrc` both bootstrap their plugin managers (antidote, vim-plug) on first run
+rather than carrying them in-tree.
+
+**Modularize by judgment, not by rule.** Split a config when it's genuinely
+unwieldy, sized to the case — a full sourced `.d/` directory when the complexity
+earns it, something lighter (like the existing config-plus-unversioned-`local`
+split) when that's enough. Aim for clarity balanced against simplicity; don't
+impose structure a file doesn't need.
