@@ -198,21 +198,11 @@ Plug 'tpope/vim-surround'
 " Repeat.vim remaps `.` in a way that plugins can tap into it.
 Plug 'tpope/vim-repeat'
 
-" This is a Vim plugin that provides Rust file detection, syntax highlighting,
-" formatting, Syntastic integration, and more.
-Plug 'rust-lang/rust.vim'
-
 " Vim syntax for TOML.
 Plug 'cespare/vim-toml'
 
 " Vim plugin for Nginx, including syntax highlighting.
 Plug 'chr4/nginx.vim'
-
-" Syntax highlighting for Dockerfiles.
-Plug 'honza/dockerfile.vim'
-
-" Syntax highlighting for Typescript.
-Plug 'leafgarland/typescript-vim'
 
 call plug#end()
 
@@ -229,7 +219,6 @@ if has("autocmd")
     au BufReadPost * if &ft !=# 'gitcommit' && line("'\"") > 0 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
 endif
 
-autocmd BufRead,BufNewFile Dockerfile* set filetype=dockerfile
 autocmd BufRead,BufNewFile *.bats      set filetype=sh
 
 
