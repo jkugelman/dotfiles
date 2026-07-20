@@ -45,6 +45,8 @@
 !/.vim/
 /.vim/*
 !/.vim/autoload/
+# ...except vim-plug itself, which ~/.vimrc bootstraps on first run.
+/.vim/autoload/plug.vim
 !/.vim/colors/
 !/.vim/doc/
 !/.vim/ftdetect/

@@ -4,8 +4,16 @@
 
 
 "===[ Plugins ]===============================================================
-" Managed with vim-plug (~/.vim/autoload/plug.vim). Run :PlugUpdate to install
-" or update. <https://github.com/junegunn/vim-plug>
+" Managed with vim-plug. Run :PlugUpdate to update plugins.
+" <https://github.com/junegunn/vim-plug>
+
+" Bootstrap vim-plug itself on first run, mirroring how ~/.zshrc auto-clones
+" antidote: fetched on demand rather than vendored into the repo.
+let s:plug = expand('~/.vim/autoload/plug.vim')
+if empty(glob(s:plug))
+    silent execute '!curl -fLo ' . s:plug . ' --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
 
 call plug#begin()
 
