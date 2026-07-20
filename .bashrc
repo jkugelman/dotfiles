@@ -37,3 +37,9 @@ command -v clang++ &> /dev/null && export CXX=$(which clang++)
 
 # Source local customizations.
 [[ ! -f ~/.config/local.bashrc ]] || source ~/.config/local.bashrc
+
+# worktrunk (wt) shell integration: defines the wt() cd/exec wrapper and its
+# completions. Guarded so it's a harmless no-op on machines without wt.
+if command -v wt >/dev/null 2>&1; then
+    eval "$(command wt config shell init bash)"
+fi
