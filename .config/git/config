@@ -1,36 +1,40 @@
 [user]
 	name = John Kugelman
 	email = john@kugelman.name
-[color]
-	status = auto
-	branch = auto
-	ui = auto
-	interactive = auto
-[push]
-	default = simple
-	useForceIfIncludes = true
+
+# Commit & history
+[init]
+	defaultBranch = main
+[commit]
+	verbose = true
+	cleanup = scissors
+[log]
+	mailmap = true
+
+# Integration: fetch / pull / merge / rebase / push
+[fetch]
+	prune = true
+[pull]
+	ff = only
 [merge]
 	ff = only
 	directoryRenames = true
-[pull]
-	ff = only
-[alias]
-	unstage = reset HEAD --
-	lg = log --graph --abbrev-commit --date=relative --format=format:'%C(bold blue)%aN <%aE>%C(reset), %C(bold green)%ad%C(reset) - %C(auto)%h%d%C(reset)%n%C(bold)%B%-C()%n' --stat
-	pushf = push --force-with-lease
-	children = "!bash -c 'c=${1:-HEAD}; set -- $(git rev-list --all --not \"$c\"^@ --children | grep $(git rev-parse \"$c\") ); shift; echo $1' -"
-[pager]
-	stash = 
-	tag = 
-	branch = 
-[log]
-	mailmap = true
-[fetch]
-	prune = true
+[rebase]
+	autosquash = true
+[push]
+	default = simple
+	useForceIfIncludes = true
+[rerere]
+	enabled = true
+
+# Diff, pager & color (delta stack)
 [core]
 	pager = delta
 [interactive]
 	diffFilter = delta --color-only
+[diff]
+	colorMoved = default
+	renames = copies
 [delta]
 	features = unobtrusive-line-numbers
 	navigate = true
@@ -44,28 +48,38 @@
 	line-numbers-right-format = "{np:>4}│"
 	line-numbers-left-style = blue
 	line-numbers-right-style = blue
-[diff]
-	colorMoved = default
-	renames = copies
-[commit]
-	verbose = true
-	cleanup = scissors
+[pager]
+	stash =
+	tag =
+	branch =
+[color]
+	status = auto
+	branch = auto
+	ui = auto
+	interactive = auto
+
+# Branch / status / column UI
+[branch]
+	sort = -committerdate
 [status]
 	showStash = true
+[column]
+	ui = auto
+
+# Aliases
+[alias]
+	unstage = reset HEAD --
+	lg = log --graph --abbrev-commit --date=relative --format=format:'%C(bold blue)%aN <%aE>%C(reset), %C(bold green)%ad%C(reset) - %C(auto)%h%d%C(reset)%n%C(bold)%B%-C()%n' --stat
+	pushf = push --force-with-lease
+	children = "!bash -c 'c=${1:-HEAD}; set -- $(git rev-list --all --not \"$c\"^@ --children | grep $(git rev-parse \"$c\") ); shift; echo $1' -"
+
+# Git LFS
 [filter "lfs"]
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
 	process = git-lfs filter-process
 	required = true
-[rebase]
-	autosquash = true
-[init]
-	defaultBranch = main
-[rerere]
-	enabled = true
-[column]
-	ui = auto
-[branch]
-	sort = -committerdate
+
+# Machine-local overrides
 [include]
 	path = ~/.config/local.gitconfig
