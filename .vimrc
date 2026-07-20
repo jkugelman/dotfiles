@@ -1,22 +1,147 @@
-" Enable syntax highlighting.
+" ~/.vimrc — Vim is a secondary editor now (VS Code and Claude Code are the
+" daily drivers), so this is kept deliberately lean. Companion files live under
+" ~/.vim/: vim-plug in autoload/, installed plugins in plugged/.
+
+
+"===[ Plugins ]===============================================================
+" Managed with vim-plug (~/.vim/autoload/plug.vim). Run :PlugUpdate to install
+" or update. <https://github.com/junegunn/vim-plug>
+
+call plug#begin()
+
+" Auto-detects indentation (shiftwidth/expandtab) per file — makes manual
+" indent tuning unnecessary.
+Plug 'tpope/vim-sleuth'
+
+" Add/change/delete surrounding pairs: cs"' , ds" , ysiw] , cst" , etc.
+Plug 'tpope/vim-surround'
+
+" Lets . repeat a whole plugin map (e.g. surround), not just its last step.
+Plug 'tpope/vim-repeat'
+
+" TOML syntax.
+Plug 'cespare/vim-toml'
+
+" nginx config syntax.
+Plug 'chr4/nginx.vim'
+
+call plug#end()
+
+" `%` jumps between matching keyword pairs. Bundled with Vim; load it from Vim's
+" own packages rather than vendoring.
+packadd! matchit
+
+
+"===[ Appearance ]============================================================
 syntax on
 hi Comment ctermfg=darkgray
-hi LineNr ctermfg=darkblue
+hi LineNr  ctermfg=darkblue
 
-" Always show the current file name.
+" Always show the statusline, plus the ruler and a little scroll context.
 set laststatus=2
+set ruler
+set scrolloff=2
 
-" Disable swap files.
+" Flash the matching bracket.
+set showmatch
+
+
+"===[ Whitespace display ]====================================================
+" Flag problematic whitespace (trailing spaces, spaces before tabs) in red.
+let c_space_errors=1
+let c_no_trail_space_error=1
+let java_space_errors=1
+let java_no_trail_space_error=1
+let python_highlight_space_errors=1
+
+highlight BadWhitespace term=standout ctermbg=red guibg=red
+match BadWhitespace /[^* \t]\zs\s\+$\| \+\ze\t/
+
+" Show tabs as » followed by spaces, tinted light gray.
+execute 'set listchars=tab:' . nr2char(187) . '\ '
+set list
+highlight Tab ctermfg=lightgray guifg=lightgray
+2match Tab /\t/
+
+
+"===[ Search ]================================================================
+set incsearch
+set hlsearch
+" F7 clears the search highlighting.
+nnoremap <F7> :nohl<Enter>
+
+
+"===[ Movement & editing ]====================================================
+" Sane backspacing, and let backspace/space/arrows cross line boundaries.
+set backspace=indent,eol,start
+set ww=b,s,<,>
+
+" Move by display line, not physical line.
+nnoremap j gj
+nnoremap k gk
+vnoremap j gj
+vnoremap k gk
+nnoremap <Down> gj
+nnoremap <Up> gk
+vnoremap <Down> gj
+vnoremap <Up> gk
+inoremap <Down> <C-o>gj
+inoremap <Up> <C-o>gk
+
+" Make Y yank to end of line, matching D. (This is the default in nvim.)
+map Y y$
+
+" Keep the selection after shifting in visual mode.
+vnoremap < <gv
+vnoremap > >gv
+
+" Square up visual-block selections.
+set virtualedit=block
+
+" Enable the mouse: click to position, drag to select, wheel to scroll.
+set mouse=a
+
+
+"===[ Indentation ]===========================================================
+" Fallback defaults: 4-space indent, no literal tabs. vim-sleuth overrides
+" these per file.
+set tabstop=8 shiftwidth=4 autoindent shiftround
+set expandtab softtabstop=4
+
+" Don't let a leading `#` yank the line out to column 0.
+" https://vim.fandom.com/wiki/Restoring_indent_after_typing_hash
+set cinkeys-=0#
+set indentkeys-=0#
+
+
+"===[ Command line ]==========================================================
+" Complete file names on <Tab> like bash does.
+set wildmode=longest,list
+
+" Show the current mode and the partially-typed command.
+set showmode
+set showcmd
+
+" Confirm rather than fail when quitting with unsaved changes.
+set confirm
+
+
+"===[ Tabs ]==================================================================
+nnoremap <C-N> :tabnext<Enter>
+nnoremap <C-P> :tabprev<Enter>
+nnoremap <C-T> :tabnew<Enter>
+nnoremap <C-D> :tabclose<Enter>
+
+
+"===[ Files & buffers ]=======================================================
+" No swap files.
 set noswapfile
 
-" Automatically reload files that have changed.
+" Auto-reload files changed on disk, and announce it when it happens.
 set autoread
-
-" Trigger `autoread` when files change on disk.
 " <https://unix.stackexchange.com/questions/149209/refresh-changed-content-of-file-opened-in-vim/383044#383044>
 " <https://vi.stackexchange.com/questions/13692/prevent-focusgained-autocmd-running-in-command-line-editing-mode>
 autocmd FocusGained,BufEnter,CursorHold,CursorHoldI * if mode() != 'c' | checktime | endif
-" Notification after file change.
 " <https://vi.stackexchange.com/questions/13091/autocmd-event-for-autoread>
 autocmd FileChangedShellPost *
   \ echohl WarningMsg | echo "File changed on disk. Buffer reloaded." | echohl None
@@ -35,155 +160,8 @@ if has('persistent_undo')
     set undodir=$XDG_STATE_HOME/vim/undo//,~/.local/state/vim/undo//,/var/tmp//,/tmp//,.
 endif
 
-" Allow backspace and delete to delete line wraps, and allow cursor to move
-" between lines with LEFT and RIGHT arrows.
-set ww=b,s,<,>
-
-" Move up and down across display lines, not physical lines.
-nnoremap j gj
-nnoremap k gk
-vnoremap j gj
-vnoremap k gk
-nnoremap <Down> gj
-nnoremap <Up> gk
-vnoremap <Down> gj
-vnoremap <Up> gk
-inoremap <Down> <C-o>gj
-inoremap <Up> <C-o>gk
-
-" Incremental search. F7 to disable highlighting.
-set incsearch
-set hlsearch
-nnoremap <F7> :nohl<Enter>
-
-" F9 to toggle between light and dark mode.
-nnoremap <F9> :if &background == "light" \| set background=dark \| else \| set background=light \| endif<Enter>
-
-" Show ruler.
-set ruler
-
-" Try to keep 2 lines above/below the current line in view for context.
-set scrolloff=2
-
-" Flag problematic whitespace (trailing spaces, spaces before tabs).
-let c_space_errors=1
-let c_no_trail_space_error=1
-let java_space_errors=1
-let java_no_trail_space_error=1
-let python_highlight_space_errors=1
-
-highlight BadWhitespace term=standout ctermbg=red guibg=red
-match BadWhitespace /[^* \t]\zs\s\+$\| \+\ze\t/
-
-" If using ':set list' show things nicer.
-execute 'set listchars=tab:' . nr2char(187) . '\ '
-set list
-highlight Tab ctermfg=lightgray guifg=lightgray
-2match Tab /\t/
-
-" Allow backspacing over auto-indent and line breaks.
-set backspace=indent,eol,start
-
-" Default indentation settings: 4 spaces, do not use tab character.
-set tabstop=8 shiftwidth=4 autoindent shiftround
-set expandtab softtabstop=4
-
-" Disable annoying auto-indent of `#`.
-" https://vim.fandom.com/wiki/Restoring_indent_after_typing_hash
-set cinkeys-=0#
-set indentkeys-=0#
-
-" Automatically show matching brackets.
-set showmatch
-
-" Auto-complete file names after <TAB> like bash does.
-set wildmode=longest,list
-
-" Show current mode and currently-typed command.
-set showmode
-set showcmd
-
-" Use mouse if possible.
-set mouse=a
-
-" Confirm saving and quitting.
-set confirm
-
-" So yank behaves like delete, i.e. Y = D.
-map Y y$
-
-" Don't exit visual mode when shifting.
-vnoremap < <gv
-vnoremap > >gv
-
-" Customize syntax highlighting.
-let python_highlight_all=1
-
-" Tab navigation.
-nnoremap <C-N> :tabnext<Enter>
-nnoremap <C-P> :tabprev<Enter>
-nnoremap <C-T> :tabnew<Enter>
-nnoremap <C-D> :tabclose<Enter>
-
-" Enable modelines even for root.
+" Honor vim: modelines, even as root.
 set modeline
-
-" Don't add '.' to the 'iskeyword' list of characters that w, e, etc., use.
-let g:sh_noisk=1
-
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-" Load plugins with vim-plug. See ~/.vim/autoload/plug.vim and
-" <https://github.com/junegunn/vim-plug>.
-"
-" Run :PlugUpdate to install and/or update plugins.
-
-call plug#begin()
-
-" This plugin automatically adjusts 'shiftwidth' and 'expandtab' heuristically
-" based on the current file, or, in the case the current file is new, blank, or
-" otherwise insufficient, by looking at other files of the same type in the
-" current and parent directories. In lieu of adjusting 'softtabstop', 'smarttab'
-" is enabled.
-"
-" Compare to DetectIndent. I wrote this because I wanted something fully
-" automatic. My goal is that by installing this plugin, you can remove all
-" indenting related configuration from your vimrc.
-Plug 'tpope/vim-sleuth'
-
-" Surround.vim is all about 'surroundings': parentheses, brackets, quotes, XML
-" tags, and more. The plugin provides mappings to easily delete, change and add
-" such surroundings in pairs.
-"
-"     cs"'       Change surrounding " to '
-"     cs'<q>     Change surrounding ' to <q></q>
-"     cst"       Change surrounding <q> to '
-"
-"     ysiw]      Surround word with [brackets]
-"     cs]{       Change [word] to { word } (use `}` instead of `{` for no
-"                    spaces)
-Plug 'tpope/vim-surround'
-
-" If you've ever tried using the `.` command after a plugin map, you were likely
-" disappointed to discover it only repeated the last native command inside that
-" map, rather than the map as a whole. That disappointment ends today.
-" Repeat.vim remaps `.` in a way that plugins can tap into it.
-Plug 'tpope/vim-repeat'
-
-" Vim syntax for TOML.
-Plug 'cespare/vim-toml'
-
-" Vim plugin for Nginx, including syntax highlighting.
-Plug 'chr4/nginx.vim'
-
-call plug#end()
-
-" Load matchit from Vim's bundled packages for `%` matching between keyword
-" pairs. Was a vendored plugin in ~/.vim/plugin; now loaded from Vim itself.
-packadd! matchit
-
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
-
 
 " Jump to the last known cursor position. Skip for git commit messages, where
 " the file path is reused across unrelated commits.
@@ -191,10 +169,13 @@ if has("autocmd")
     au BufReadPost * if &ft !=# 'gitcommit' && line("'\"") > 0 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
 endif
 
-autocmd BufRead,BufNewFile *.bats      set filetype=sh
 
+"===[ Filetypes & syntax ]====================================================
+" bats tests are shell scripts.
+autocmd BufRead,BufNewFile *.bats set filetype=sh
 
-"=====[ Make Visual modes work better ]==================
+" Don't count '.' as a keyword character in shell scripts.
+let g:sh_noisk=1
 
-"Square up visual selections...
-set virtualedit=block
+" Fuller Python syntax highlighting.
+let python_highlight_all=1
