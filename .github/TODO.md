@@ -109,33 +109,6 @@ know. But the effort is broader than macOS now: deleting what's obsolete and
 moving off vendoring are first-class, not afterthoughts.
 
 
-Scrub the vim config — vim is now secondary
-===========================================
-
-Vim is no longer my primary editor; VS Code and Claude Code are the daily
-drivers, and vim is a "pop in real quick" tool now. So the whole `~/.vim` tree
-and `.vimrc` are open to aggressive trimming — the bar for keeping a mapping,
-plugin, or autocmd is "do I still reach for this in a quick edit," and deleting
-likely beats porting. Worth doing *before* the native-mechanism restructure
-below, since some of what that would move may just be cut instead. Bring a
-reviewable delete-list to approve first.
-
-
-Restructure: vim via native mechanisms
-======================================
-
-Vim already has a loader; several autocmds reinvent it. (The dead vendored
-plugins that used to clutter `~/.vim/plugin` are gone now, so it's much closer to
-being yours.)
-
-**Move filetype detection to `~/.vim/ftdetect/`.** `*.gradle → groovy`,
-`SCons* → python`, and `ex*.log → iislog` are reinventing it; `ftdetect/less.vim`
-already shows the pattern.
-
-**Move per-filetype config to `~/.vim/after/ftplugin/`.** The m4 syntax block and
-the wordlist `<F9>` map are the clear candidates.
-
-
 XDG relocation (opportunistic — easy wins only)
 ===============================================
 
@@ -158,3 +131,10 @@ Lower confidence — think about whether these are actually wanted.
 behind the July 2026 prune came from staging accidents before `.gitignore` denied
 `$HOME` by default. That hardening should prevent a recurrence, but a bare repo
 gets no automatic gc from routine `git` invocations. Worth a look in six months.
+
+**Truecolor colorscheme for vim.** `.vimrc` still hand-tunes a couple of
+8-color terminal highlights (`hi Comment ctermfg=darkgray`, `hi LineNr
+ctermfg=darkblue`). A real truecolor scheme would look better in a modern
+terminal with no manual upkeep. Low priority — and moot if vim gets replaced
+(switching to nvim or another editor is on the table), so revisit only if vim
+sticks around.
