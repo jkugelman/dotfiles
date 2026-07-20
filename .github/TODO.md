@@ -116,21 +116,13 @@ A soft preference, not a crusade: switch to XDG paths when it's easy, lean
 practical when a tool resists — if it wants a non-XDG location and can't be
 cleanly repointed, accept that. Worth a detailed pass when we get to it.
 
-Don't force the ones without native XDG support (`.psqlrc`, `.sqliterc`). Related
-policy call: generated artifacts that were or are tracked — vim's `doc/tags` (now
-deleted) and the ~1000-line, mostly-boilerplate `.p10k.zsh` — should we stop
-tracking them (regenerate locally, keep only hand overrides) or accept them?
+Don't force the ones without native XDG support (`.psqlrc`, `.sqliterc`).
 
 
 Worth considering
 =================
 
 Lower confidence — think about whether these are actually wanted.
-
-**Periodic `git gc` on `.dotfiles`.** The 260 MB of unreachable loose objects
-behind the July 2026 prune came from staging accidents before `.gitignore` denied
-`$HOME` by default. That hardening should prevent a recurrence, but a bare repo
-gets no automatic gc from routine `git` invocations. Worth a look in six months.
 
 **Truecolor colorscheme for vim.** `.vimrc` still hand-tunes a couple of
 8-color terminal highlights (`hi Comment ctermfg=darkgray`, `hi LineNr
