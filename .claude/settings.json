@@ -3,6 +3,24 @@
     "commit": "",
     "pr": ""
   },
+  "enabledPlugins": {
+    "code-review@claude-code-plugins": true,
+    "superpowers@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "claude-code-plugins": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/claude-code"
+      }
+    },
+    "claude-plugins-official": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/claude-plugins-official"
+      }
+    }
+  },
   "permissions": {
     "allow": [
       "Bash(awk *)",
@@ -84,5 +102,6 @@
   "effortLevel": "xhigh",
   "theme": "auto",
   "agentPushNotifEnabled": true,
-  "tui": "fullscreen"
+  "tui": "fullscreen",
+  "skipAutoPermissionPrompt": true
 }
