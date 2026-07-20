@@ -23,7 +23,7 @@ fi
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
-if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+if [[ -z $CLAUDECODE && -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
     source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
 fi
 
@@ -77,7 +77,15 @@ unset ANTIDOTE_DIR zsh_plugins_txt zsh_plugins_zsh
 
 # To customize the prompt, edit ~/.config/zsh/p10k.zsh. Running `p10k
 # configure` rewrites the default ~/.p10k.zsh instead, so move its output here.
-[[ ! -f ~/.config/zsh/p10k.zsh ]] || source ~/.config/zsh/p10k.zsh
+#
+# Claude Code's shell integration gets confused by p10k's prompt and hangs, so
+# give it a plain prompt instead. Interactive terminals (including VS Code) are
+# unaffected and keep p10k.
+if [[ -n $CLAUDECODE ]]; then
+    PROMPT='%~ $ '
+elif [[ -f ~/.config/zsh/p10k.zsh ]]; then
+    source ~/.config/zsh/p10k.zsh
+fi
 
 # Source functions/aliases shared with other shells.
 [[ ! -f ~/.config/common.shrc ]] || source ~/.config/common.shrc
