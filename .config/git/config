@@ -72,6 +72,7 @@
 	lg = log --graph --abbrev-commit --date=relative --format=format:'%C(bold blue)%aN <%aE>%C(reset), %C(bold green)%ad%C(reset) - %C(auto)%h%d%C(reset)%n%C(bold)%B%-C()%n' --stat
 	pushf = push --force-with-lease
 	children = "!bash -c 'c=${1:-HEAD}; set -- $(git rev-list --all --not \"$c\"^@ --children | grep $(git rev-parse \"$c\") ); shift; echo $1' -"
+	branchd = branch -d @{-1}
 
 # Git LFS
 [filter "lfs"]
