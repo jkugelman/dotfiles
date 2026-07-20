@@ -1,9 +1,9 @@
 # Zsh plugins, loaded by antidote from ~/.zshrc.
 # Order matters here: zsh-syntax-highlighting must come last.
 
-# Powerlevel10k prompt theme, on 256-color terminals only (see is-256color in
-# ~/.zshrc). Configured separately by ~/.config/zsh/p10k.zsh.
-romkatv/powerlevel10k conditional:is-256color
+# Powerlevel10k prompt theme, on 256-color terminals only and never under Claude
+# Code (see use-p10k in ~/.zshrc). Configured separately by ~/.config/zsh/p10k.zsh.
+romkatv/powerlevel10k conditional:use-p10k
 
 # Directory-stack navigation: Alt-Left/Right cycle through visited dirs like a
 # browser's back/forward buttons. Keys are bound in

@@ -66,9 +66,12 @@ unset _rc
 # Keep $PATH free of duplicate entries.
 typeset -U path
 
-# Enable Powerlevel10k only on 256-color terminals; antidote calls this when it
-# sources the plugin list (the conditional: in .zsh_plugins.txt).
+# Gate for the Powerlevel10k plugin; antidote calls use-p10k when it sources the
+# plugin list (the conditional: in .zsh_plugins.txt). Load p10k only on a
+# 256-color terminal, and never under Claude Code — its shell integration hangs
+# on p10k's prompt (the p10k.zsh source below is skipped the same way).
 is-256color() { [[ $TERM == *256* ]] }
+use-p10k()    { [[ -z $CLAUDECODE ]] && is-256color }
 
 # Load the plugins — late on purpose, so zsh-syntax-highlighting wraps the final
 # set of widgets and keybindings defined above.
