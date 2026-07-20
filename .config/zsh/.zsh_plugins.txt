@@ -2,7 +2,7 @@
 # Order matters here: zsh-syntax-highlighting must come last.
 
 # Powerlevel10k prompt theme, on 256-color terminals only (see is-256color in
-# ~/.zshrc). Configured separately by ~/.p10k.zsh.
+# ~/.zshrc). Configured separately by ~/.config/zsh/p10k.zsh.
 romkatv/powerlevel10k conditional:is-256color
 
 # Directory-stack navigation: Alt-Left/Right cycle through visited dirs like a

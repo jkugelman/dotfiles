@@ -75,8 +75,9 @@ is-256color() { [[ $TERM == *256* ]] }
 [[ -r $zsh_plugins_zsh ]] && source $zsh_plugins_zsh
 unset ANTIDOTE_DIR zsh_plugins_txt zsh_plugins_zsh
 
-# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
-[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
+# To customize the prompt, edit ~/.config/zsh/p10k.zsh. Running `p10k
+# configure` rewrites the default ~/.p10k.zsh instead, so move its output here.
+[[ ! -f ~/.config/zsh/p10k.zsh ]] || source ~/.config/zsh/p10k.zsh
 
 # Source functions/aliases shared with other shells.
 [[ ! -f ~/.config/common.shrc ]] || source ~/.config/common.shrc
