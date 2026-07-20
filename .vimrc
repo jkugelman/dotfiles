@@ -17,6 +17,9 @@ endif
 
 call plug#begin()
 
+" Truecolor colorscheme (muted, dark; degrades to a 256-color palette).
+Plug 'sainnhe/gruvbox-material'
+
 " Auto-detects indentation (shiftwidth/expandtab) per file — makes manual
 " indent tuning unnecessary.
 Plug 'tpope/vim-sleuth'
@@ -42,8 +45,19 @@ packadd! matchit
 
 "===[ Appearance ]============================================================
 syntax on
-hi Comment ctermfg=darkgray
-hi LineNr  ctermfg=darkblue
+
+" Use a real truecolor colorscheme rather than hand-tuning highlight groups.
+" Enable 24-bit color only on a terminal that advertises it; inside tmux, teach
+" vim the escape sequences it needs first.
+if has('termguicolors') && ($COLORTERM ==# 'truecolor' || $COLORTERM ==# '24bit')
+    let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+    let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+    set termguicolors
+endif
+set background=dark
+" Swap this one word for any other installed scheme (e.g. sonokai, gruvbox).
+" silent! keeps a fresh machine quiet until :PlugInstall fetches it.
+silent! colorscheme gruvbox-material
 
 " Always show the statusline, plus the ruler and a little scroll context.
 set laststatus=2
