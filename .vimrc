@@ -17,8 +17,8 @@ endif
 
 call plug#begin()
 
-" Truecolor colorscheme (muted, dark; degrades to a 256-color palette).
-Plug 'sainnhe/gruvbox-material'
+" Truecolor colorscheme (vivid, dark; degrades to a 256-color palette).
+Plug 'sainnhe/sonokai'
 
 " Auto-detects indentation (shiftwidth/expandtab) per file — makes manual
 " indent tuning unnecessary.
@@ -55,9 +55,12 @@ if has('termguicolors') && ($COLORTERM ==# 'truecolor' || $COLORTERM ==# '24bit'
     set termguicolors
 endif
 set background=dark
-" Swap this one word for any other installed scheme (e.g. sonokai, gruvbox).
+" Skip the scheme's own background so the terminal's own black shows through
+" instead — keep only its highlighting.
+let g:sonokai_transparent_background = 1
+" Swap this one word for any other installed scheme (e.g. gruvbox, dracula).
 " silent! keeps a fresh machine quiet until :PlugInstall fetches it.
-silent! colorscheme gruvbox-material
+silent! colorscheme sonokai
 
 " Always show the statusline, plus the ruler and a little scroll context.
 set laststatus=2
