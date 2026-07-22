@@ -56,6 +56,10 @@ The distillation belongs in the **same commit as the feature work**, not a separ
 
 I know files written to `/tmp` can be deleted at any time — it's why I send things there. Don't caveat, warn, or hedge about that when writing to `/tmp`; just write the file.
 
+## Name worktrees descriptively
+
+When calling `EnterWorktree`, always pass an explicit `name` describing the task, instead of omitting it and letting the tool fall back to a randomly generated name. A descriptive name is what makes `git worktree list` and later cleanup legible.
+
 # The dotfiles repo
 
 `$HOME` is the work tree of a bare Git repo at `~/.dotfiles`, published publicly at `github.com/jkugelman/dotfiles`. So files under `~` may be tracked, and plain `git` there does not work — use the `dotfiles` function. Before doing real work on my config, invoke the `dotfiles` skill.
