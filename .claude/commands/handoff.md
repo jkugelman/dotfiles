@@ -1,7 +1,16 @@
 ---
-description: Write a handoff doc capturing this session's state so a fresh session can resume without re-reading the whole conversation.
-argument-hint: [output-path]
+description: Write a handoff doc capturing session state (default), or resume from one written earlier with `/handoff resume`.
+argument-hint: [output-path] | resume [handoff-path]
 ---
+
+`$ARGUMENTS` selects the mode:
+
+- First whitespace-separated token is literally `resume` → **Resume** (below),
+  with the rest of `$ARGUMENTS` as the optional handoff path.
+- Anything else (including empty) → **Write** (below), with all of
+  `$ARGUMENTS` as the optional output path.
+
+## Write
 
 This session's context window is filling up. Produce a **handoff document** so a
 brand-new session — which will have NONE of this conversation in its context —
@@ -9,18 +18,18 @@ can pick up exactly where we are. This is the cheaper alternative to `/compact`:
 write the state down deliberately instead of having the next session re-ingest
 the whole transcript.
 
-## Where to write it
+### Where to write it
 
 - Let `<dir>` be the basename of the current working directory (`basename "$PWD"`).
 - Output path: use `$ARGUMENTS` if non-empty; otherwise default to
   `/tmp/handoff-<dir>.md`.
 - After writing the doc, record its absolute path into the pointer file
   `/tmp/handoff-last-<dir>.path` (overwrite it — the latest handoff wins). This
-  lets the next session run `/resume` with no argument and find this doc
-  automatically.
+  lets the next session run `/handoff resume` with no argument and find this
+  doc automatically.
 - Then print the doc's path and tell the user the next session can simply run
-  `/resume` (no path needed). Mention they can pass an explicit path to either
-  command if they're juggling multiple handoffs.
+  `/handoff resume` (no path needed). Mention they can pass an explicit path to
+  either mode if they're juggling multiple handoffs.
 - **Colliding with a *different, still-active* effort?** If the default path (or
   the pointer) already holds a handoff for a separate concurrent effort in this
   same repo — not just a stale prior handoff of your own lineage — do **not**
@@ -30,7 +39,7 @@ the whole transcript.
   Flag the collision to the user and agree on how to name the two and which one
   the pointer should track.
 
-## Before you write
+### Before you write
 
 Run `git status` and `git log --oneline -8` so the "Work done" section reflects
 the real tree state (staged vs. unstaged, recent commits). Otherwise rely on the
@@ -44,7 +53,7 @@ section to carry forward (below) — it holds long-lived items that predate this
 session and would otherwise be lost the moment you overwrite the file. It's one
 small doc, not a source tree; read it.
 
-## What goes in it
+### What goes in it
 
 Write for a competent peer who knows this codebase and has the project's
 CLAUDE.md, but knows nothing about *this conversation*. Do NOT restate things
@@ -81,3 +90,52 @@ even if only to record "(none)"):
 
 Keep it tight and skimmable: headings and bullets, not walls of prose. Favor
 state that carries forward over narration of how we got here.
+
+## Resume
+
+Pick up a working session from a handoff document written by **Write** (above)
+in a previous session.
+
+### Find the handoff
+
+Let `<dir>` be the basename of the current working directory (`basename "$PWD"`).
+Resolve the handoff path in this order:
+
+1. If a path was given after `resume`, use that path.
+2. Else, if the pointer file `/tmp/handoff-last-<dir>.path` exists, use the path
+   stored inside it. (This is how a no-argument `/handoff` → `/handoff resume`
+   transfers the filename automatically.)
+3. Else fall back to `/tmp/handoff-<dir>.md`.
+4. If the resolved file doesn't exist, list `/tmp/handoff-*.md` (newest first)
+   and any obvious in-repo candidate, then ask which one to use rather than
+   guessing.
+
+### Orient, then continue
+
+1. Read the handoff doc in full.
+2. Run `git status` and `git log --oneline -8` to confirm the tree matches what
+   the doc describes. Flag any drift (e.g. the doc says a change is unstaged but
+   it's since been committed, or vice versa).
+3. Give the user a tight orientation — goal, where things stand, and the
+   immediate next step from the doc — in a few lines, not a wall of prose.
+   **Always surface the doc's "Parked / deferred" section too, even when it
+   isn't what you're about to work on.** Those are long-lived items that decay
+   out of the handoff chain precisely because no single session is actively
+   pushing them; a one-line "still parked: X, Y" in your orientation keeps them
+   visible. If the doc has no such section at all, say so — an older handoff
+   predating this convention may have silently dropped deferred work, and the
+   user may want to reconstruct it.
+4. Once you've read the doc and oriented (before doing the actual work), clean
+   up the pointer file: delete `/tmp/handoff-last-<dir>.path` if it exists. The
+   handoff has been consumed, so a stray re-run of `/handoff resume` shouldn't
+   silently pick up a stale pointer. Leave the handoff doc itself in place. (If
+   an explicit path was given after `resume`, still clear the pointer.)
+5. State the specific next action you're about to take. If it's unambiguous and
+   doesn't need a decision, proceed. If the next step is a fork or needs the
+   user's input, ask before acting. **If the recorded next step is vague or
+   missing** (e.g. "ask the user what's next", "last task unstated"), check the
+   "Parked / deferred" section before asking the user to reconstruct it from
+   memory — the answer is often already written down there.
+
+Treat the doc's decisions as already settled — don't relitigate choices it
+records unless something in the current tree contradicts them.
