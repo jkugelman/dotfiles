@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Claude Code status line: model · context meter · dir/worktree/branch · PR.
+# Claude Code status line: model · context meter · dir/worktree/branch.
 # Reads the standard status line JSON payload on stdin. See:
 # https://code.claude.com/docs/en/statusline
 set -uo pipefail
@@ -20,23 +20,16 @@ fmt_num() {
 
 # ANSI colors, kept sparse: the emoji label each segment, so color is reserved
 # for a few accents — dim gray structure, a white branch glyph and green
-# worktree glyph, a red near-full context meter, and PR review state.
+# worktree glyph, and a red near-full context meter.
 reset=$'\033[0m'
 gray=$'\033[90m'
 red=$'\033[31m'
 green=$'\033[32m'
-yellow=$'\033[33m'
 white=$'\033[97m'  # bright white, for the branch glyph
 
 # Nerd Font glyphs (require a Nerd Font — John has one; otherwise blank boxes).
 branch_icon=$'\uf126'    # nf-fa-code_branch
 worktree_icon=$'\uf1bb'  # nf-fa-tree
-pr_icon=$'\uf407'        # nf-oct-git_pull_request
-
-# OSC 8 hyperlink: open with a URL, close with an empty one. Whether it renders
-# clickable depends on the terminal (and on Claude Code passing it through).
-osc8_open() { printf '\033]8;;%s\033\\' "$1"; }
-osc8_close=$'\033]8;;\033\\'
 
 # Section separator: a dim middot between every part of the line.
 sep=" ${gray}·${reset} "
@@ -101,28 +94,12 @@ if [ -n "$branch" ]; then
     segment_dir="${segment_dir}${sep}${white}${branch_icon}${reset} ${branch}"
 fi
 
-# --- 2. Pull request: number, review state (as color), clickable link ---
-pr_number=$(j '.pr.number // empty')
-if [ -n "$pr_number" ]; then
-    case "$(j '.pr.review_state // empty')" in
-        approved)          pr_color=$green ;;
-        changes_requested) pr_color=$red ;;
-        pending)           pr_color=$yellow ;;
-        draft)             pr_color=$gray ;;
-        *)                 pr_color="" ;;
-    esac
-    pr_text="${pr_color}${pr_icon} #${pr_number}${reset}"
-    pr_url=$(j '.pr.url // empty')
-    [ -n "$pr_url" ] && pr_text="$(osc8_open "$pr_url")${pr_text}${osc8_close}"
-    segment_dir="${segment_dir}${sep}${pr_text}"
-fi
-
-# --- 3. Model display name ---
+# --- 2. Model display name ---
 model=$(j '.model.display_name // empty')
 segment_model=""
 [ -n "$model" ] && segment_model="🤖 ${model}"
 
-# --- 4. Context meter (counts up as the window fills) ---
+# --- 3. Context meter (counts up as the window fills) ---
 # Work in absolute tokens: the label is the token count in the window, and the
 # bar fills that count against the window size. Prefer the real token count,
 # then derive it from a pre-calculated percentage, then read the transcript.
