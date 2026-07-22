@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Claude Code status line: model · context meter · dir/branch/worktree · PR.
+# Claude Code status line: model · context meter · dir/worktree/branch · PR.
 # Reads the standard status line JSON payload on stdin. See:
 # https://code.claude.com/docs/en/statusline
 set -uo pipefail
@@ -85,13 +85,10 @@ base_dir=${wt_origin:-$cwd}
 dir_display=${base_dir/#$HOME/\~}
 segment_dir="📁 ${dir_display}"
 
-# Branch first. The worktree marker trails at the end: when the worktree name
-# is already implied by the branch (or there's no name), a bare tree icon says
-# "you're in a worktree" and the branch says which; only an unrelated worktree
-# name is spelled out.
-if [ -n "$branch" ]; then
-    segment_dir="${segment_dir}${sep}${white}${branch_icon}${reset} ${branch}"
-fi
+# Worktree marker sits between directory and branch: when the worktree name is
+# already implied by the branch (or there's no name), a bare tree icon says
+# "you're in a worktree" and the branch that follows says which; only an
+# unrelated worktree name is spelled out.
 if [ "$in_worktree" = yes ]; then
     if [ -z "$wt_name" ] \
         || { [ -n "$branch" ] && [[ "$branch" == *"$wt_name"* || "$wt_name" == *"$branch"* ]]; }; then
@@ -99,6 +96,9 @@ if [ "$in_worktree" = yes ]; then
     else
         segment_dir="${segment_dir}${sep}${green}${worktree_icon}${reset} ${wt_name}"
     fi
+fi
+if [ -n "$branch" ]; then
+    segment_dir="${segment_dir}${sep}${white}${branch_icon}${reset} ${branch}"
 fi
 
 # --- 2. Pull request: number, review state (as color), clickable link ---
