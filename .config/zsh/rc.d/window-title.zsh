@@ -4,7 +4,7 @@ case $TERM in
     xterm*)
         precmd() {
             local dir=${PWD/#$HOME/'~'}
-            print -n "\e]0;$dir ❯ ${history[1]}\a"
+            print -n "\e]0;$dir ❯ $(fc -ln -1)\a"
         }
         ;;
 esac
