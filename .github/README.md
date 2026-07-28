@@ -71,6 +71,9 @@ Command-line tools
 A few tools these configs reference aren't tracked in the repo — install them
 per machine:
 
+- **[bacon]** — background Rust checker, configured by
+  `.config/bacon/prefs.toml`. `cargo install bacon`, or `brew install bacon` on
+  macOS.
 - **[delta]** — the Git pager, set as `core.pager`. `cargo install git-delta`,
   or `brew install git-delta` on macOS.
 - **[git-revise]** — history-editing helper (`git revise`). `pipx install
@@ -79,6 +82,7 @@ per machine:
   packages for most Linux distros (`apt install tree`); `brew install tree` on
   macOS, which has no system copy.
 
+[bacon]: https://dystroy.org/bacon/
 [delta]: https://github.com/dandavison/delta
 [git-revise]: https://github.com/mystor/git-revise
 [tree]: https://oldmanprogrammer.net/source.php?dir=projects/tree
