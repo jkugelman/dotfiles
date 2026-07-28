@@ -66,6 +66,25 @@ unset _rc
 # Keep $PATH free of duplicate entries.
 typeset -U path
 
+# macOS ships a BSD userland, so the GNU-only spellings these configs and my
+# muscle memory expect are missing: `date -d`, `readlink -f`, `sed -i` with no
+# argument. Homebrew's coreutils installs the GNU tools g-prefixed (gls, gdate)
+# plus an unprefixed "gnubin" directory; putting that first makes ls/date/cp
+# behave here the way they do on Linux. Tried by existence, so it's a no-op
+# without `brew install coreutils`, and skipped entirely off Darwin, where GNU
+# coreutils is already the system default. Above the common.shrc source below on
+# purpose: its GNU-vs-BSD `ls` probe should see the GNU one.
+if [[ $OSTYPE == darwin* ]]; then
+    _gnubin=${HOMEBREW_PREFIX:-/opt/homebrew}/opt/coreutils/libexec/gnubin
+    if [[ -d $_gnubin ]]; then
+        path=($_gnubin $path)
+        # Keep the trailing colon: it's what makes man still fall back to the
+        # system page path after this prepend.
+        export MANPATH="${_gnubin:h}/gnuman:${MANPATH}"
+    fi
+    unset _gnubin
+fi
+
 # Gate for the Powerlevel10k plugin; antidote calls use-p10k when it sources the
 # plugin list (the conditional: in .zsh_plugins.txt). Load p10k only on a
 # 256-color terminal, and never under Claude Code — its shell integration hangs
