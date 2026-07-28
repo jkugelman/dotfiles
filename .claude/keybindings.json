@@ -1,0 +1,16 @@
+{
+  "$schema": "https://www.schemastore.org/claude-code-keybindings.json",
+  "$docs": "https://code.claude.com/docs/en/keybindings",
+  "bindings": [
+    {
+      "context": "Chat",
+      "bindings": {
+        "enter": "chat:newline",
+        "shift+enter": "chat:newline",
+        "ctrl+j": "chat:submit",
+        "ctrl+enter": "chat:submit",
+        "cmd+enter": "chat:submit"
+      }
+    }
+  ]
+}
