@@ -54,7 +54,6 @@
       "Bash(ip route *)",
       "Bash(jq *)",
       "Bash(ls *)",
-      "Bash(node /home/jkugelman/.claude/scripts/check-syntax.js:*)",
       "Bash(node ~/.claude/scripts/check-syntax.js:*)",
       "Bash(npm test *)",
       "Bash(npx -y http-server *)",
@@ -86,7 +85,7 @@
     "defaultMode": "auto",
     "additionalDirectories": [
       "/tmp",
-      "/home/jkugelman/.claude"
+      "~/.claude"
     ]
   },
   "hooks": {

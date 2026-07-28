@@ -31,7 +31,7 @@ When you'd reach for the file-based memory to record a rule or preference, prefe
 When you need to syntax-check JavaScript — either a `.js` file or inline `<script>` blocks in an HTML file — run:
 
 ```
-node /home/jkugelman/.claude/scripts/check-syntax.js <file>
+node ~/.claude/scripts/check-syntax.js <file>
 ```
 
 It accepts one or more file paths, or JS on stdin. For `.html`/`.htm` it extracts inline `<script>` blocks (skipping `src=`); for `.js` it parses directly. Exits non-zero on errors.
