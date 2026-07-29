@@ -88,6 +88,49 @@ per machine:
 [tree]: https://oldmanprogrammer.net/source.php?dir=projects/tree
 
 
+Terminal key mappings
+=====================
+
+`.claude/keybindings.json` binds Enter to insert a newline and Ctrl+Enter to
+submit, matching how Slack is configured. Terminals transmit bytes rather than
+keypresses, and Enter is already a control character — CR is 0x0d, which is
+Ctrl+M — so no byte is left over to mean Ctrl+Enter, and it arrives
+indistinguishable from a bare Enter. Each terminal has to be told to send it as
+CSI 13;5u instead, which Claude Code matches whether or not the Kitty keyboard
+protocol has been negotiated. `/terminal-setup` makes the same move when it
+maps Shift+Enter to ESC CR, so the technique is ordinary; what matters is that
+submitting never rests on it alone.
+
+Ctrl+Q submits with no mapping at all, on any terminal — Ctrl+letter rides the
+ASCII control range, the same always-available vocabulary that carries Enter. A
+machine that hasn't been set up is inconvenient, not unusable.
+
+The mappings live in each application's own settings, out of this repo's reach,
+so they are per machine:
+
+- **iTerm2** — Settings > Profiles > Keys > Key Bindings. Add Cmd+Enter, action
+  "Send Hex Codes", value `0x1b 0x5b 0x31 0x33 0x3b 0x35 0x75`.
+
+- **Windows Terminal** — in `settings.json`, an entry in `actions` and the
+  key that triggers it in `keybindings`:
+
+  ```json
+  { "command": { "action": "sendInput", "input": "\u001b[13;5u" },
+    "id": "User.sendInput.CtrlEnter" }
+
+  { "id": "User.sendInput.CtrlEnter", "keys": "ctrl+enter" }
+  ```
+
+- **VS Code** — in `keybindings.json`. Keybindings are a client-side setting,
+  so over a remote (WSL, SSH) this belongs on the local machine rather than the
+  remote:
+
+  ```json
+  { "key": "ctrl+enter", "command": "workbench.action.terminal.sendSequence",
+    "args": { "text": "\u001b[13;5u" }, "when": "terminalFocus" }
+  ```
+
+
 Docker
 ======
 

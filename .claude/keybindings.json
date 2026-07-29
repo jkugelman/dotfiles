@@ -1,15 +1,19 @@
 {
   "$schema": "https://www.schemastore.org/claude-code-keybindings.json",
   "$docs": "https://code.claude.com/docs/en/keybindings",
+  "$terminals": {
+    "fallback": "Ctrl+Q submits on any terminal, mapped or not: Ctrl+letter rides the ASCII control range, the same always-available vocabulary that carries Enter. Ctrl+J is the one letter that cannot serve, because 0x0a collides with LF and Claude Code names that key \"enter\", which no pattern can bind.",
+    "mappings": "Ctrl+Enter reaches Claude Code only where the terminal has been told to send CSI 13;5u for it. Recipes for iTerm2, Windows Terminal and VS Code are in the dotfiles README under Terminal key mappings."
+  },
   "bindings": [
     {
       "context": "Chat",
       "bindings": {
         "enter": "chat:newline",
         "shift+enter": "chat:newline",
-        "ctrl+j": "chat:submit",
         "ctrl+enter": "chat:submit",
-        "cmd+enter": "chat:submit"
+        "cmd+enter": "chat:submit",
+        "ctrl+q": "chat:submit"
       }
     }
   ]
