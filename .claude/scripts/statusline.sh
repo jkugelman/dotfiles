@@ -28,9 +28,11 @@ green=$'\033[32m'
 white=$'\033[97m'  # bright white, for glyph accents
 
 # Nerd Font glyphs (require a Nerd Font — John has one; otherwise blank boxes).
-branch_icon=$'\uf126'    # nf-fa-code_branch
-worktree_icon=$'\uf1bb'  # nf-fa-tree
-send_icon=$'\uf1d8'      # nf-fa-paper_plane
+# Spelled as UTF-8 bytes rather than $'\uXXXX': \u needs bash 4.2 and macOS
+# ships 3.2, where it passes straight through as the literal text "\uf1d8".
+branch_icon=$'\xef\x84\xa6'    # U+F126 nf-fa-code_branch
+worktree_icon=$'\xef\x86\xbb'  # U+F1BB nf-fa-tree
+send_icon=$'\xef\x87\x98'      # U+F1D8 nf-fa-paper_plane
 
 # Section separator: a dim middot between every part of the line.
 sep=" ${gray}·${reset} "
