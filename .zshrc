@@ -63,9 +63,6 @@ for _rc (~/.config/zsh/rc.d/*.zsh(N)); do
 done
 unset _rc
 
-# Keep $PATH free of duplicate entries.
-typeset -U path
-
 # macOS ships a BSD userland, so the GNU-only spellings these configs and my
 # muscle memory expect are missing: `date -d`, `readlink -f`, `sed -i` with no
 # argument. Homebrew's coreutils installs the GNU tools g-prefixed (gls, gdate)
@@ -74,8 +71,12 @@ typeset -U path
 # without `brew install coreutils`, and skipped entirely off Darwin, where GNU
 # coreutils is already the system default. Above the common.shrc source below on
 # purpose: its GNU-vs-BSD `ls` probe should see the GNU one.
-if [[ $OSTYPE == darwin* ]]; then
-    _gnubin=${HOMEBREW_PREFIX:-/opt/homebrew}/opt/coreutils/libexec/gnubin
+#
+# Consumes HOMEBREW_PREFIX rather than falling back to a hardcoded prefix:
+# ~/.zshenv has already run brew.shrc, so the variable is set whenever a brew
+# exists, and an unset one means there is no coreutils to find anyway.
+if [[ $OSTYPE == darwin* && -n $HOMEBREW_PREFIX ]]; then
+    _gnubin=$HOMEBREW_PREFIX/opt/coreutils/libexec/gnubin
     if [[ -d $_gnubin ]]; then
         path=($_gnubin $path)
         # Keep the trailing colon: it's what makes man still fall back to the

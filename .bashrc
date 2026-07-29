@@ -5,6 +5,21 @@ if [ -f /etc/bashrc ]; then
     . /etc/bashrc
 fi
 
+# Homebrew, the same activation zsh gets from ~/.zshenv. Sourced here rather than
+# from ~/.bash_profile so it covers interactive non-login shells too, and early
+# enough that the PATH probes below (and anything in common.shrc) see brew's
+# binaries. ~/.bash_profile sources this file, so login shells are covered as
+# well. Matters most where bash is the daily shell — Linux and WSL.
+#
+# Bash has no ~/.zshenv equivalent, so a non-interactive, non-login bash (`bash
+# -c`, a shebang script) still reads nothing and sees only the PATH it inherited.
+# Covering that would mean exporting BASH_ENV, which would make every bash script
+# on the system pay for a startup file; not worth it, since such scripts inherit
+# an already-activated PATH in practice.
+if [ -r "$HOME/.config/brew.shrc" ]; then
+    . "$HOME/.config/brew.shrc"
+fi
+
 #shopt -s failglob      # Disabled, interferes with Ubuntu's auto `complete'
 shopt -u failglob
 shopt -u force_fignore

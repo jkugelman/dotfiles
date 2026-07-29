@@ -1,0 +1,47 @@
+# Make Homebrew reachable, wherever it happens to live.
+#
+# Activate whichever brew exists — Apple Silicon, Intel Mac, Linuxbrew
+# system-wide, Linuxbrew per-user — tried by existence rather than guessed from
+# uname, so the same rule works on all of them and is a silent no-op on a machine
+# with no brew at all. `shellenv` sets PATH, MANPATH, INFOPATH, FPATH and the
+# HOMEBREW_* vars.
+#
+# Sourced from ~/.zshenv, which runs for *every* zsh, so non-interactive shells
+# (scripts, `ssh host cmd`, editors, launchd agents, tool harnesses) can find
+# brew-installed binaries — neither ~/.zprofile nor ~/.zshrc runs for those. Also
+# sourced from ~/.bashrc, which ~/.bash_profile pulls in for login shells, so bash
+# gets the same coverage wherever it is the daily shell (Linux, WSL).
+#
+# This file only makes brew *reachable*. Winning a precedence fight against a PATH
+# that something else has since reordered is a separate job, handled in
+# ~/.zprofile — see there for why that is needed and why it does not belong here.
+#
+# Skip the work when this brew is already activated: `brew shellenv` forks a
+# sizeable shell script and costs ~50ms, which dwarfs the ~8ms of a bare `zsh -c`,
+# and ~/.zshenv is on the hot path for every script and tool call. HOMEBREW_PREFIX
+# is the right thing to test, and it is exported, so a subshell of an activated
+# shell — the overwhelmingly common case — inherits it and does no work.
+#
+# Testing PATH instead would be wrong: a Homebrew install may drop its bin
+# directory into /etc/paths.d, in which case macOS's path_helper puts it on PATH
+# (demoted, behind /usr/bin) before this file ever runs. Reachable is not
+# activated — that guard would skip activation for every login bash, leaving
+# MANPATH, INFOPATH and the HOMEBREW_* vars unset and brew stuck behind Apple's
+# stock tools.
+#
+# Deliberately POSIX sh, not zsh, since bash sources it too: no arrays, no [[ ]],
+# no glob qualifiers.
+for _brew in \
+	/opt/homebrew/bin/brew \
+	/usr/local/bin/brew \
+	/home/linuxbrew/.linuxbrew/bin/brew \
+	"$HOME"/.linuxbrew/bin/brew
+do
+	[ -x "$_brew" ] || continue
+
+	if [ "${HOMEBREW_PREFIX-}" != "${_brew%/bin/brew}" ]; then
+		eval "$("$_brew" shellenv)"
+	fi
+	break
+done
+unset _brew
