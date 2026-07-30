@@ -25,8 +25,9 @@ typeset -U path fpath
 
 # Homebrew, so that even a bare `zsh -c` can find brew-installed binaries. Only
 # makes brew *reachable*; ~/.zprofile handles making it *win* under macOS's
-# path_helper. Self-guarded on HOMEBREW_PREFIX to skip its ~50ms `brew shellenv`
-# fork when already activated — see the file for why that matters on this hot path.
+# path_helper. Self-guarded on HOMEBREW_PREFIX *and* on brew being reachable, to
+# skip its ~50ms `brew shellenv` fork when already activated without being fooled
+# by a half-activated environment — see the file for why both tests are needed.
 if [ -r "$HOME/.config/brew.shrc" ]; then
 	. "$HOME/.config/brew.shrc"
 fi

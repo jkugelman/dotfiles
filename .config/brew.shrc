@@ -22,12 +22,27 @@
 # is the right thing to test, and it is exported, so a subshell of an activated
 # shell — the overwhelmingly common case — inherits it and does no work.
 #
-# Testing PATH instead would be wrong: a Homebrew install may drop its bin
+# Testing PATH *instead* would be wrong: a Homebrew install may drop its bin
 # directory into /etc/paths.d, in which case macOS's path_helper puts it on PATH
 # (demoted, behind /usr/bin) before this file ever runs. Reachable is not
 # activated — that guard would skip activation for every login bash, leaving
 # MANPATH, INFOPATH and the HOMEBREW_* vars unset and brew stuck behind Apple's
 # stock tools.
+#
+# Testing PATH *as well* is right, though, because the converse also happens:
+# activated is not reachable. A parent process can export the HOMEBREW_* vars and
+# then hand down a PATH with the bin directory stripped out, leaving an
+# environment that claims to be activated but cannot run brew — and since the
+# claim is what this guard tests, brew stays permanently unreachable in every
+# shell descended from it. Claude Code does exactly this: it replays a captured
+# `export PATH=...` over each tool shell, and if the shell it captured never ran
+# ~/.zprofile it captures a PATH with no brew in it. Re-activating when brew is
+# unreachable lets such a shell heal itself.
+#
+# The two tests compose safely because this one can only *add* activations, never
+# skip one the prefix test wanted: the path_helper case above has HOMEBREW_PREFIX
+# unset, so it still activates on the first test. `command -v` is a builtin in
+# every shell that sources this, so the fast path stays fork-free.
 #
 # Deliberately POSIX sh, not zsh, since bash sources it too: no arrays, no [[ ]],
 # no glob qualifiers.
@@ -39,7 +54,9 @@ for _brew in \
 do
 	[ -x "$_brew" ] || continue
 
-	if [ "${HOMEBREW_PREFIX-}" != "${_brew%/bin/brew}" ]; then
+	if [ "${HOMEBREW_PREFIX-}" != "${_brew%/bin/brew}" ] ||
+		! command -v brew >/dev/null 2>&1
+	then
 		eval "$("$_brew" shellenv)"
 	fi
 	break
