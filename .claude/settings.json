@@ -79,9 +79,7 @@
       "Skill(live-notes:*)",
       "WebFetch(domain:www.crosserville.com)"
     ],
-    "deny": [
-      "Bash(git push *)"
-    ],
+    "deny": [],
     "defaultMode": "auto",
     "additionalDirectories": [
       "/tmp",
