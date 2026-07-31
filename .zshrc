@@ -38,6 +38,15 @@ autoload -U compinit
 zstyle ':completion:*' menu select=2
 zmodload zsh/complist
 
+# Docker Desktop keeps its CLI completions outside the default fpath. An fpath
+# entry only counts if compinit sees it, so this has to sit above the block
+# below — which is also why it can't live in local.zshrc, sourced near the
+# bottom. Docker's installer solves that placement problem the other way, by
+# appending to the end of .zshrc and re-running a bare compinit; that redoes
+# the security audit this block exists to skip and leaves a second dump in
+# $HOME, so delete its block rather than keeping both.
+[[ -d ~/.docker/completions ]] && fpath=(~/.docker/completions $fpath)
+
 # compinit's security audit is the slow part of zsh startup. Rebuild the
 # dump and run the audit only when it's over a day old; otherwise (fresh,
 # or missing on first run) trust the cache with -C. Keep the dump under the
