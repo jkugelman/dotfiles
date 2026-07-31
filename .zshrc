@@ -115,9 +115,3 @@ fi
 
 # Source local customizations.
 [[ ! -f ~/.config/local.zshrc ]] || source ~/.config/local.zshrc
-
-# worktrunk (wt) shell integration: defines the wt() cd/exec wrapper and its
-# completions. Guarded so it's a harmless no-op on machines without wt.
-if command -v wt >/dev/null 2>&1; then
-    eval "$(command wt config shell init zsh)"
-fi
