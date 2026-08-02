@@ -91,44 +91,40 @@ per machine:
 Terminal key mappings
 =====================
 
-`.claude/keybindings.json` binds Enter to insert a newline and Ctrl+Enter to
-submit, matching how Slack is configured. Terminals transmit bytes rather than
-keypresses, and Enter is already a control character — CR is 0x0d, which is
-Ctrl+M — so no byte is left over to mean Ctrl+Enter, and it arrives
-indistinguishable from a bare Enter. Each terminal has to be told to send it as
-CSI 13;5u instead, which Claude Code matches whether or not the Kitty keyboard
-protocol has been negotiated. `/terminal-setup` makes the same move when it
-maps Shift+Enter to ESC CR, so the technique is ordinary; what matters is that
-submitting never rests on it alone.
+Claude Code submits on Enter and inserts a newline on Shift+Enter. Terminals
+transmit bytes rather than keypresses, though, and Enter is already a control
+character — CR is 0x0d — with no modifier bits left to spare, so Shift+Enter
+arrives indistinguishable from a bare Enter and the newline binding never
+fires. Recovering the distinction takes a mapping in the terminal itself, the
+last layer that still knows Shift was held: it sends ESC CR instead, which is
+what Claude Code reads as "insert a newline".
 
-Ctrl+Q submits with no mapping at all, on any terminal — Ctrl+letter rides the
-ASCII control range, the same always-available vocabulary that carries Enter. A
-machine that hasn't been set up is inconvenient, not unusable.
+`/terminal-setup` installs that mapping on the terminals it knows how to
+configure, VS Code and iTerm2 among them. It does **not** cover Windows
+Terminal — it classifies it as supporting Shift+Enter natively, which does not
+hold over WSL. (It also identifies the terminal by `WT_SESSION`, which WSL may
+not pass through even when `WSLENV` lists it, in which case Claude Code does
+not recognize Windows Terminal at all.)
 
-The mappings live in each application's own settings, out of this repo's reach,
-so they are per machine:
+Windows Terminal therefore needs it by hand, in `settings.json` — an entry in
+`actions` and the key that triggers it in `keybindings`:
 
-- **iTerm2** — Settings > Profiles > Keys > Key Bindings. Add Cmd+Enter, action
-  "Send Hex Codes", value `0x1b 0x5b 0x31 0x33 0x3b 0x35 0x75`.
+```json
+{ "command": { "action": "sendInput", "input": "\u001b\r" },
+  "id": "User.sendInput.ShiftEnter" }
 
-- **Windows Terminal** — in `settings.json`, an entry in `actions` and the
-  key that triggers it in `keybindings`:
+{ "id": "User.sendInput.ShiftEnter", "keys": "shift+enter" }
+```
 
-  ```json
-  { "command": { "action": "sendInput", "input": "\u001b[13;5u" },
-    "id": "User.sendInput.CtrlEnter" }
+That file lives at
+`%LOCALAPPDATA%\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json`,
+and the terminal reloads it on save. A raw ESC byte is not valid inside a JSON
+string, so the input has to be spelled as the `\u001b\r` escape above.
 
-  { "id": "User.sendInput.CtrlEnter", "keys": "ctrl+enter" }
-  ```
-
-- **VS Code** — in `keybindings.json`. Keybindings are a client-side setting,
-  so over a remote (WSL, SSH) this belongs on the local machine rather than the
-  remote:
-
-  ```json
-  { "key": "ctrl+enter", "command": "workbench.action.terminal.sendSequence",
-    "args": { "text": "\u001b[13;5u" }, "when": "terminalFocus" }
-  ```
+The mapping lives in the terminal's own settings, out of this repo's reach, so
+it is per machine. Ctrl+J and a trailing backslash insert a newline with no
+mapping at all, so a machine that hasn't been set up is inconvenient rather
+than unusable.
 
 
 Docker

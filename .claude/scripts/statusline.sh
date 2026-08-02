@@ -19,42 +19,22 @@ fmt_num() {
 }
 
 # ANSI colors, kept sparse: the emoji label each segment, so color is reserved
-# for a few accents — dim gray structure, white branch and send glyphs, a
-# green worktree glyph, and a red near-full context meter.
+# for a few accents — dim gray structure, a white branch glyph and green
+# worktree glyph, and a red near-full context meter.
 reset=$'\033[0m'
 gray=$'\033[90m'
 red=$'\033[31m'
 green=$'\033[32m'
-white=$'\033[97m'  # bright white, for glyph accents
+white=$'\033[97m'  # bright white, for the branch glyph
 
 # Nerd Font glyphs (require a Nerd Font — John has one; otherwise blank boxes).
 # Spelled as UTF-8 bytes rather than $'\uXXXX': \u needs bash 4.2 and macOS
-# ships 3.2, where it passes straight through as the literal text "\uf1d8".
+# ships 3.2, where it passes straight through as the literal text "\uf126".
 branch_icon=$'\xef\x84\xa6'    # U+F126 nf-fa-code_branch
 worktree_icon=$'\xef\x86\xbb'  # U+F1BB nf-fa-tree
-send_icon=$'\xef\x87\x98'      # U+F1D8 nf-fa-paper_plane
 
 # Section separator: a dim middot between every part of the line.
 sep=" ${gray}·${reset} "
-
-# Cells a rendered string occupies: the colors above take none, and the emoji
-# labels take two apiece, so it is the character count plus one per emoji.
-disp_width() {
-    local s=$1 bare c
-    for c in "$reset" "$gray" "$red" "$green" "$white"; do s=${s//"$c"/}; done
-    bare=$s
-    for c in 🤖 🧠 📁; do s=${s//"$c"/}; done
-    printf '%s' $(( 2 * ${#bare} - ${#s} ))
-}
-
-join_segments() {
-    local out="" seg
-    for seg in "$@"; do
-        [ -n "$seg" ] || continue
-        if [ -n "$out" ]; then out="${out}${sep}${seg}"; else out="$seg"; fi
-    done
-    printf '%s' "$out"
-}
 
 # --- 1. Directory, branch, worktree ---
 cwd=$(j '.workspace.current_dir // .cwd // empty')
@@ -173,31 +153,11 @@ if [ -n "$tokens" ] && [ "$tokens" != null ]; then
     segment_ctx="🧠 ${ctx_color}${filled_str}${gray}${empty_str}${reset} ${ctx_color}${used_fmt}${gray}/${max_fmt}${reset}"
 fi
 
-# --- Assemble --- model · context · directory group on the left, submit hint
-# held against the right edge.
-case ${OSTYPE:-} in
-    darwin*) submit_chord="cmd+return" ;;
-    *)       submit_chord="ctrl+enter" ;;
-esac
-hint="${white}${send_icon}${reset} ${submit_chord} ${gray}to submit${reset}"
+# --- Assemble --- model · context · directory group, with middot separators.
+out=""
+for seg in "$segment_model" "$segment_ctx" "$segment_dir"; do
+    [ -n "$seg" ] || continue
+    if [ -n "$out" ]; then out="${out}${sep}${seg}"; else out="$seg"; fi
+done
 
-# Claude Code captures this script's output rather than wiring it to the
-# terminal, so tput cannot see the width; it exports COLUMNS instead. It also
-# indents the row by two cells, and a third is left empty so a full row cannot
-# wrap — overrun is truncated from the right, taking the hint with it.
-avail=$(( ${COLUMNS:-80} - 3 ))
-hint_w=$(disp_width "$hint")
-room=$(( avail - hint_w - 1 ))
-
-# When the row is too narrow the model name goes first and the context meter
-# second; the directory group stays, being what says which checkout this is.
-left=$(join_segments "$segment_model" "$segment_ctx" "$segment_dir")
-[ "$(disp_width "$left")" -gt "$room" ] && left=$(join_segments "$segment_ctx" "$segment_dir")
-[ "$(disp_width "$left")" -gt "$room" ] && left=$(join_segments "$segment_dir")
-
-gap=$(( avail - $(disp_width "$left") - hint_w ))
-if [ "$gap" -ge 1 ]; then
-    printf '%s%*s%s\n' "$left" "$gap" '' "$hint"
-else
-    printf '%s\n' "$left"
-fi
+printf '%s\n' "$out"
