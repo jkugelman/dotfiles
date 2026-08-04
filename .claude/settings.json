@@ -1,4 +1,7 @@
 {
+  "env": {
+    "CLAUDE_CODE_SCROLL_SPEED": "0.5"
+  },
   "attribution": {
     "commit": "",
     "pr": ""
