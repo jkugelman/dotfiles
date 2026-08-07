@@ -1,0 +1,10 @@
+# Debug builds emit line tables instead of full DWARF. Backtraces and spantraces
+# still resolve to file:line, but a debugger can no longer step through code or
+# inspect variables — and `target/` shrinks dramatically in exchange, which is
+# the difference between a few Rust checkouts costing tens of gigabytes and
+# costing hundreds. On the rare occasion a real debugger is warranted, rebuild
+# with `CARGO_PROFILE_DEV_DEBUG=full cargo build`: the environment outranks this
+# file, so nothing here has to be edited to get full symbols back.
+
+[profile.dev]
+debug = "line-tables-only"
