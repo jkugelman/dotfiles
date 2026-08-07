@@ -1,0 +1,50 @@
+# Homebrew packages, installed by `brew bundle install --global`.
+#
+# The dotfiles carry the *configuration* for these tools but not the tools
+# themselves, so a fresh machine gets every shell integration and none of the
+# binaries it guards. `~/.config/common.shrc` reacts to a missing tool by
+# silently skipping its setup, which is the right behavior but gives no hint
+# that anything is absent — this file is the missing half, the record of what
+# `command -v` is expecting to find.
+#
+# `--global` resolves to this path via HOMEBREW_BUNDLE_FILE_GLOBAL, exported
+# from ~/.config/brew.shrc; see there for why that variable rather than
+# XDG_CONFIG_HOME. Useful commands:
+#
+#     brew bundle install --global   # install everything listed here
+#     brew bundle check   --global   # report what is missing, install nothing
+#     brew bundle dump    --global --force   # rewrite this file from the machine
+#
+# Regenerating with `dump` drops these comments, so re-add the header when you
+# do. It lists `brew leaves` — top-level installs, not their dependencies.
+#
+# Not Mac-only: Linuxbrew runs `brew bundle` too, and ~/.config/brew.shrc
+# activates it, so this file works there as well. A few entries are redundant
+# rather than wrong on Linux (`coreutils` ships natively), which costs nothing.
+
+# Background rust code check
+brew "bacon"
+# GNU File, Shell, and Text utilities
+brew "coreutils"
+# Lock file during command
+brew "flock"
+# Fast and simple Node.js version manager
+brew "fnm"
+# GitHub command-line tool
+brew "gh"
+# Syntax-highlighting pager for git and diff output
+brew "git-delta"
+# Git extension for versioning large files
+brew "git-lfs"
+# Rebase alternative for easy & efficient in-memory rebases and fixups
+brew "git-revise"
+# Lightweight and flexible command-line JSON processor
+brew "jq"
+# Open-source, cross-platform JavaScript runtime environment
+brew "node"
+# Search tool like grep and The Silver Searcher
+brew "ripgrep"
+# Display directories as trees (with optional color/HTML output)
+brew "tree"
+# CLI for Git worktree management, designed for parallel AI agent workflows
+brew "worktrunk"

@@ -62,3 +62,21 @@ do
 	break
 done
 unset _brew
+
+# Point `brew bundle --global` at ~/.config/Brewfile, the tracked record of
+# which packages this machine should have.
+#
+# Without this, --global falls back to ~/.Brewfile, adding another entry to a
+# home directory that is kept deliberately sparse. Homebrew does look in
+# ${XDG_CONFIG_HOME}/homebrew/Brewfile first, but only when XDG_CONFIG_HOME is
+# actually set, and setting it here to win that lookup would be a poor trade:
+# the variable redirects every XDG-aware program on the system, so a global
+# export to satisfy one tool changes where unrelated tools read their config.
+# These dotfiles consume XDG variables where they are already set — see the
+# ${XDG_*:-...} fallbacks in ~/.zshrc — and never set them. This is the
+# narrower lever: it moves brew's Brewfile and nothing else.
+#
+# Deliberately *not* HOMEBREW_BUNDLE_FILE, which would override the plain
+# `brew bundle` default of ./Brewfile and hide the per-project Brewfile in any
+# repository that ships one.
+export HOMEBREW_BUNDLE_FILE_GLOBAL="$HOME/.config/Brewfile"
