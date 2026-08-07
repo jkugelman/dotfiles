@@ -27,7 +27,8 @@
 !/.claude/commands/
 !/.claude/scripts/
 !/.claude/skills/
-# ...except mobile-bridge: machine-local WSL/LAN glue, deliberately unshared.
+# ...except mobile-bridge: each machine has its own LAN glue (a Windows
+# portproxy refresher; a Mac address-resolver), deliberately unshared.
 /.claude/skills/mobile-bridge/
 
 # Most of ~/.config belongs to other programs. Denying by default also keeps the
