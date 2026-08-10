@@ -6,28 +6,6 @@
     "commit": "",
     "pr": ""
   },
-  "enabledPlugins": {
-    "code-review@claude-code-plugins": true,
-    "superpowers@claude-plugins-official": true
-  },
-  "extraKnownMarketplaces": {
-    "claude-code-plugins": {
-      "source": {
-        "source": "github",
-        "repo": "anthropics/claude-code"
-      }
-    },
-    "claude-plugins-official": {
-      "source": {
-        "source": "github",
-        "repo": "anthropics/claude-plugins-official"
-      }
-    }
-  },
-  "statusLine": {
-    "type": "command",
-    "command": "bash ~/.claude/scripts/statusline.sh"
-  },
   "permissions": {
     "allow": [
       "Bash(awk *)",
@@ -103,9 +81,31 @@
       }
     ]
   },
+  "statusLine": {
+    "type": "command",
+    "command": "bash ~/.claude/scripts/statusline.sh"
+  },
+  "enabledPlugins": {
+    "code-review@claude-code-plugins": true,
+    "superpowers@claude-plugins-official": true
+  },
+  "extraKnownMarketplaces": {
+    "claude-code-plugins": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/claude-code"
+      }
+    },
+    "claude-plugins-official": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/claude-plugins-official"
+      }
+    }
+  },
   "effortLevel": "xhigh",
+  "tui": "fullscreen",
   "theme": "auto",
   "agentPushNotifEnabled": true,
-  "tui": "fullscreen",
   "skipAutoPermissionPrompt": true
 }
