@@ -8,14 +8,16 @@
 # routinely miss this because loading the `dotfiles` skill is a judgement call.
 # This hook makes it deterministic:
 #
-#   Edit/Write/MultiEdit on a file in the dotfiles context  -> inject the rules
+#   Edit/Write/MultiEdit on a file in the dotfiles context   -> inject the rules
+#   Bash writing to a file in the dotfiles context           -> inject the rules
 #   EnterWorktree in the dotfiles context (a creation)       -> deny (edit in place)
 #
 # "Dotfiles context" is one structural rule, no hardcoded file list: the target
-# (the edited file; the session's project dir for EnterWorktree) is under $HOME
-# and there is no nested `.git` between it and $HOME. That excludes project
-# checkouts and .claude/worktrees/* (they carry their own .git) while still
-# covering brand-new files that `dotfiles add -f` would track.
+# (the edited file; the write target recovered from a Bash command; the
+# session's project dir for EnterWorktree) is under $HOME and there is no
+# nested `.git` between it and $HOME. That excludes project checkouts and
+# .claude/worktrees/* (they carry their own .git) while still covering
+# brand-new files that `dotfiles add -f` would track.
 #
 # The hook never blocks an edit: any internal failure exits 0 (allow) silently.
 
@@ -51,26 +53,72 @@ in_dotfiles_context() {
   return 0
 }
 
-case "$tool" in
-Edit | Write | MultiEdit)
-  [ -n "$fp" ] || exit 0
-  in_dotfiles_context "$fp" || exit 0
-
-  fp_abs=$(realpath -m -- "$fp" 2>/dev/null || printf '%s' "$fp")
+# Inject the dotfiles rules for $1, a file in the dotfiles context.
+emit_dotfiles_context() {
+  local target track msg
+  target=$(realpath -m -- "$1" 2>/dev/null || printf '%s' "$1")
   if git --git-dir="$home/.dotfiles" --work-tree="$home" \
-    ls-files --error-unmatch -- "$fp_abs" >/dev/null 2>&1; then
-    track=$(printf 'It is already tracked — commit it with `dotfiles`, not `git`.')
+    ls-files --error-unmatch -- "$target" >/dev/null 2>&1; then
+    track='It is already tracked — commit it with `dotfiles`, not `git`.'
   else
-    track=$(printf 'It is NOT tracked yet — if it should be, add it with `dotfiles add -f <path>` (~/.gitignore ignores $HOME by default).')
+    track='It is NOT tracked yet — if it should be, add it with `dotfiles add -f <path>` (~/.gitignore ignores $HOME by default).'
   fi
 
-  msg=$(printf '%s %s %s' \
-    '⚙ Dotfiles work: this file lives in $HOME, the work tree of the bare repo ~/.dotfiles.' \
+  msg=$(printf '⚙ Dotfiles work: %s lives in $HOME, the work tree of the bare repo ~/.dotfiles. %s %s' \
+    "~${target#"$home"}" \
     "$track" \
     'Use the `dotfiles` function for all git ops (plain `git` fails in $HOME). Edit in place — never isolate dotfiles work in a worktree. Commit locally only; do not push or open a PR unless asked. Load the `dotfiles` skill for full detail.')
 
   jq -cn --arg ctx "$msg" \
     '{hookSpecificOutput:{hookEventName:"PreToolUse",additionalContext:$ctx}}'
+}
+
+case "$tool" in
+Edit | Write | MultiEdit)
+  [ -n "$fp" ] || exit 0
+  in_dotfiles_context "$fp" || exit 0
+  emit_dotfiles_context "$fp"
+  exit 0
+  ;;
+Bash)
+  # A shell edit carries no file_path, so the target has to be recovered from
+  # the command text — and which files an arbitrary command writes is not
+  # decidable, so this stays a heuristic. It covers the shapes Claude Code's
+  # bash-first steering actually produces (sed -i, heredocs, redirects, tee).
+  # A miss costs the advisory, not correctness: nothing here blocks.
+  #
+  # Read separately rather than in the joined `read` above: a heredoc command
+  # spans lines, and `read` would stop at the first one.
+  cmd=$(printf '%s' "$input" | jq -r '.tool_input.command // ""' 2>/dev/null)
+  [ -n "$cmd" ] || exit 0
+  printf '%s' "$cmd" | grep -qE \
+    '>|(^|[^[:alnum:]_.-])(sed|perl|tee|dd|truncate|install|cp|mv|ln|rm|touch|mkdir)([^[:alnum:]_.-]|$)' ||
+    exit 0
+
+  # Redirect targets may be bare words (`> notes.txt`) and resolve against the
+  # command's cwd. Every other candidate must name its path outright: bare
+  # words resolved against a cwd that is itself under $HOME — which
+  # $CLAUDE_JOB_DIR/tmp always is — would match on nearly any command.
+  candidates=$(
+    {
+      printf '%s' "$cmd" | grep -oE '>>?[[:space:]]*[^[:space:]<>|;&()]+' |
+        sed -E 's/^>>?[[:space:]]*//'
+      printf '%s' "$cmd" | tr -d "\"'" | tr $' \t\n|;&()<>' '\n' | grep -E '^[~/]'
+    } 2>/dev/null | sort -u
+  )
+
+  while IFS= read -r tok; do
+    [ -n "$tok" ] || continue
+    case "$tok" in
+    "~") tok=$home ;;
+    "~/"*) tok="$home/${tok#\~/}" ;;
+    /*) ;;
+    *) tok="$cwd/$tok" ;;
+    esac
+    in_dotfiles_context "$tok" || continue
+    emit_dotfiles_context "$tok"
+    exit 0
+  done <<<"$candidates"
   exit 0
   ;;
 EnterWorktree)
