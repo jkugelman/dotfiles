@@ -12,9 +12,10 @@
 #   EnterWorktree in the dotfiles context (a creation)       -> deny (edit in place)
 #
 # "Dotfiles context" is one structural rule, no hardcoded file list: the target
-# is under $HOME and there is no nested `.git` between it and $HOME. That
-# excludes project checkouts and .claude/worktrees/* (they carry their own
-# .git) while still covering brand-new files that `dotfiles add -f` would track.
+# (the edited file; the session's project dir for EnterWorktree) is under $HOME
+# and there is no nested `.git` between it and $HOME. That excludes project
+# checkouts and .claude/worktrees/* (they carry their own .git) while still
+# covering brand-new files that `dotfiles add -f` would track.
 #
 # The hook never blocks an edit: any internal failure exits 0 (allow) silently.
 
@@ -76,8 +77,16 @@ EnterWorktree)
   # Entering an existing worktree by path is fine; only block a *creation*
   # (name / default) launched from the dotfiles context.
   [ -z "$wt_path" ] || exit 0
-  [ -n "$cwd" ] || cwd=$(pwd -P 2>/dev/null)
-  in_dotfiles_context "$cwd" || exit 0
+
+  # Judge the session's project directory, not `.cwd`. EnterWorktree builds a
+  # worktree of the session's repo, but `.cwd` follows every Bash `cd` — and
+  # background jobs are told to work out of $CLAUDE_JOB_DIR/tmp, i.e.
+  # ~/.claude/jobs/<id>/tmp: a non-repo path under $HOME that reads as dotfiles
+  # context and would deny worktrees for whatever repo the job is really on.
+  # Fall back to `.cwd` only when the env var is missing (older Claude Code);
+  # never guess with `pwd`, which is this hook's cwd and not the session's.
+  root=${CLAUDE_PROJECT_DIR:-$cwd}
+  in_dotfiles_context "$root" || exit 0
 
   reason=$(printf '%s' 'Do not isolate dotfiles work in a worktree — edit $HOME in place. $HOME is the work tree of the bare repo ~/.dotfiles and has no .git, so worktree isolation does not apply (and adding WorktreeCreate hooks to force it would hijack every repo). Nothing enforces isolation here and John works one agent at a time on this repo. Proceed with the edit directly; use the `dotfiles` function for git ops.')
 
