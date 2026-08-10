@@ -26,9 +26,11 @@ Before rewriting history — amend, rebase, squash, reset, force-push — don't 
 
 When choosing between approaches, weigh only what produces the best code — never prefer an option because it touches fewer lines or is less work. Tedious, wide-reaching changes are fine. Existing patterns in a codebase are not load-bearing by default: question the architecture and redo existing systems when it makes the whole more elegant. Surface the better design even when it's the larger change.
 
-## Prefer CLAUDE.md over memories
+## Prefer CLAUDE.md over memories — unless I ask for a memory
 
-When you'd reach for the file-based memory to record a rule or preference, prefer a CLAUDE.md instead: the project's checked-in `CLAUDE.md` for anything project-relevant or worth sharing with collaborators, this global file for cross-project personal preferences. Memories aren't version controlled and don't transfer to a new machine; CLAUDE.md files do — the project one through its repo, this one through my dotfiles. Reserve memory for the rare thing that fits neither and is genuinely idiosyncratic to me — and even then, lean toward CLAUDE.md.
+When *you* would reach for the file-based memory to record a rule or preference, prefer a CLAUDE.md instead: the project's checked-in `CLAUDE.md` for anything project-relevant or worth sharing with collaborators, this global file for cross-project personal preferences. Memories aren't version controlled and don't transfer to a new machine; CLAUDE.md files do — the project one through its repo, this one through my dotfiles.
+
+**When I explicitly ask for a memory, write a memory.** Don't reroute it into a CLAUDE.md, and don't relitigate the choice first — the preference above governs your own unprompted judgment calls, it isn't a veto over a direct request. Machine-local facts earn a memory under the default too: a local checkout path or anything true only of this machine would be wrong on the next machine, which is exactly what a CLAUDE.md would carry there.
 
 ## Syntax-checking JavaScript
 
