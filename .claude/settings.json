@@ -86,7 +86,6 @@
     "command": "bash ~/.claude/scripts/statusline.sh"
   },
   "enabledPlugins": {
-    "code-review@claude-code-plugins": true,
     "superpowers@claude-plugins-official": true
   },
   "extraKnownMarketplaces": {
