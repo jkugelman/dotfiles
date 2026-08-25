@@ -18,6 +18,35 @@ This covers local commits only. Pushing and PRs are outward-facing and mine to t
 
 Hard-wrap the commit-message body at 72 columns — including when you write it to a file or heredoc to commit, not only when suggesting it in chat (file-written messages have been coming out unwrapped).
 
+## Writing prose: commit messages, docs, and comments
+
+**Say what it is before why it is that way.** Open with what the thing does or contains, in terms someone without the context can follow. Name the parts and how they relate. Rationale, tradeoffs, and design discussion come after — if they earn their place at all.
+
+**"Why, not just what" is not "why instead of what."** The standard advice warns against a message that only restates the diff. It is not license to open with rationale.
+
+**Describe what exists, not what doesn't.** Cut comparisons to alternatives that were never built, to states that no longer exist, and to decisions already settled:
+
+- "Four skills rather than one" → "Four skills:" then name them
+- "X is now a versioned interface" → "X carries a schema version"
+- "so this lives here rather than in other-file.md" → delete
+- "`6.0.21-dev24.gb0d6286bb`, verified against a real run" → delete the clause; the example stands on its own
+
+The word *now*, the phrase *rather than a*, and any sentence arguing against a claim the reader never made are the tells.
+
+**Don't justify what nobody disputed.** State the fact once:
+
+- "The restriction is the point" → delete
+- "This is not a stylistic preference" → delete, give the reason
+- "The gate is the point, not a formality" → "Never mutate without an explicit go."
+
+*Deliberately* and *on purpose* are load-bearing only where they stop a reader from "fixing" something that looks wrong. Cut them elsewhere.
+
+**Define terms on first use.** Referring to a concept without saying what it is ("driven by a shot list") makes the document opaque to everyone who wasn't in the conversation.
+
+**Cut length hard.** First drafts run about three times too long. Drop operational detail that already lives in the files being added, and drop any account of how the work was investigated.
+
+Applies equally to commit messages, PR descriptions, skill and design docs, docstrings, and code comments.
+
 ## Don't create backup refs or commits
 
 Before rewriting history — amend, rebase, squash, reset, force-push — don't create a backup branch, tag, or checkpoint commit "just in case." The reflog already preserves the old commits and is sufficient for resurrecting them when something goes wrong, so a backup ref adds nothing but clutter I have to notice and delete. Just do the rewrite. If you do create one anyway, clean it up yourself as part of the same task rather than leaving it behind or handing me the delete command.
