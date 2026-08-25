@@ -1,3 +1,5 @@
 *.code-workspace
 .vscode/
 .playwright-mcp/
+
+**/.claude/settings.local.json
