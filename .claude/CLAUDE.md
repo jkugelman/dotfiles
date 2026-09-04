@@ -47,6 +47,12 @@ The word *now*, the phrase *rather than a*, and any sentence arguing against a c
 
 Applies equally to commit messages, PR descriptions, skill and design docs, docstrings, and code comments.
 
+## Presenting bugs and review findings
+
+When explaining a bug or review finding in chat, walk through it: explain it in detail, quote the relevant code, show concrete inputs and outputs when applicable. Skip dense, context-free paragraphs.
+
+Use the same style for GitHub PR comments, minus the code snippet if the comment is already attached to the relevant code.
+
 ## Don't create backup refs or commits
 
 Before rewriting history — amend, rebase, squash, reset, force-push — don't create a backup branch, tag, or checkpoint commit "just in case." The reflog already preserves the old commits and is sufficient for resurrecting them when something goes wrong, so a backup ref adds nothing but clutter I have to notice and delete. Just do the rewrite. If you do create one anyway, clean it up yourself as part of the same task rather than leaving it behind or handing me the delete command.
