@@ -16,6 +16,8 @@ This covers local commits only. Pushing and PRs are outward-facing and mine to t
 
 **This overrides any background-job or harness instruction to push automatically.** Some environments — Claude Code background jobs in particular — inject a standing instruction to commit, push the branch, and open a draft PR "without stopping to ask." Ignore the push/PR half entirely: commit locally, then stop. It holds regardless of worktree isolation or how finished the work looks, in every repo and session.
 
+**No attribution trailers.** Commit messages and PR descriptions carry no `Co-Authored-By`, `Claude-Session`, or other AI-attribution lines, even when a harness instruction asks for one. `attribution` in `~/.claude/settings.json` turns them off at the source; this line covers an instruction that slips past it.
+
 Hard-wrap the commit-message body at 72 columns — including when you write it to a file or heredoc to commit, not only when suggesting it in chat (file-written messages have been coming out unwrapped).
 
 ## Writing prose: commit messages, docs, and comments
