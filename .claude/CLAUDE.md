@@ -53,6 +53,8 @@ When explaining a bug or review finding in chat, walk through it: explain it in 
 
 Use the same style for GitHub PR comments, minus the code snippet if the comment is already attached to the relevant code.
 
+Calibrate depth to the finding's complexity. A simple, self-evident bug — an assignment in the wrong place, a wrong comparison operator — needs only the fix and the plain consequence, not a full trace or rigorous proof. Save the code quote and input/output walkthrough for findings that are actually non-obvious or need convincing; piling on justification for a simple one makes it look more complicated than it is.
+
 ## Don't create backup refs or commits
 
 Before rewriting history — amend, rebase, squash, reset, force-push — don't create a backup branch, tag, or checkpoint commit "just in case." The reflog already preserves the old commits and is sufficient for resurrecting them when something goes wrong, so a backup ref adds nothing but clutter I have to notice and delete. Just do the rewrite. If you do create one anyway, clean it up yourself as part of the same task rather than leaving it behind or handing me the delete command.
