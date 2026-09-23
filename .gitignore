@@ -30,6 +30,8 @@
 # ...except mobile-bridge: each machine has its own LAN glue (a Windows
 # portproxy refresher; a Mac address-resolver), deliberately unshared.
 /.claude/skills/mobile-bridge/
+# ...and synced/, where Claude Code downloads skills from claude.ai.
+/.claude/skills/synced/
 
 # Most of ~/.config belongs to other programs. Denying by default also keeps the
 # untracked local.* overrides out, which is their whole point.
