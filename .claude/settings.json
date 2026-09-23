@@ -68,6 +68,7 @@
       "~/.claude"
     ]
   },
+  "model": "opus[1m]",
   "hooks": {
     "PreToolUse": [
       {
@@ -106,6 +107,7 @@
   "effortLevel": "xhigh",
   "tui": "fullscreen",
   "theme": "auto",
+  "switchModelsOnFlag": true,
   "agentPushNotifEnabled": true,
   "skipAutoPermissionPrompt": true
 }
