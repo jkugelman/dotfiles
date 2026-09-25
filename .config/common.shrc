@@ -128,6 +128,31 @@ if command -v wt >/dev/null 2>&1; then
     fi
 fi
 
+# Route builds through kache (a Rust and C/C++ compiler cache) if it's
+# installed. `kache init` would write these into ~/.cargo/config.toml, but
+# a tracked `rustc-wrapper = "kache"` breaks cargo outright on any machine
+# without kache; the environment variables are equivalent and can be
+# guarded. Cargo prefers them to its config files.
+#
+# The compiler shims (cc, clang, gcc, ...) only intercept when they come
+# first on PATH, so they're moved to the front even if already present:
+# a login zsh's ~/.zprofile promotes Homebrew ahead of whatever it
+# inherited. Kept below the other PATH edits here for the same reason.
+if command -v kache >/dev/null 2>&1; then
+    export RUSTC_WRAPPER=kache
+    export HOST_CC="kache cc" HOST_CXX="kache c++" CC_KNOWN_WRAPPER_CUSTOM=kache
+
+    _kache_shims=$HOME/.local/lib/kache/shims
+    if [[ -d $_kache_shims ]]; then
+        _path=:$PATH:
+        _path=${_path//":$_kache_shims:"/:}
+        _path=${_path#:}
+        PATH=$_kache_shims:${_path%:}
+        export PATH
+    fi
+    unset _kache_shims _path
+fi
+
 # Source local customizations.
 [[ ! -f ~/.config/local.shrc ]] || source ~/.config/local.shrc
 
