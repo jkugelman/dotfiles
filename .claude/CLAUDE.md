@@ -105,6 +105,12 @@ I know files written to `/tmp` can be deleted at any time — it's why I send th
 
 When calling `EnterWorktree`, always pass an explicit `name` describing the task, instead of omitting it and letting the tool fall back to a randomly generated name. A descriptive name is what makes `git worktree list` and later cleanup legible.
 
+## Finding a commit's CI runs with `gh`
+
+`gh run list --commit` needs the **full** 40-character SHA. A short SHA matches nothing and returns `[]`, so it looks like CI hasn't started when it's already running. Expand it first: `gh run list --commit "$(git rev-parse <sha>)"`.
+
+One push can start several workflows (in Grawlix, *Test and deploy* and *Docs*). Pick the run by `workflowName` rather than taking `.[0]`, or you may watch the wrong one.
+
 # The dotfiles repo
 
 `$HOME` is the work tree of a bare Git repo at `~/.dotfiles`, published publicly at `github.com/jkugelman/dotfiles`. So files under `~` may be tracked, and plain `git` there does not work — use the `dotfiles` function. Before doing real work on my config, invoke the `dotfiles` skill.
