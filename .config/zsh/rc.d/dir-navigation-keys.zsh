@@ -1,8 +1,3 @@
-# Alt-Left/Right cycle the directory stack (dircycle plugin, loaded from
-# ~/.zshrc).
-bindkey '^[[1;3D' insert-cycledleft     # Alt-Left
-bindkey '^[[1;3C' insert-cycledright    # Alt-Right
-
 setopt auto_pushd pushd_ignore_dups
 
 # Press Alt-Up to go up a directory, Alt-Down to go back down.

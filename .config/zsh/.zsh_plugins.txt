@@ -5,11 +5,6 @@
 # Code (see use-p10k in ~/.zshrc). Configured separately by ~/.config/zsh/p10k.zsh.
 romkatv/powerlevel10k conditional:use-p10k
 
-# Directory-stack navigation: Alt-Left/Right cycle through visited dirs like a
-# browser's back/forward buttons. Keys are bound in
-# ~/.config/zsh/rc.d/dir-navigation-keys.zsh.
-ohmyzsh/ohmyzsh path:plugins/dircycle
-
 # Fish-like autosuggestions from history and completions as you type.
 zsh-users/zsh-autosuggestions
 
