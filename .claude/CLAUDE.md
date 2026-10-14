@@ -45,7 +45,7 @@ The word *now*, the phrase *rather than a*, and any sentence arguing against a c
 
 **Define terms on first use.** Referring to a concept without saying what it is ("driven by a shot list") makes the document opaque to everyone who wasn't in the conversation.
 
-**Cut length hard.** First drafts run about three times too long. Drop operational detail that already lives in the files being added, and drop any account of how the work was investigated.
+**Cut length hard.** First drafts run about three times too long. Drop operational detail that already lives in the files being added, and drop any account of how the work was investigated. Cutting means removing sentences and details that don't earn their place, never packing the same content into fewer, denser sentences.
 
 Applies equally to commit messages, PR descriptions, skill and design docs, docstrings, and code comments.
 
