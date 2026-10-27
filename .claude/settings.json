@@ -37,9 +37,6 @@
     "type": "command",
     "command": "bash ~/.claude/scripts/statusline.sh"
   },
-  "enabledPlugins": {
-    "superpowers@claude-plugins-official": true
-  },
   "extraKnownMarketplaces": {
     "claude-code-plugins": {
       "source": {
