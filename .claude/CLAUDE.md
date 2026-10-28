@@ -47,6 +47,8 @@ The word *now*, the phrase *rather than a*, and any sentence arguing against a c
 
 **Cut length hard.** First drafts run about three times too long. Drop operational detail that already lives in the files being added, and drop any account of how the work was investigated. Cutting means removing sentences and details that don't earn their place, never packing the same content into fewer, denser sentences.
 
+**Lead reports with findings.** In reports and artifacts, put methodology, evidence, and timelines in collapsible sections or an appendix, or cut them; never list ruled-out items. Give each item enough context to be understood by someone skimming straight to it.
+
 Applies equally to commit messages, PR descriptions, skill and design docs, docstrings, and code comments.
 
 ## Presenting bugs and review findings
