@@ -113,6 +113,15 @@ When calling `EnterWorktree`, always pass an explicit `name` describing the task
 
 One push can start several workflows (in Grawlix, *Test and deploy* and *Docs*). Pick the run by `workflowName` rather than taking `.[0]`, or you may watch the wrong one.
 
+## Stacked PRs
+
+When a change has parts a reviewer can take one at a time, such as a refactor and the feature built on it, open one PR per part as a stack: each PR's base is the branch of the PR below it. GitHub supports stacks natively, and the `gh stack` extension (`github/gh-stack`) manages them.
+
+- To write the titles and descriptions yourself, open each PR with `gh pr create --draft --base <branch below>`, then join them with `gh stack link <bottom> … <top>`. It takes branches, PR numbers or URLs, bottom first, and opens a PR for any branch that has none.
+- `gh stack init <branches…>` tracks existing branches as a local stack, and `gh stack submit --auto` pushes them and opens draft PRs with generated titles. `view`, `rebase`, `sync` and `push` manage a tracked stack.
+
+Splitting a pushed PR into a stack resets its branch, which takes a force-push. Ask me before force-pushing.
+
 # The dotfiles repo
 
 `$HOME` is the work tree of a bare Git repo at `~/.dotfiles`, published publicly at `github.com/jkugelman/dotfiles`. So files under `~` may be tracked, and plain `git` there does not work — use the `dotfiles` function. Before doing real work on my config, invoke the `dotfiles` skill.
