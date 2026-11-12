@@ -59,6 +59,30 @@ Use the same style for GitHub PR comments, minus the code snippet if the comment
 
 Calibrate depth to the finding's complexity. A simple, self-evident bug — an assignment in the wrong place, a wrong comparison operator — needs only the fix and the plain consequence, not a full trace or rigorous proof. Save the code quote and input/output walkthrough for findings that are actually non-obvious or need convincing; piling on justification for a simple one makes it look more complicated than it is.
 
+## Fixing flaky tests
+
+Fix a flaky test. Never rerun it until it passes: a load-dependent flake
+rarely recurs on demand, and a pass proves nothing.
+
+- Save the first failure's output and artifacts before running anything
+  else. They may be the only record of the race.
+- Form a hypothesis about the race and test it. Add printouts, and force the
+  suspect timing with an injected delay or state, until the failure
+  reproduces every time. Running many copies at once adds the load that
+  brings a race out.
+- A flake can be a real bug the test caught under load. Decide which before
+  changing the test.
+- Fix the cause, and check that the fix passes with the forced timing still
+  in. Then take the instrumentation out.
+- Make tests deterministic. A test waits on a signal from the code, never a
+  fixed sleep; when the code gives none, add one, through a small test-only
+  shim if needed. A check that something is absent first waits for a
+  positive sign that the work ran.
+
+More in Grawlix's
+[testing doc](https://github.com/jkugelman/grawlix/blob/main/docs/testing.md),
+under "Debugging a flake".
+
 ## Don't create backup refs or commits
 
 Before rewriting history — amend, rebase, squash, reset, force-push — don't create a backup branch, tag, or checkpoint commit "just in case." The reflog already preserves the old commits and is sufficient for resurrecting them when something goes wrong, so a backup ref adds nothing but clutter I have to notice and delete. Just do the rewrite. If you do create one anyway, clean it up yourself as part of the same task rather than leaving it behind or handing me the delete command.
