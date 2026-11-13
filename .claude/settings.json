@@ -13,6 +13,7 @@
     ],
     "deny": [],
     "defaultMode": "auto",
+    "denyInsteadOfPrompting": true,
     "additionalDirectories": [
       "/tmp",
       "~/.claude"
