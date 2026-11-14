@@ -111,10 +111,6 @@ This script is pre-approved in `~/.claude/settings.json`, so it runs without a p
 
 **Only run it when you actually changed JavaScript.** Editing CSS, HTML markup, or other non-`<script>` content in an `.html` file does not warrant a syntax check — the JS in the file hasn't changed. Don't run the checker as a routine "after every edit" step.
 
-## Don't edit files with Python
-
-Don't make code or doc edits with a Python script, even for a batch of edits: each Python run needs my approval.
-
 ## Planning docs
 
 A plan written to think through imminent work — one you'll implement right away and then discard — is ephemeral: write it to `/tmp`, not into the repo, and don't commit it. Only a plan that stays useful in version control for a while, and isn't about to be implemented, belongs in the repo.
