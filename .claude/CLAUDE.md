@@ -20,6 +20,14 @@ This covers local commits only. Pushing and PRs are outward-facing and mine to t
 
 Hard-wrap the commit-message body at 72 columns — including when you write it to a file or heredoc to commit, not only when suggesting it in chat (file-written messages have been coming out unwrapped).
 
+## Questions about what to do
+
+When you have a question about what to do, first ask yourself whether it needs my input or only a second opinion.
+It needs my input when the answer turns on something only I know or decide: my priorities and taste, the scope of the work, or approval for something outward-facing or hard to undo.
+Otherwise it's a second opinion: consult a Fable agent instead of me, and ask me only when Fable is unsure too.
+Brief Fable with the code and the question, not your answer, so it judges for itself.
+Then go ahead, and tell me in your report what Fable decided.
+
 ## Writing prose: commit messages, docs, and comments
 
 **Say what it is before why it is that way.** Open with what the thing does or contains, in terms someone without the context can follow. Name the parts and how they relate. Rationale, tradeoffs, and design discussion come after — if they earn their place at all.
