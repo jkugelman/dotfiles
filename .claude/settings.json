@@ -50,6 +50,12 @@
         "source": "github",
         "repo": "anthropics/claude-plugins-official"
       }
+    },
+    "caldo-skills": {
+      "source": {
+        "source": "github",
+        "repo": "caldoai/skills"
+      }
     }
   },
   "effortLevel": "xhigh",
@@ -58,5 +64,8 @@
   "switchModelsOnFlag": true,
   "agentPushNotifEnabled": true,
   "skipAutoPermissionPrompt": true,
-  "advisorModel": "fable"
+  "advisorModel": "fable",
+  "enabledPlugins": {
+    "untangle-codebase@caldo-skills": true
+  }
 }
