@@ -137,6 +137,10 @@ When calling `EnterWorktree`, always pass an explicit `name` describing the task
 
 One push can start several workflows (in Grawlix, *Test and deploy* and *Docs*). Pick the run by `workflowName` rather than taking `.[0]`, or you may watch the wrong one.
 
+## Previewing Markdown
+
+`gh markdown-preview <file>` serves a live preview rendered by GitHub's API at `localhost:3333`. Pass `--markdown-mode`: the default, `gfm`, renders the way GitHub comments do, turning every line break into a `<br>`, so a file written one sentence per line shows each sentence on its own line. `--markdown-mode` renders the way GitHub shows a file.
+
 ## Stacked PRs
 
 When a change has parts a reviewer can take one at a time, such as a refactor and the feature built on it, open one PR per part as a stack: each PR's base is the branch of the PR below it. GitHub supports stacks natively, and the `gh stack` extension (`github/gh-stack`) manages them.
