@@ -32,6 +32,17 @@
           }
         ]
       }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "$HOME/.claude/scripts/name-session.py",
+            "timeout": 90
+          }
+        ]
+      }
     ]
   },
   "statusLine": {
