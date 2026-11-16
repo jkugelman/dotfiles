@@ -38,6 +38,9 @@
     "type": "command",
     "command": "bash ~/.claude/scripts/statusline.sh"
   },
+  "enabledPlugins": {
+    "untangle-codebase@caldo-skills": true
+  },
   "extraKnownMarketplaces": {
     "claude-code-plugins": {
       "source": {
@@ -59,13 +62,10 @@
     }
   },
   "effortLevel": "xhigh",
+  "advisorModel": "opus",
   "tui": "fullscreen",
   "theme": "auto",
   "switchModelsOnFlag": true,
   "agentPushNotifEnabled": true,
-  "skipAutoPermissionPrompt": true,
-  "advisorModel": "fable",
-  "enabledPlugins": {
-    "untangle-codebase@caldo-skills": true
-  }
+  "skipAutoPermissionPrompt": true
 }
