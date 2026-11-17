@@ -34,7 +34,7 @@ LOOKUP_TOOLS = [
     "mcp__claude_ai_Atlassian_Rovo__getJiraIssue",
 ]
 
-STYLE = """Write the title in sentence case. If the session is about one obvious reference, start with it and a colon, then capitalize the next word. Write references exactly as "ABC-1234", "PR #1234", "Issue #1234" or "Todo #5" (always "#", never "Todo 5"), and use "Todos #5 and #6" for two. Example: "PR #1234: Fix relay timeout"."""
+STYLE = """Write the title in sentence case. If the session is about one obvious reference, start with it and a colon, then capitalize the next word. Write references exactly as "ABC-1234", "PR #1234", "Issue #1234" or "Todo 5", and use "Todos 5 and 6" for two. Example: "PR #1234: Fix relay timeout"."""
 
 GUESS = """Suggest a short title (3-6 words) for this Claude Code session that says what it's about.
 
