@@ -23,7 +23,7 @@
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "Edit|Write|MultiEdit|EnterWorktree",
+        "matcher": "Edit|Write|MultiEdit|EnterWorktree|Bash",
         "hooks": [
           {
             "type": "command",

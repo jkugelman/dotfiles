@@ -91,25 +91,64 @@ Bash)
   # spans lines, and `read` would stop at the first one.
   cmd=$(printf '%s' "$input" | jq -r '.tool_input.command // ""' 2>/dev/null)
   [ -n "$cmd" ] || exit 0
+  # Drop heredoc bodies: they are data (a commit message, a file's contents),
+  # and a `>` in them reads as a redirect. The `<<EOF` line itself stays.
+  cmd=$(printf '%s\n' "$cmd" | awk '
+    end != "" { if ($0 ~ "^[ \t]*" end "$") end = ""; next }
+    { print }
+    match($0, /<<-?[ \t]*["\047]?[A-Za-z_][A-Za-z0-9_]*/) {
+      end = substr($0, RSTART, RLENGTH); sub(/^<<-?[ \t]*["\047]?/, "", end)
+    }')
   printf '%s' "$cmd" | grep -qE \
     '>|(^|[^[:alnum:]_.-])(sed|perl|tee|dd|truncate|install|cp|mv|ln|rm|touch|mkdir)([^[:alnum:]_.-]|$)' ||
     exit 0
 
+  # Candidates are the paths a command writes, not every path it names, so a
+  # read like `grep x ~/.zshrc > /tmp/out` stays quiet:
+  #   - redirect targets (`> f`, `>> f`), skipping `>&1` and /dev/*;
+  #   - every path argument of tee, touch, mkdir, rm, truncate;
+  #   - the last argument of cp, mv, install, ln (the destination);
+  #   - the path arguments of sed or perl only with -i / --in-place;
+  #   - dd's of=.
   # Redirect targets may be bare words (`> notes.txt`) and resolve against the
   # command's cwd. Every other candidate must name its path outright: bare
   # words resolved against a cwd that is itself under $HOME — which
   # $CLAUDE_JOB_DIR/tmp always is — would match on nearly any command.
   candidates=$(
     {
-      printf '%s' "$cmd" | grep -oE '>>?[[:space:]]*[^[:space:]<>|;&()]+' |
-        sed -E 's/^>>?[[:space:]]*//'
-      printf '%s' "$cmd" | tr -d "\"'" | tr $' \t\n|;&()<>' '\n' | grep -E '^[~/]'
+      printf '%s' "$cmd" | tr -d "\"'" | grep -oE '>>?[[:space:]]*[^&[:space:]<>|;()][^[:space:]<>|;&()]*' |
+        sed -E 's/^>>?[[:space:]]*//' | grep -v '^/dev/'
+      printf '%s\n' "$cmd" | tr -d "\"'" | tr '|;&()' '\n\n\n\n\n' | awk '
+        {
+          n = 0
+          for (i = 1; i <= NF; i++) {
+            if (n == 0 && ($i == "sudo" || $i == "command" || $i ~ /^[A-Za-z_][A-Za-z0-9_]*=/)) continue
+            w[++n] = $i
+          }
+          if (n == 0) next
+          v = w[1]; sub(/.*\//, "", v)
+          if (v ~ /^(tee|touch|mkdir|rm|truncate)$/) {
+            for (j = 2; j <= n; j++) print w[j]
+          } else if (v ~ /^(cp|mv|install|ln)$/) {
+            print w[n]
+          } else if (v == "sed" || v == "perl") {
+            inplace = 0
+            for (j = 2; j <= n; j++) if (w[j] ~ /^-[A-Za-z]*i/ || w[j] ~ /^--in-place/) inplace = 1
+            if (inplace) for (j = 2; j <= n; j++) print w[j]
+          } else if (v == "dd") {
+            for (j = 2; j <= n; j++) if (w[j] ~ /^of=/) { s = w[j]; sub(/^of=/, "", s); print s }
+          }
+          delete w
+        }' | grep -E '^[~/]'
     } 2>/dev/null | sort -u
   )
 
   while IFS= read -r tok; do
     [ -n "$tok" ] || continue
+    tok=${tok/#\$\{HOME\}/$home}
+    tok=${tok/#\$HOME/$home}
     case "$tok" in
+    *'$'*) continue ;; # some other unexpanded variable
     "~") tok=$home ;;
     "~/"*) tok="$home/${tok#\~/}" ;;
     /*) ;;
