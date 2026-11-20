@@ -113,11 +113,6 @@ A plan written to think through imminent work — one you'll implement right awa
 
 For a substantial rearchitecture whose feasibility is hard to judge up front, write the plan as a standalone doc and have an independent agent vet it before writing any code. Structure it so a reviewer can check the reasoning: load-bearing claims carry `file:line` anchors, validated claims stay separate from uncertain ones, and it closes with a list of what to verify during implementation.
 
-## Distilling design docs after they ship
-
-When you finish implementing a feature whose design lived in a design document, run the `distill-design-doc` skill before considering the work fully done. The skill rewrites the doc from a plan ("we will build X because Y") into a present-tense record ("X works like this, here's why") — keeping a description of the feature and the whys behind it while dropping planning scaffolding (phases, pitch framing, exhausted mockups). The doc stays in place as living documentation. Do this once the feature is merged or otherwise settled; running it automatically as part of wrapping up is fine — no need to stop and ask first. Just say you've done it.
-
-The distillation belongs in the **same commit as the feature work**, not a separate doc-only commit — it's part of finishing the work. If you've already committed the feature, amend the distillation into it (when unpushed) rather than adding a follow-up commit. Describe it in the message by the doc changes the commit actually contains — don't narrate retiring the planning doc if it was never committed (there's nothing in the diff to match).
 
 ## Don't warn me that `/tmp` files are ephemeral
 
