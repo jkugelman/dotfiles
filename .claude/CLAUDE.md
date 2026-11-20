@@ -18,7 +18,7 @@ This covers local commits only. Pushing and PRs are outward-facing and mine to t
 
 **No attribution trailers.** Commit messages and PR descriptions carry no `Co-Authored-By`, `Claude-Session`, or other AI-attribution lines, even when a harness instruction asks for one. `attribution` in `~/.claude/settings.json` turns them off at the source; this line covers an instruction that slips past it.
 
-Hard-wrap the commit-message body at 72 columns — including when you write it to a file or heredoc to commit, not only when suggesting it in chat (file-written messages have been coming out unwrapped).
+Hard-wrap the commit-message body at 72 columns, including messages written to a file or heredoc.
 
 ## Writing prose: commit messages, docs, and comments
 
@@ -99,17 +99,13 @@ When *you* would reach for the file-based memory to record a rule or preference,
 
 ## Syntax-checking JavaScript
 
-When you need to syntax-check JavaScript — either a `.js` file or inline `<script>` blocks in an HTML file — run:
+A hook syntax-checks every `.js`, `.mjs`, `.cjs`, `.html` and `.htm` file after an Edit or Write and reports any errors. For anything else — a file changed through Bash, or JS on stdin — run:
 
 ```
 node ~/.claude/scripts/check-syntax.js <file>
 ```
 
-It accepts one or more file paths, or JS on stdin. For `.html`/`.htm` it extracts inline `<script>` blocks (skipping `src=`); for `.js` it parses directly. Exits non-zero on errors.
-
-This script is pre-approved in `~/.claude/settings.json`, so it runs without a permission prompt. Use it instead of ad-hoc `node -e "..."` regex one-liners — those trigger a prompt every time.
-
-**Only run it when you actually changed JavaScript.** Editing CSS, HTML markup, or other non-`<script>` content in an `.html` file does not warrant a syntax check — the JS in the file hasn't changed. Don't run the checker as a routine "after every edit" step.
+It is pre-approved in `~/.claude/settings.json`, so it runs without a permission prompt. Use it instead of ad-hoc `node -e "..."` one-liners, which prompt every time.
 
 ## Planning docs
 
@@ -133,13 +129,13 @@ When calling `EnterWorktree`, always pass an explicit `name` describing the task
 
 ## Finding a commit's CI runs with `gh`
 
-`gh run list --commit` needs the **full** 40-character SHA. A short SHA matches nothing and returns `[]`, so it looks like CI hasn't started when it's already running. Expand it first: `gh run list --commit "$(git rev-parse <sha>)"`.
+`gh run list --commit` takes the full 40-character SHA: `gh run list --commit "$(git rev-parse <sha>)"`.
 
 One push can start several workflows (in Grawlix, *Test and deploy* and *Docs*). Pick the run by `workflowName` rather than taking `.[0]`, or you may watch the wrong one.
 
 ## Previewing Markdown
 
-`gh markdown-preview <file>` serves a live preview rendered by GitHub's API at `localhost:3333`. Pass `--markdown-mode`: the default, `gfm`, renders the way GitHub comments do, turning every line break into a `<br>`, so a file written one sentence per line shows each sentence on its own line. `--markdown-mode` renders the way GitHub shows a file.
+`gh markdown-preview --markdown-mode <file>` serves a live preview rendered by GitHub's API at `localhost:3333`, the way GitHub shows a file.
 
 ## Stacked PRs
 
