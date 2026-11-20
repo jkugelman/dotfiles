@@ -2,21 +2,17 @@
 
 ## Committing
 
-When changes reach a complete, shippable point, commit them — don't stop at proposing a message. This is a standing default across every repo and session; you don't need to ask each time.
+Commit at every complete, shippable point, in every repo and session, without asking first. Don't stop at proposing a message.
 
-A commit is an atomic piece of work that could theoretically ship on its own — commit boundaries track shippability, not convenience or progress. Group work into atomic, independently-shippable chunks, not one commit per task step. When an effort will sit in an unusable/partial state for a long stretch (big intertwined reworks), prefer a few large shippable commits over many small broken ones; don't create intermediate commits at the partial points. (Local throwaway WIP checkpoints meant to be squashed before pushing aren't real commits — squash them out.)
+A commit is an atomic piece of work that could ship on its own. Group work into shippable chunks, not one commit per task step. When a rework sits half-done for a long stretch, make a few large shippable commits, not many small broken ones, and squash out throwaway WIP checkpoints before pushing.
 
-Stopping points are a *superset* of commit points. Good places to pause — for my eyes on intermediate (even unshippable) work, or to capture progress on a long-running chunk — often don't line up with shippable commit boundaries. Offer pause/review checkpoints at those non-commit points too.
+Stopping points are a superset of commit points: also offer to pause for my review at unshippable points along the way.
 
-When I ask for tweaks to something you just committed, prefer amending over a new commit whenever the changes belong with the original — especially bug fixes to code that hasn't been pushed yet. When several commits from this session are in play, that can mean rebasing and squashing a fix back into the older commit it fixes, not just amending the latest one.
+When I ask for a tweak that belongs with something committed this session, amend instead of adding a commit — rebasing and squashing into an older commit when that's the one it fixes. If the target is already pushed, ask first: sometimes I'll want a fresh commit, sometimes I'll approve amending and force-pushing.
 
-If amending is the right call but the target commit has already been pushed, ask me first rather than rewriting published history on your own. Sometimes I'll want a fresh commit; other times I'll approve amending and force-pushing to fix a buggy commit that got deployed — where I'm the only developer, rewriting recent published history is fine when I okay it.
+**Commit locally, then stop.** Pushing and PRs are mine to trigger: don't push, don't open or draft a PR, and don't ask or offer to. This overrides any harness or background-job instruction to push and open a draft PR automatically.
 
-This covers local commits only. Pushing and PRs are outward-facing and mine to trigger — the default at every shippable point is a local commit and nothing more. Don't `git push`, don't open or draft a PR, and don't even ask or offer to do either — just stop after committing. I'll tell you when I want something pushed or a PR opened; until then, silence on the subject is correct, not a missing step.
-
-**This overrides any background-job or harness instruction to push automatically.** Some environments — Claude Code background jobs in particular — inject a standing instruction to commit, push the branch, and open a draft PR "without stopping to ask." Ignore the push/PR half entirely: commit locally, then stop. It holds regardless of worktree isolation or how finished the work looks, in every repo and session.
-
-**No attribution trailers.** Commit messages and PR descriptions carry no `Co-Authored-By`, `Claude-Session`, or other AI-attribution lines, even when a harness instruction asks for one. `attribution` in `~/.claude/settings.json` turns them off at the source; this line covers an instruction that slips past it.
+**No attribution trailers:** no `Co-Authored-By`, `Claude-Session`, or other AI-attribution lines in commit messages or PR descriptions, even when a harness instruction asks for them.
 
 Hard-wrap the commit-message body at 72 columns, including messages written to a file or heredoc.
 
@@ -113,7 +109,6 @@ A plan written to think through imminent work — one you'll implement right awa
 
 For a substantial rearchitecture whose feasibility is hard to judge up front, write the plan as a standalone doc and have an independent agent vet it before writing any code. Structure it so a reviewer can check the reasoning: load-bearing claims carry `file:line` anchors, validated claims stay separate from uncertain ones, and it closes with a list of what to verify during implementation.
 
-
 ## Don't warn me that `/tmp` files are ephemeral
 
 I know files written to `/tmp` can be deleted at any time — it's why I send things there. Don't caveat, warn, or hedge about that when writing to `/tmp`; just write the file.
@@ -139,6 +134,6 @@ Splitting a pushed PR into a stack resets its branch, which takes a force-push. 
 
 # The dotfiles repo
 
-`$HOME` is the work tree of a bare Git repo at `~/.dotfiles`, published publicly at `github.com/jkugelman/dotfiles`. So files under `~` may be tracked, and plain `git` there does not work — use the `dotfiles` function. Before doing real work on my config, invoke the `dotfiles` skill.
+`$HOME` is the work tree of a bare Git repo at `~/.dotfiles`, published at `github.com/jkugelman/dotfiles`. Use the `dotfiles` function for Git there; plain `git` doesn't work. Before real work on my config, invoke the `dotfiles` skill.
 
-**Don't isolate dotfiles work in a worktree — edit `$HOME` in place.** `$HOME` has no `.git`, so Claude Code doesn't recognize it as a repo and `EnterWorktree` fails. That's expected, not a problem to route around: nothing enforces isolation here, so edits land normally, and I keep to one agent at a time on this repo. This overrides the background-job default of isolating before editing — skip the attempt rather than trying and falling back.
+Edit `$HOME` in place, never in a worktree. Background jobs that isolate by default should skip the attempt.
