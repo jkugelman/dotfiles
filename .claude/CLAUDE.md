@@ -123,10 +123,6 @@ The distillation belongs in the **same commit as the feature work**, not a separ
 
 I know files written to `/tmp` can be deleted at any time — it's why I send things there. Don't caveat, warn, or hedge about that when writing to `/tmp`; just write the file.
 
-## Name worktrees descriptively
-
-When calling `EnterWorktree`, always pass an explicit `name` describing the task, instead of omitting it and letting the tool fall back to a randomly generated name. A descriptive name is what makes `git worktree list` and later cleanup legible.
-
 ## Finding a commit's CI runs with `gh`
 
 `gh run list --commit` takes the full 40-character SHA: `gh run list --commit "$(git rev-parse <sha>)"`.
